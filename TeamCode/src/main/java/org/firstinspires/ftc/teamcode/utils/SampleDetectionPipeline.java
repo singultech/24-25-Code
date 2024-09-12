@@ -1,16 +1,21 @@
 package org.firstinspires.ftc.teamcode.utils;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.openftc.easyopencv.OpenCvPipeline;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Core;
-import org.opencv.imgcodecs.Imgcodecs;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleDetectionPipeline {
+public class SampleDetectionPipeline extends OpenCvPipeline {
+
+    // Telemetry for OpMode to display info
+    Telemetry telemetry;
 
     // Threshold values for detecting colors
     Scalar lowerRed = new Scalar(125, 0, 0);
@@ -20,17 +25,23 @@ public class SampleDetectionPipeline {
     double minSide = 50.0;
 
     // Store located items
-    List<DetectedItem> locatedItems = new ArrayList<>();
+    public List<DetectedItem> locatedItems = new ArrayList<>();
     int id = 0;
 
-    public Mat processImage(Mat inputImage) {
+    // Constructor to pass telemetry
+    public SampleDetectionPipeline(Telemetry telemetry) {
+        this.telemetry = telemetry;
+    }
+
+    @Override
+    public Mat processFrame(Mat input) {
         Mat hsvImage = new Mat();
         Mat mask = new Mat();
         Mat binaryMask = new Mat();
         Mat grayImage = new Mat();
 
         // Convert image to HSV (if required)
-        Imgproc.cvtColor(inputImage, hsvImage, Imgproc.COLOR_RGB2BGR);
+        Imgproc.cvtColor(input, hsvImage, Imgproc.COLOR_RGB2BGR);
 
         // Threshold the image for red color
         Core.inRange(hsvImage, lowerRed, upperRed, mask);
@@ -50,14 +61,11 @@ public class SampleDetectionPipeline {
             MatOfPoint2f contour2f = new MatOfPoint2f(contour.toArray());
             RotatedRect rotatedRect = Imgproc.minAreaRect(contour2f);
 
-            // Get the width, height, and angle of the rectangle
             double width = rotatedRect.size.width;
             double height = rotatedRect.size.height;
 
-            // Check if the object is big enough
             if (width < minSide || height < minSide) continue;
 
-            // Get the angle of the longest side
             Point[] boxPoints = new Point[4];
             rotatedRect.points(boxPoints);
 
@@ -83,7 +91,6 @@ public class SampleDetectionPipeline {
                 angleAdjusted += 180;
             }
 
-            // Draw rectangle and add text to the image
             for (int j = 0; j < 4; j++) {
                 Imgproc.line(grayImage, boxPoints[j], boxPoints[(j + 1) % 4], new Scalar(0, 255, 0), 2);
             }
@@ -99,32 +106,14 @@ public class SampleDetectionPipeline {
             id++;
         }
 
-        // Validate detected items and annotate invalid ones
         validateDetectedItems(grayImage);
 
-        // Save the processed image
-        Imgcodecs.imwrite("output.png", grayImage);
-
-        return grayImage;
+        return grayImage;  // This is the final image that will be displayed to the screen.
     }
 
-    // Helper method to calculate distance between two points
-    private double distance(Point p1, Point p2) {
-        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-    }
+    // Helper methods (distance, getLongestSideIndex, validateDetectedItems, etc.) remain the same
+    // ...
 
-    // Helper method to get index of the longest side
-    private int getLongestSideIndex(double[] sideLengths) {
-        int index = 0;
-        for (int i = 1; i < sideLengths.length; i++) {
-            if (sideLengths[i] > sideLengths[index]) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
-    // Validate located items based on distance between corners
     private void validateDetectedItems(Mat image) {
         for (int i = 0; i < locatedItems.size(); i++) {
             DetectedItem item = locatedItems.get(i);
@@ -140,8 +129,26 @@ public class SampleDetectionPipeline {
             }
         }
     }
+    public static class DetectedItem {
+        public int id;
+        public double angle;
+        public double centerX;
+        public double centerY;
+        public Point[] cornerPoints;
+        public boolean isValid = true;
 
-    // Check the perpendicular distance between corners (stub function, you will need to implement the logic)
+        public DetectedItem(int id, double angle, double centerX, double centerY, Point[] cornerPoints) {
+            this.id = id;
+            this.angle = angle;
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.cornerPoints = cornerPoints;
+        }
+
+        public Point getCenter() {
+            return new Point(centerX, centerY);
+        }
+    }
     private boolean checkDistance(Point[] itemCorners, Point[] otherCorners) {
         // Convert OpenCV Points to your SampleDist Point
         SampleDist.Point[] itemCornersConverted = new SampleDist.Point[itemCorners.length];
@@ -161,27 +168,16 @@ public class SampleDetectionPipeline {
         // Use SampleDist's isValid function to determine if the distance is valid
         return SampleDist.isValid(itemCornersConverted, otherCornersConverted, threshold);
     }
-
-
-    // Detected item class to store properties of each detected object
-    private static class DetectedItem {
-        int id;
-        double angle;
-        double centerX;
-        double centerY;
-        Point[] cornerPoints;
-        boolean isValid = true;
-
-        DetectedItem(int id, double angle, double centerX, double centerY, Point[] cornerPoints) {
-            this.id = id;
-            this.angle = angle;
-            this.centerX = centerX;
-            this.centerY = centerY;
-            this.cornerPoints = cornerPoints;
+    private int getLongestSideIndex(double[] sideLengths) {
+        int index = 0; // Start by assuming the first side is the longest
+        for (int i = 1; i < sideLengths.length; i++) {
+            if (sideLengths[i] > sideLengths[index]) {
+                index = i; // Update the index if a longer side is found
+            }
         }
-
-        public Point getCenter() {
-            return new Point(centerX, centerY);
-        }
+        return index;
     }
-}
+    private double distance(Point p1, Point p2) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }}
+
