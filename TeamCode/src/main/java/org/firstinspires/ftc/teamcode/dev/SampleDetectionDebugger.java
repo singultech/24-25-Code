@@ -21,7 +21,7 @@ public class SampleDetectionDebugger extends LinearOpMode {
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        pipeline = new SampleDetectionPipeline(telemetry);
+        pipeline = new SampleDetectionPipeline();
         webcam.setPipeline(pipeline);
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -40,7 +40,6 @@ public class SampleDetectionDebugger extends LinearOpMode {
 
         while (opModeIsActive()) {
             // Display detection results on telemetry
-            telemetry.addData("Items Detected", pipeline.locatedItems.size());
             telemetry.update();
         }
     }
