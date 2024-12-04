@@ -24,7 +24,7 @@ public class SparkfunDebugger extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Get a reference to the sensor
-        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sparkfun-odo");
+        myOtos = hardwareMap.get(SparkFunOTOSCorrected.class, "sparkfun-otos");
 
         // All the configuration for the OTOS is done in this method
         configureOtos();
