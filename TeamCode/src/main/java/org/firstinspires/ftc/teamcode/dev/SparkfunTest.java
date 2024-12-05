@@ -16,8 +16,8 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "Sparkfun Debugger", group = "Dev")
-public class SparkfunDebugger extends LinearOpMode {
+@TeleOp(name = "Sparkfun Test", group = "Dev")
+public class SparkfunTest extends LinearOpMode {
     // Create an instance of the sensor
     SparkFunOTOSCorrected myOtos;
     // should be a "throws InterruptedException"
