@@ -43,6 +43,10 @@ public class SlidesTest extends LinearOpMode {
                 leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
+            if (gamepad1.triangle){
+                leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            }
             if (gamepad1.dpad_up){
                 currentPosition += 1;
             }
@@ -51,6 +55,7 @@ public class SlidesTest extends LinearOpMode {
             }
             telemetry.addLine("Use the D-pad to control the slides.");
             telemetry.addLine("Press ▣ to reset the slides position to 0.");
+            telemetry.addLine("Press ▲ to disable the holding motors");
             telemetry.addLine("Current Left Position " + leftSlide.getCurrentPosition());
             telemetry.addLine("Current Right Position " + rightSlide.getCurrentPosition());
             telemetry.addLine("Target Position " + currentPosition);
