@@ -24,6 +24,7 @@ public class SlidesTest extends LinearOpMode {
     DcMotorEx leftSlide;
     DcMotorEx rightSlide;
     int currentPosition;
+    boolean isActive;
     @Override
     public void runOpMode() {
 
@@ -35,10 +36,11 @@ public class SlidesTest extends LinearOpMode {
         leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         //rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        leftSlide.setPower(1.0);
+        rightSlide.setPower(1.0);
+        isActive = true;
         waitForStart();
 
         while (opModeIsActive()) {
@@ -48,8 +50,21 @@ public class SlidesTest extends LinearOpMode {
                 rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
             if (gamepad1.triangle){
-                leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                if (isActive){
+                    leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    leftSlide.setPower(0.0);
+                    rightSlide.setPower(0.0);
+                    isActive = false;
+                } else{
+                    leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    leftSlide.setPower(1.0);
+                    rightSlide.setPower(1.0);
+                    isActive = true;
+                }
+                }
+
             }
             if (gamepad1.dpad_up){
                 currentPosition += 1;
@@ -60,17 +75,18 @@ public class SlidesTest extends LinearOpMode {
             setSlidePositions(currentPosition);
             telemetry.addLine("Use the D-pad to control the slides.");
             telemetry.addLine("Press ▣ to reset the slides position to 0.");
-            telemetry.addLine("Press ▲ to disable the holding motors");
+            telemetry.addLine("Press ▲ to toggle the holding motors");
             telemetry.addLine("Current Left Position " + leftSlide.getCurrentPosition());
             telemetry.addLine("Current Right Position " + rightSlide.getCurrentPosition());
             telemetry.addLine("Target Position " + currentPosition);
             telemetry.update();
-        }
     }
-
     public void setSlidePositions(int pos){
 
         leftSlide.setTargetPosition(pos);
         rightSlide.setTargetPosition(pos);
+
     }
 }
+
+
