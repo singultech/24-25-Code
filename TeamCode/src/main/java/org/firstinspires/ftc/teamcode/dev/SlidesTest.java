@@ -25,21 +25,21 @@ public class SlidesTest extends LinearOpMode {
     DcMotorEx rightSlide;
     int currentPosition;
     boolean isActive;
+    final int maxH = 10000;
     @Override
     public void runOpMode() {
 
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+        leftSlide.setTargetPosition(0);
+        rightSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftSlide.setPower(1.0);
-        rightSlide.setPower(1.0);
+        setSlidePositions(1);
         isActive = true;
         waitForStart();
 
@@ -51,28 +51,20 @@ public class SlidesTest extends LinearOpMode {
             }
             if (gamepad1.triangle){
                 if (isActive){
-                    leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                    rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-                    leftSlide.setPower(0.0);
-                    rightSlide.setPower(0.0);
+                    setSlidePositions(0);
                     isActive = false;
                 } else{
-                    leftSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    rightSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                    leftSlide.setPower(1.0);
-                    rightSlide.setPower(1.0);
+                    setSlidePositions(1);
                     isActive = true;
                 }
-                }
-
             }
-            if (gamepad1.dpad_up){
+            if (gamepad1.dpad_up && currentPosition<maxH){
                 currentPosition += 1;
             }
-            if (gamepad1.dpad_down){
+            if (gamepad1.dpad_down && currentPosition>=0){
                 currentPosition -= 1;
             }
-            setSlidePositions(currentPosition);
+            setSlidePositions(0);
             telemetry.addLine("Use the D-pad to control the slides.");
             telemetry.addLine("Press ▣ to reset the slides position to 0.");
             telemetry.addLine("Press ▲ to toggle the holding motors");
@@ -80,12 +72,11 @@ public class SlidesTest extends LinearOpMode {
             telemetry.addLine("Current Right Position " + rightSlide.getCurrentPosition());
             telemetry.addLine("Target Position " + currentPosition);
             telemetry.update();
+        }
     }
     public void setSlidePositions(int pos){
-
-        leftSlide.setTargetPosition(pos);
-        rightSlide.setTargetPosition(pos);
-
+        leftSlide.setTargetPosition(0);
+        rightSlide.setTargetPosition(0);
     }
 }
 
