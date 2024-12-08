@@ -42,10 +42,12 @@ public class SlidePair {
         if (pos > maxHeight) {
             leftSlide.setTargetPosition(maxHeight);
             rightSlide.setTargetPosition(maxHeight);
+            return;
         }
         if (pos < 0){
             leftSlide.setTargetPosition(0);
             rightSlide.setTargetPosition(0);
+            return;
         }
         leftSlide.setTargetPosition(pos);
         rightSlide.setTargetPosition(pos);
@@ -55,6 +57,7 @@ public class SlidePair {
         if (targetPosition + amt > 0 && targetPosition + amt <= maxHeight){
             targetPosition += amt;
         }
+        setTargetPosition(targetPosition);
     }
 
     public void setPower(double p){
@@ -83,6 +86,7 @@ public class SlidePair {
     }
 
     public void resetPosition(){
+        setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
