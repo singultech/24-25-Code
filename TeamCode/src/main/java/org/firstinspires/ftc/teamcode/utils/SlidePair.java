@@ -29,8 +29,7 @@ public class SlidePair {
 
     private void init(){
         setPower(power);
-        leftSlide.setTargetPosition(0);
-        rightSlide.setTargetPosition(0);
+        setPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
