@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class SlidePair {
     DcMotorEx rightSlide;
     DcMotorEx leftSlide;
-    private int currentPosition;
+    private int targetPosition;
     private boolean isActive;
     private final int maxHeight;
     private double power;
@@ -29,7 +29,7 @@ public class SlidePair {
 
     private void init(){
         setPower(power);
-        setPosition(0);
+        setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -38,7 +38,7 @@ public class SlidePair {
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void setPosition(int pos){
+    public void setTargetPosition(int pos){
         if (pos > maxHeight) {
             leftSlide.setTargetPosition(maxHeight);
             rightSlide.setTargetPosition(maxHeight);
@@ -51,9 +51,9 @@ public class SlidePair {
         rightSlide.setTargetPosition(pos);
     }
 
-    public void changePosition(int amt){
-        if (currentPosition + amt > 0 && currentPosition + amt <= maxHeight){
-            currentPosition += amt;
+    public void changeTargetPosition(int amt){
+        if (targetPosition + amt > 0 && targetPosition + amt <= maxHeight){
+            targetPosition += amt;
         }
     }
 
@@ -70,7 +70,20 @@ public class SlidePair {
         return isActive;
     }
 
-    public int getPosition(){
-        return currentPosition;
+    public int getTargetPosition(){
+        return targetPosition;
+    }
+
+    public int getLeftPosition(){
+        return leftSlide.getCurrentPosition();
+    }
+
+    public int getRightPosition(){
+        return rightSlide.getCurrentPosition();
+    }
+
+    public void resetPosition(){
+        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
