@@ -5,6 +5,8 @@
 */
 package org.firstinspires.ftc.teamcode.dev;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -18,7 +20,7 @@ public class SlidesTest extends LinearOpMode {
     DcMotorEx rightSlide;
     @Override
     public void runOpMode() {
-
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         SlidePair slides = new SlidePair(leftSlide, rightSlide, 2000, 0.25);
