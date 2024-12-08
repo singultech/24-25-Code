@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class SlidePair {
     DcMotorEx rightSlide;
     DcMotorEx leftSlide;
-    private int targetPosition;
     private boolean isActive;
     private final int maxHeight;
     private double power;
@@ -54,10 +53,9 @@ public class SlidePair {
     }
 
     public void changeTargetPosition(int amt){
-        if (targetPosition + amt > 0 && targetPosition + amt <= maxHeight){
-            targetPosition += amt;
+        if (leftSlide.getTargetPosition() + amt > 0 && leftSlide.getTargetPosition() + amt <= maxHeight){
+            setTargetPosition(leftSlide.getTargetPosition() + amt);
         }
-        setTargetPosition(targetPosition);
     }
 
     public void setPower(double p){
@@ -74,7 +72,7 @@ public class SlidePair {
     }
 
     public int getTargetPosition(){
-        return targetPosition;
+        return leftSlide.getTargetPosition();
     }
 
     public int getLeftPosition(){
