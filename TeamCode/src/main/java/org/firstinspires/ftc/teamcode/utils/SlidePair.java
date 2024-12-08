@@ -17,12 +17,14 @@ public class SlidePair {
         leftSlide = left;
         maxHeight = maxH;
         power = startingPower;
+        init();
     }
     public SlidePair(DcMotorEx left, DcMotorEx right, int maxH){
         rightSlide = right;
         leftSlide = left;
         maxHeight = maxH;
         power = 1.0;
+        init();
     }
 
     private void init(){
