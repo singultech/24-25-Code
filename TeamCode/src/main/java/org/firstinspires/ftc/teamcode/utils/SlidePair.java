@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import static java.lang.Math.round;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,12 +29,13 @@ public class SlidePair {
     }
 
     private void init(){
-        setPower(power);
-        setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setPower(power);
+        setTargetPosition(0);
+
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -40,20 +43,23 @@ public class SlidePair {
     public void setTargetPosition(int pos){
         if (pos > maxHeight) {
             leftSlide.setTargetPosition(maxHeight);
-            rightSlide.setTargetPosition(maxHeight);
+            double rightMaxHeight = 0.713679*maxHeight-12.7546;
+            rightSlide.setTargetPosition((int) rightMaxHeight);
             return;
         }
-        if (pos < 0){
+        if (pos <= 0){
             leftSlide.setTargetPosition(0);
             rightSlide.setTargetPosition(0);
             return;
         }
         leftSlide.setTargetPosition(pos);
-        rightSlide.setTargetPosition(pos);
+        double rightSidePosition = 0.713679*pos-12.7546;
+        rightSlide.setTargetPosition((int) rightSidePosition);
+
     }
 
     public void changeTargetPosition(int amt){
-        if (leftSlide.getTargetPosition() + amt > 0 && leftSlide.getTargetPosition() + amt <= maxHeight){
+        if (leftSlide.getTargetPosition() + amt >= 0 && leftSlide.getTargetPosition() + amt <= maxHeight){
             setTargetPosition(leftSlide.getTargetPosition() + amt);
         }
     }

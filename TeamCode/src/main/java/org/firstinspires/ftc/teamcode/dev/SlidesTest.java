@@ -20,10 +20,11 @@ public class SlidesTest extends LinearOpMode {
     DcMotorEx rightSlide;
     @Override
     public void runOpMode() {
+        double slidePower = 1.0;
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-        SlidePair slides = new SlidePair(leftSlide, rightSlide, 2000, 0.25);
+        SlidePair slides = new SlidePair(leftSlide, rightSlide, 2700, slidePower);
 
 
         waitForStart();
@@ -37,14 +38,14 @@ public class SlidesTest extends LinearOpMode {
                 if (slides.isActive()){
                     slides.setPower(0);
                 } else{
-                    slides.setPower(0.25);
+                    slides.setPower(slidePower);
                 }
             }
             if (gamepad1.dpad_up){
-                slides.changeTargetPosition(1);
+                slides.changeTargetPosition(50);
             }
             if (gamepad1.dpad_down){
-                slides.changeTargetPosition(-1);
+                slides.changeTargetPosition(-50);
             }
             telemetry.addLine("Use the D-pad to control the slides.");
             telemetry.addLine("Press ▣ to reset the slides position to 0.");
