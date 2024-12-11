@@ -24,7 +24,7 @@ public class SlidesTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-        SlidePair slides = new SlidePair(leftSlide, rightSlide, 2700, slidePower);
+        SlidePair slides = new SlidePair(leftSlide, rightSlide, 4100, slidePower);
 
 
         waitForStart();

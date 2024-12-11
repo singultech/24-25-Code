@@ -29,12 +29,12 @@ public class SlidePair {
     }
 
     private void init(){
+        setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(power);
-        setTargetPosition(0);
 
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -43,8 +43,7 @@ public class SlidePair {
     public void setTargetPosition(int pos){
         if (pos > maxHeight) {
             leftSlide.setTargetPosition(maxHeight);
-            double rightMaxHeight = 0.713679*maxHeight-12.7546;
-            rightSlide.setTargetPosition((int) rightMaxHeight);
+            rightSlide.setTargetPosition(maxHeight);
             return;
         }
         if (pos <= 0){
@@ -53,8 +52,7 @@ public class SlidePair {
             return;
         }
         leftSlide.setTargetPosition(pos);
-        double rightSidePosition = 0.713679*pos-12.7546;
-        rightSlide.setTargetPosition((int) rightSidePosition);
+        rightSlide.setTargetPosition(pos);
 
     }
 
