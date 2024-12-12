@@ -8,14 +8,22 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-@TeleOp(name = "Teleop", group = "a")
+import org.firstinspires.ftc.teamcode.utils.SlidePair;
+
+@TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        DcMotorEx leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
+        DcMotorEx rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
 
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+        SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 0);
+
+
 
         waitForStart();
 
