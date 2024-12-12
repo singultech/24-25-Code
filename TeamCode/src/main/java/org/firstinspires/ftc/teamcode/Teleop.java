@@ -9,7 +9,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
 @TeleOp(name = "Teleop")
@@ -18,6 +20,8 @@ public class Teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DcMotorEx leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         DcMotorEx rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+
+        GamepadPair gamepads = new GamepadPair();
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -28,17 +32,20 @@ public class Teleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            gamepads.copyStates();
+
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x
+                            -gamepads.joystickValue(1, "left", "y"),
+                            -gamepads.joystickValue(1, "left", "x")
                     ),
-                    -gamepad1.right_stick_x
+                    -gamepads.joystickValue(1, "right", "x")
             ));
 
             drive.updatePoseEstimate();
 
-            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("x: ", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.update();
