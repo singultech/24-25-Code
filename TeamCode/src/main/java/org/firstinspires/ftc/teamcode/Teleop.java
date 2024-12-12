@@ -21,7 +21,7 @@ public class Teleop extends LinearOpMode {
         DcMotorEx leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         DcMotorEx rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
 
-        GamepadPair gamepads = new GamepadPair();
+        GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));

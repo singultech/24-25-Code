@@ -1,30 +1,29 @@
 package org.firstinspires.ftc.teamcode.utils;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class GamepadPair {
-    Gamepad gamepad1;
-    Gamepad gamepad2;
-    Gamepad previousGamepad1;
-    Gamepad previousGamepad2;
+    private final Gamepad gamepad1;
+    private final Gamepad gamepad2;
+    private final Gamepad previousGamepad1;
+    private final Gamepad previousGamepad2;
 
-    public GamepadPair(){
-        gamepad1 = new Gamepad();
-        previousGamepad1 = new Gamepad();
-        gamepad2 = new Gamepad();
-        previousGamepad2 = new Gamepad();
+    public GamepadPair(Gamepad gamepad1, Gamepad gamepad2) {
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
+        this.previousGamepad1 = new Gamepad();
+        this.previousGamepad2 = new Gamepad();
     }
 
-    public void copyStates(){
+    public void copyStates() {
         previousGamepad1.copy(gamepad1);
         previousGamepad2.copy(gamepad2);
-        gamepad1.copy(gamepad1);
-        gamepad2.copy(gamepad2);
     }
 
-    public boolean isPressedOnce(int gamepadNum, String button){
+    public boolean isPressedOnce(int gamepadNum, String button) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
         Gamepad previousGamepad = gamepadNum == 1 ? previousGamepad1 : previousGamepad2;
-        switch (button){
+        switch (button) {
             case "a":
             case "cross":
                 return currentGamepad.a && !previousGamepad.a;
@@ -57,9 +56,10 @@ public class GamepadPair {
                 throw new IllegalArgumentException("Unknown button: " + button);
         }
     }
-    public boolean isHeld(int gamepadNum, String button){
+
+    public boolean isHeld(int gamepadNum, String button) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
-        switch (button){
+        switch (button) {
             case "a":
             case "cross":
                 return currentGamepad.a;
@@ -92,17 +92,19 @@ public class GamepadPair {
                 throw new IllegalArgumentException("Unknown button: " + button);
         }
     }
-    public float joystickValue(int gamepadNum, String joystick, String direction){
-        Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
-        if (joystick.equals("left")){
-            if (direction.equals("y")) return currentGamepad.left_stick_y;
-            if (direction.equals("x")) return currentGamepad.left_stick_x;
-        }
-        if (joystick.equals("right")){
-            if (direction.equals("y")) return currentGamepad.right_stick_y;
-            if (direction.equals("x")) return currentGamepad.right_stick_x;
-        }
-        return 0;
-    }
 
+    public float joystickValue(int gamepadNum, String joystick, String direction) {
+        Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
+        switch (joystick) {
+            case "left":
+                if ("x".equals(direction)) return currentGamepad.left_stick_x;
+                if ("y".equals(direction)) return currentGamepad.left_stick_y;
+                break;
+            case "right":
+                if ("x".equals(direction)) return currentGamepad.right_stick_x;
+                if ("y".equals(direction)) return currentGamepad.right_stick_y;
+                break;
+        }
+        throw new IllegalArgumentException("Unknown joystick/direction combination: " + joystick + "/" + direction);
+    }
 }
