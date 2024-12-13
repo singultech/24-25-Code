@@ -21,7 +21,7 @@ public class GamepadPair {
         previousGamepad2.copy(gamepad2);
     }
 
-    public boolean isPressedOnce(int gamepadNum, String button) {
+    public boolean isPressed(int gamepadNum, String button) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
         Gamepad previousGamepad = gamepadNum == 1 ? previousGamepad1 : previousGamepad2;
         if (gamepadNum == 2 && !secondControllerEnabled) return false;

@@ -29,7 +29,6 @@ public class Teleop extends LinearOpMode {
         int[] vertSlidePresets = {0, 1000, 2000, 3000};
         int vertSlidePreset = 0;
 
-
         waitForStart();
 
         while (opModeIsActive()) {
@@ -43,6 +42,11 @@ public class Teleop extends LinearOpMode {
                     ),
                     -gamepads.joystickValue(1, "right", "x")
             ));
+
+            if (gamepads.isPressed(1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) vertSlidePreset++;
+            if (gamepads.isPressed(1, "dpad_down") && vertSlidePreset>0) vertSlidePreset--;
+
+
 
             vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);
             drive.updatePoseEstimate();
