@@ -22,38 +22,109 @@ public class GamepadPair {
     }
 
     public boolean isPressed(int gamepadNum, String button) {
-        Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
-        Gamepad previousGamepad = gamepadNum == 1 ? previousGamepad1 : previousGamepad2;
+
         if (gamepadNum == 2 && !secondControllerEnabled) return false;
+        if (gamepadNum == 1 || gamepadNum == 2){
+            Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
+            Gamepad previousGamepad = gamepadNum == 1 ? previousGamepad1 : previousGamepad2;
+            switch (button) {
+                case "a":
+                case "cross":
+                    return currentGamepad.a && !previousGamepad.a;
+                case "b":
+                case "circle":
+                    return currentGamepad.b && !previousGamepad.b;
+                case "x":
+                case "square":
+                    return currentGamepad.x && !previousGamepad.x;
+                case "y":
+                case "triangle":
+                    return currentGamepad.y && !previousGamepad.y;
+                case "dpad_up":
+                    return currentGamepad.dpad_up && !previousGamepad.dpad_up;
+                case "dpad_down":
+                    return currentGamepad.dpad_down && !previousGamepad.dpad_down;
+                case "dpad_left":
+                    return currentGamepad.dpad_left && !previousGamepad.dpad_left;
+                case "dpad_right":
+                    return currentGamepad.dpad_right && !previousGamepad.dpad_right;
+                case "left_bumper":
+                    return currentGamepad.left_bumper && !previousGamepad.left_bumper;
+                case "right_bumper":
+                    return currentGamepad.right_bumper && !previousGamepad.right_bumper;
+                case "left_stick_button":
+                    return currentGamepad.left_stick_button && !previousGamepad.left_stick_button;
+                case "right_stick_button":
+                    return currentGamepad.right_stick_button && !previousGamepad.right_stick_button;
+                default:
+                    throw new IllegalArgumentException("Unknown button: " + button);
+            }
+        }
+        if (!secondControllerEnabled){
+            Gamepad currentGamepad = gamepad1;
+            Gamepad previousGamepad = previousGamepad1;
+            switch (button) {
+                case "a":
+                case "cross":
+                    return currentGamepad.a && !previousGamepad.a;
+                case "b":
+                case "circle":
+                    return currentGamepad.b && !previousGamepad.b;
+                case "x":
+                case "square":
+                    return currentGamepad.x && !previousGamepad.x;
+                case "y":
+                case "triangle":
+                    return currentGamepad.y && !previousGamepad.y;
+                case "dpad_up":
+                    return currentGamepad.dpad_up && !previousGamepad.dpad_up;
+                case "dpad_down":
+                    return currentGamepad.dpad_down && !previousGamepad.dpad_down;
+                case "dpad_left":
+                    return currentGamepad.dpad_left && !previousGamepad.dpad_left;
+                case "dpad_right":
+                    return currentGamepad.dpad_right && !previousGamepad.dpad_right;
+                case "left_bumper":
+                    return currentGamepad.left_bumper && !previousGamepad.left_bumper;
+                case "right_bumper":
+                    return currentGamepad.right_bumper && !previousGamepad.right_bumper;
+                case "left_stick_button":
+                    return currentGamepad.left_stick_button && !previousGamepad.left_stick_button;
+                case "right_stick_button":
+                    return currentGamepad.right_stick_button && !previousGamepad.right_stick_button;
+                default:
+                    throw new IllegalArgumentException("Unknown button: " + button);
+            }
+        }
         switch (button) {
             case "a":
             case "cross":
-                return currentGamepad.a && !previousGamepad.a;
+                return (gamepad1.a && !previousGamepad1.a) || (gamepad2.a && !previousGamepad2.a);
             case "b":
             case "circle":
-                return currentGamepad.b && !previousGamepad.b;
+                return (gamepad1.b && !previousGamepad1.b) || (gamepad2.b && !previousGamepad2.b);
             case "x":
             case "square":
-                return currentGamepad.x && !previousGamepad.x;
+                return (gamepad1.x && !previousGamepad1.x) || (gamepad2.x && !previousGamepad2.x);
             case "y":
             case "triangle":
-                return currentGamepad.y && !previousGamepad.y;
+                return (gamepad1.y && !previousGamepad1.y) || (gamepad2.y && !previousGamepad2.y);
             case "dpad_up":
-                return currentGamepad.dpad_up && !previousGamepad.dpad_up;
+                return (gamepad1.dpad_up && !previousGamepad1.dpad_up) || (gamepad2.dpad_up && !previousGamepad2.dpad_up);
             case "dpad_down":
-                return currentGamepad.dpad_down && !previousGamepad.dpad_down;
+                return (gamepad1.dpad_down && !previousGamepad1.dpad_down) || (gamepad2.dpad_down && !previousGamepad2.dpad_down);
             case "dpad_left":
-                return currentGamepad.dpad_left && !previousGamepad.dpad_left;
+                return (gamepad1.dpad_left && !previousGamepad1.dpad_left) || (gamepad2.dpad_left && !previousGamepad2.dpad_left);
             case "dpad_right":
-                return currentGamepad.dpad_right && !previousGamepad.dpad_right;
+                return (gamepad1.dpad_right && !previousGamepad1.dpad_right) || (gamepad2.dpad_right && !previousGamepad2.dpad_right);
             case "left_bumper":
-                return currentGamepad.left_bumper && !previousGamepad.left_bumper;
+                return (gamepad1.left_bumper && !previousGamepad1.left_bumper) || (gamepad2.left_bumper && !previousGamepad2.left_bumper);
             case "right_bumper":
-                return currentGamepad.right_bumper && !previousGamepad.right_bumper;
+                return (gamepad1.right_bumper && !previousGamepad1.right_bumper) || (gamepad2.right_bumper && !previousGamepad2.right_bumper);
             case "left_stick_button":
-                return currentGamepad.left_stick_button && !previousGamepad.left_stick_button;
+                return (gamepad1.left_stick_button && !previousGamepad1.left_stick_button) || (gamepad2.left_stick_button && !previousGamepad2.left_stick_button);
             case "right_stick_button":
-                return currentGamepad.right_stick_button && !previousGamepad.right_stick_button;
+                return (gamepad1.right_stick_button && !previousGamepad1.right_stick_button) || (gamepad2.right_stick_button && !previousGamepad2.right_stick_button);
             default:
                 throw new IllegalArgumentException("Unknown button: " + button);
         }
