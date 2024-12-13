@@ -7,6 +7,7 @@ public class GamepadPair {
     private final Gamepad gamepad2;
     private final Gamepad previousGamepad1;
     private final Gamepad previousGamepad2;
+    private boolean secondControllerEnabled = true;
 
     public GamepadPair(Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
@@ -23,6 +24,7 @@ public class GamepadPair {
     public boolean isPressedOnce(int gamepadNum, String button) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
         Gamepad previousGamepad = gamepadNum == 1 ? previousGamepad1 : previousGamepad2;
+        if (gamepadNum == 2 && !secondControllerEnabled) return false;
         switch (button) {
             case "a":
             case "cross":
@@ -59,6 +61,7 @@ public class GamepadPair {
 
     public boolean isHeld(int gamepadNum, String button) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
+        if (gamepadNum == 2 && !secondControllerEnabled) return false;
         switch (button) {
             case "a":
             case "cross":
@@ -95,6 +98,7 @@ public class GamepadPair {
 
     public float joystickValue(int gamepadNum, String joystick, String direction) {
         Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
+        if (gamepadNum == 2 && !secondControllerEnabled) return 0;
         switch (joystick) {
             case "left":
                 if ("x".equals(direction)) return currentGamepad.left_stick_x;
@@ -106,5 +110,13 @@ public class GamepadPair {
                 break;
         }
         throw new IllegalArgumentException("Unknown joystick/direction combination: " + joystick + "/" + direction);
+    }
+
+    public void setSecondControllerState(boolean state){
+        secondControllerEnabled = state;
+    }
+
+    public boolean getSecondControllerState(){
+        return secondControllerEnabled;
     }
 }

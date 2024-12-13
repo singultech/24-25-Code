@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
@@ -27,6 +26,8 @@ public class Teleop extends LinearOpMode {
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
         SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 0);
 
+        int[] vertSlidePresets = {0, 1000, 2000, 3000};
+        int vertSlidePreset = 0;
 
 
         waitForStart();
@@ -43,6 +44,7 @@ public class Teleop extends LinearOpMode {
                     -gamepads.joystickValue(1, "right", "x")
             ));
 
+            vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);
             drive.updatePoseEstimate();
 
             telemetry.addData("x: ", drive.pose.position.x);
