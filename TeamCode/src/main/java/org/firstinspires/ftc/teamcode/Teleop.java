@@ -19,15 +19,22 @@ public class Teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         DcMotorEx leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         DcMotorEx rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-
+        SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+
         SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 1);
 
         int[] vertSlidePresets = {0, 1000, 2000, 3000};
         int vertSlidePreset = 0;
+        /*
+        while (!isStarted()){
+            if (gamepads.isHeld(-1, "triangle")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+            if (gamepads.isHeld(-1, "circle")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+            if (gamepads.isHeld(-1, "square")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+            if (gamepads.isHeld(-1, "cross")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
+        }*/
 
         waitForStart();
 

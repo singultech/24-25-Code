@@ -19,7 +19,6 @@ public class GamepadPair {
         this.previousGamepad1 = new Gamepad();
         this.previousGamepad2 = new Gamepad();
         copyStates();
-        System.out.println("Gamepad init");
     }
 
     public void copyStates() {
@@ -30,7 +29,6 @@ public class GamepadPair {
     }
 
     public boolean isPressed(int gamepadNum, String button) {
-        System.out.println("Is pressed");
         if (gamepadNum == 2 && !secondControllerEnabled) return false;
         if (gamepadNum == 1 || gamepadNum == 2){
             Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
