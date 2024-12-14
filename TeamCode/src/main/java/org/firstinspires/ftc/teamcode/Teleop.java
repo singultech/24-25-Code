@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
@@ -47,12 +49,11 @@ public class Teleop extends LinearOpMode {
                     -gamepads.joystickValue(1, "right", "x")
             ));
 
-            if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) vertSlidePreset++;
-            if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) vertSlidePreset--;
+            if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
+            if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
 
 
 
-            vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);
             drive.updatePoseEstimate();
             gamepads.copyStates();
 
