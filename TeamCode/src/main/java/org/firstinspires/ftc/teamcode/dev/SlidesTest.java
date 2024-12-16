@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
 @TeleOp(name = "Slides Test", group = "Dev")
@@ -25,7 +26,7 @@ public class SlidesTest extends LinearOpMode {
         leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
         rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         SlidePair slides = new SlidePair(leftSlide, rightSlide, 4100, slidePower);
-
+        GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
 
@@ -47,6 +48,10 @@ public class SlidesTest extends LinearOpMode {
             if (gamepad1.dpad_down){
                 slides.changeTargetPosition(-50);
             }
+            //if (gamepads.isPressed(1, "cross")){
+                //slides.performCycleMove(2000, 3000);
+            //}
+
             telemetry.addLine("Use the D-pad to control the slides.");
             telemetry.addLine("Press ▣ to reset the slides position to 0.");
             telemetry.addLine("Press ▲ to toggle the holding motors");

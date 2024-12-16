@@ -92,4 +92,64 @@ public class SlidePair {
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
+
+    public void performTimedMove(int changeOfPosition, long waitTimeMillis) {
+        int startPosition = getLeftPosition();
+        int positionToGo = startPosition + changeOfPosition;
+        new Thread(() -> {
+            try {
+                setTargetPosition(positionToGo);
+
+                // Wait until reached down position
+                while (Math.abs(getLeftPosition() - positionToGo) > 20) {
+                    Thread.sleep(20);
+                }
+
+                // State 2: Wait at Bottom
+                Thread.sleep(waitTimeMillis);
+
+                // State 3: Move Back Up
+                setTargetPosition(startPosition);
+
+                // Wait until returned to home position
+                while (Math.abs(getLeftPosition()) > 20) {
+                    Thread.sleep(20);
+                }
+
+            } catch (InterruptedException e) {
+                // Handle interruption
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
+
+    public void performTimedMove(int changeOfPosition, int finalPosition, long waitTimeMillis) {
+        int startPosition = getLeftPosition();
+        int positionToGo = startPosition + changeOfPosition;
+        new Thread(() -> {
+            try {
+                setTargetPosition(positionToGo);
+
+                // Wait until reached down position
+                while (Math.abs(getLeftPosition() - positionToGo) > 20) {
+                    Thread.sleep(20);
+                }
+
+                // State 2: Wait at Bottom
+                Thread.sleep(waitTimeMillis);
+
+                // State 3: Move Back Up
+                setTargetPosition(finalPosition);
+
+                // Wait until returned to home position
+                while (Math.abs(getLeftPosition()) > 20) {
+                    Thread.sleep(20);
+                }
+
+            } catch (InterruptedException e) {
+                // Handle interruption
+                Thread.currentThread().interrupt();
+            }
+        }).start();
+    }
 }
