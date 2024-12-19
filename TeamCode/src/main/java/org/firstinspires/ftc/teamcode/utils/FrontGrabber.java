@@ -12,27 +12,27 @@ public class FrontGrabber {
     private boolean isClosed;
 
     public FrontGrabber(double close, double open){
-         grabberServo = hardwareMap.servo.get("frontGrabberServo");
-         limitSwitch = hardwareMap.touchSensor.get("frontGrabberLimit");
+         grabberServo = hardwareMap.servo.get("frontGrabber");
+         limitSwitch = hardwareMap.touchSensor.get("frontGrabber");
          closePosition = close;
          openPosition = open;
-         openGrabber();
+         open();
     }
 
-    public void closeGrabber(){
+    public void close(){
         grabberServo.setPosition(closePosition);
         isClosed = true;
     }
 
-    public void openGrabber(){
+    public void open(){
         grabberServo.setPosition(openPosition);
         isClosed = false;
     }
 
     public boolean isClosed() { return isClosed; }
 
-    public void getSwitchState(){
-        limitSwitch.isPressed();
+    public boolean getSwitchState(){
+        return limitSwitch.isPressed();
     }
 
 }
