@@ -38,6 +38,8 @@ public class GrabberTest extends LinearOpMode {
             }
             gamepads.copyStates();
             telemetry.addLine("Press X to open or close the grabber");
+            telemetry.addLine(grabber.isClosed() ? "Grabber closed" : "Grabber opened");
+            telemetry.addLine(grabber.getSwitchState() ? "Switch pressed" : "Switch not pressed");
             telemetry.update();
         }
     }
