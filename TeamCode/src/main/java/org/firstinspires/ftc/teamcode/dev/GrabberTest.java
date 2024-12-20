@@ -25,16 +25,21 @@ public class GrabberTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         FrontGrabber grabber = new FrontGrabber(0, 0.333);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
+        long curTime;
+        long lastOpened = 0;
 
         waitForStart();
 
         while (opModeIsActive()) {
+            curTime = System.currentTimeMillis() / 1000L;
 
             if (gamepads.isPressed(-1, "cross")) {
-                if (grabber.isClosed()) grabber.open();
+                if (grabber.isClosed()) {grabber.open(); lastOpened = curTime;}
+                else grabber.close();
             }
-            if (grabber.getSwitchState()){
+            if (grabber.getSwitchState() && curTime - lastOpened > 3){
                 grabber.close();
+
             }
             gamepads.copyStates();
             telemetry.addLine("Press X to open or close the grabber");

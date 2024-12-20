@@ -17,7 +17,7 @@ import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Disabled
+
 @TeleOp(name = "Sparkfun Test", group = "Dev")
 public class SparkfunTest extends LinearOpMode {
     // Create an instance of the sensor
@@ -54,8 +54,8 @@ public class SparkfunTest extends LinearOpMode {
             telemetry.addLine();
 
             // Log the position to the telemetry
-            telemetry.addData("X coordinate", pos.x);
-            telemetry.addData("Y coordinate", pos.y);
+            telemetry.addData("X coordinate", pos.x*1.2834);
+            telemetry.addData("Y coordinate", pos.y*1.2834);
             telemetry.addData("Heading angle", pos.h);
 
             // Update the telemetry on the driver station

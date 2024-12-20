@@ -11,6 +11,7 @@ public class FrontGrabber {
     private final double openPosition;
     private boolean isClosed;
 
+
     public FrontGrabber(double close, double open){
          grabberServo = hardwareMap.servo.get("frontGrabber");
          limitSwitch = hardwareMap.touchSensor.get("frontGrabber");
