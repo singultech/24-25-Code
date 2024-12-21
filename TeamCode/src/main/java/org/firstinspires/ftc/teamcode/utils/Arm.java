@@ -12,8 +12,8 @@ public class Arm {
     private boolean isUp;
 
     public Arm(double upPos, double downPos, Servo lServo, Servo rServo){
-        leftServo = hardwareMap.servo.get("leftFlip");
-        rightServo = hardwareMap.servo.get("rightFlip");
+        leftServo = lServo;
+        rightServo = rServo;
         rightServo.setDirection(Servo.Direction.REVERSE);
         upPosition = upPos;
         downPosition = downPos;
