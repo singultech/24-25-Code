@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
@@ -23,7 +25,9 @@ public class GrabberTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        FrontGrabber grabber = new FrontGrabber(0, 0.333);
+        Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
+        TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
+        FrontGrabber grabber = new FrontGrabber(0.73, 1, grabberServo, limitSwitch);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         long curTime;
         long lastOpened = 0;
@@ -32,6 +36,7 @@ public class GrabberTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             curTime = System.currentTimeMillis() / 1000L;
+            gamepads.copyStates();
 
             if (gamepads.isPressed(-1, "cross")) {
                 if (grabber.isClosed()) {grabber.open(); lastOpened = curTime;}
@@ -41,7 +46,7 @@ public class GrabberTest extends LinearOpMode {
                 grabber.close();
 
             }
-            gamepads.copyStates();
+
             telemetry.addLine("Press X to open or close the grabber");
             telemetry.addLine(grabber.isClosed() ? "Grabber closed" : "Grabber opened");
             telemetry.addLine(grabber.getSwitchState() ? "Switch pressed" : "Switch not pressed");

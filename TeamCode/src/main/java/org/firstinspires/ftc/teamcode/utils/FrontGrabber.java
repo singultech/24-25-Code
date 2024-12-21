@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -12,9 +13,9 @@ public class FrontGrabber {
     private boolean isClosed;
 
 
-    public FrontGrabber(double close, double open){
-         grabberServo = hardwareMap.servo.get("frontGrabber");
-         limitSwitch = hardwareMap.touchSensor.get("frontGrabber");
+    public FrontGrabber(double close, double open, Servo gServo, TouchSensor lSwitch){
+         grabberServo = gServo;
+         limitSwitch = lSwitch;
          closePosition = close;
          openPosition = open;
          open();
