@@ -10,8 +10,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
@@ -26,6 +29,12 @@ public class Teleop extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        long curTime;
+        long lastFrontOpened = 0;
+
+        Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
+        TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
+        FrontGrabber grabber = new FrontGrabber(0.73, 1, grabberServo, limitSwitch);
         SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 1);
 
         int[] vertSlidePresets = {0, 1000, 2000, 3000};
@@ -41,6 +50,8 @@ public class Teleop extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            gamepads.copyStates();
+            curTime = System.currentTimeMillis() / 1000L;
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
                             -gamepads.joystickValue(1, "left", "y"),
@@ -52,10 +63,17 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
             if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
 
+            if (gamepads.isPressed(-1, "cross")) {
+                if (grabber.isClosed()) {grabber.open(); lastFrontOpened = curTime;}
+                else grabber.close();
+            }
+            if (grabber.getSwitchState() && curTime - lastFrontOpened > 2){
+                grabber.close();
+            }
 
 
             drive.updatePoseEstimate();
-            gamepads.copyStates();
+
 
             telemetry.addData("x: ", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
