@@ -258,6 +258,11 @@ public class GamepadPair {
         throw new IllegalArgumentException("Unknown joystick/direction combination: " + joystick + "/" + direction);
     }
 
+    public void rumble(int gamepadNum, int milliseconds){
+        gamepad1.rumble(milliseconds);
+        gamepad2.rumble(milliseconds);
+    }
+
     public void setSecondControllerState(boolean state){
         secondControllerEnabled = state;
     }

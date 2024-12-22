@@ -26,9 +26,8 @@ public class ArmTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Servo lServo = hardwareMap.servo.get("leftFlip");
         Servo rServo = hardwareMap.servo.get("rightFlip");
-        Arm arm = new Arm(1, 0, lServo, rServo);
+        Arm arm = new Arm(0.55, 0, rServo);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();

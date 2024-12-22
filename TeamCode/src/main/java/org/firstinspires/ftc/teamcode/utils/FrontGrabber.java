@@ -18,7 +18,6 @@ public class FrontGrabber {
          limitSwitch = lSwitch;
          closePosition = close;
          openPosition = open;
-         open();
     }
 
     public void close(){

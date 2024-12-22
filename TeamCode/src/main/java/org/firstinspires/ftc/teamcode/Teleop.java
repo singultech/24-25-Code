@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.utils.Arm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.SlidePair;
@@ -34,11 +35,15 @@ public class Teleop extends LinearOpMode {
 
         Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
         TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
+        Servo rServo = hardwareMap.servo.get("rightFlip");
         FrontGrabber grabber = new FrontGrabber(0.73, 1, grabberServo, limitSwitch);
         SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 1);
 
-        int[] vertSlidePresets = {0, 1000, 2000, 3000};
+        Arm arm = new Arm(0.55, 0, rServo);
+
+        int[] vertSlidePresets = {0, 300, 894, 2478, 2800, 3500, 4100};
         int vertSlidePreset = 0;
+        grabber.close();
         /*
         while (!isStarted()){
             if (gamepads.isHeld(-1, "triangle")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -63,7 +68,14 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
             if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
 
-            if (gamepads.isPressed(-1, "cross")) {
+            if (gamepads.isPressed(-1, "dpad_right")) {
+                arm.up();
+            }
+            if (gamepads.isPressed(-1, "dpad_left")) {
+                arm.down();
+            }
+
+            if (gamepads.isPressed(-1, "circle")) {
                 if (grabber.isClosed()) {grabber.open(); lastFrontOpened = curTime;}
                 else grabber.close();
             }

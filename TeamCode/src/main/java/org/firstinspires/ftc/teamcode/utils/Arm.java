@@ -5,30 +5,26 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Arm {
-    private final Servo leftServo;
-    private final Servo rightServo;
+    private final Servo armServo;
     private final double upPosition;
     private final double downPosition;
     private boolean isUp;
 
-    public Arm(double upPos, double downPos, Servo lServo, Servo rServo){
-        leftServo = lServo;
-        rightServo = rServo;
-        rightServo.setDirection(Servo.Direction.REVERSE);
+    public Arm(double upPos, double downPos, Servo servo){
+        armServo = servo;
         upPosition = upPos;
         downPosition = downPos;
+        servo.setDirection(Servo.Direction.REVERSE);
         isUp = true;
     }
 
     public void up(){
-        leftServo.setPosition(upPosition);
-        rightServo.setPosition(upPosition);
+        armServo.setPosition(upPosition);
         isUp = true;
     }
 
     public void down(){
-        leftServo.setPosition(downPosition);
-        rightServo.setPosition(downPosition);
+        armServo.setPosition(downPosition);
         isUp = false;
     }
 

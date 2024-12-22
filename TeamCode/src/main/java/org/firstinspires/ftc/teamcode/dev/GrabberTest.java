@@ -27,7 +27,7 @@ public class GrabberTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
         TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
-        FrontGrabber grabber = new FrontGrabber(0.73, 1, grabberServo, limitSwitch);
+        FrontGrabber grabber = new FrontGrabber(0.72, 1, grabberServo, limitSwitch);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         long curTime;
         long lastOpened = 0;
@@ -44,6 +44,7 @@ public class GrabberTest extends LinearOpMode {
             }
             if (grabber.getSwitchState() && curTime - lastOpened > 3){
                 grabber.close();
+                gamepads.rumble(-1, 250);
 
             }
 
