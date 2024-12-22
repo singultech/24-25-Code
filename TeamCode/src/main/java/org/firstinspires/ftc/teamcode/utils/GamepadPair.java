@@ -259,10 +259,40 @@ public class GamepadPair {
     }
 
     public void rumble(int gamepadNum, int milliseconds){
-        gamepad1.rumble(milliseconds);
-        gamepad2.rumble(milliseconds);
+        if (gamepadNum == 1) gamepad1.rumble(milliseconds);
+        if (gamepadNum == 2) gamepad2.rumble(milliseconds);
+        else {
+            gamepad1.rumble(milliseconds);
+            gamepad2.rumble(milliseconds);
+        }
     }
 
+    public double getTrigger(int gamepadNum, String trigger) {
+        if (gamepadNum == 2 && !secondControllerEnabled) return 0;
+        if (gamepadNum == 1 || gamepadNum == 2) {
+            Gamepad currentGamepad = gamepadNum == 1 ? gamepad1 : gamepad2;
+            switch (trigger) {
+                case "left_trigger":
+                    return currentGamepad.left_trigger;
+                case "right_trigger":
+                    return currentGamepad.right_trigger;
+                default:
+                    throw new IllegalArgumentException("Unknown trigger: " + trigger);
+            }
+        }
+        if (!secondControllerEnabled) {
+            Gamepad currentGamepad = gamepad1;
+            switch (trigger) {
+                case "left_trigger":
+                    return currentGamepad.left_trigger;
+                case "right_trigger":
+                    return currentGamepad.right_trigger;
+                default:
+                    throw new IllegalArgumentException("Unknown trigger: " + trigger);
+            }
+        }
+        throw new IllegalArgumentException("Unknown trigger: " + trigger);
+    }
     public void setSecondControllerState(boolean state){
         secondControllerEnabled = state;
     }

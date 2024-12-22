@@ -59,14 +59,36 @@ public class Teleop extends LinearOpMode {
             curTime = System.currentTimeMillis() / 1000L;
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
-                            -gamepads.joystickValue(1, "left", "y"),
-                            -gamepads.joystickValue(1, "left", "x")
+                            -(gamepads.joystickValue(1, "left", "y")-gamepads.getTrigger(1, "right_trigger")),
+                            -(gamepads.joystickValue(1, "left", "x")-gamepads.getTrigger(1, "right_trigger"))
                     ),
-                    -gamepads.joystickValue(1, "right", "x")
+                    -(gamepads.joystickValue(1, "right", "x")-gamepads.getTrigger(1, "right_trigger"))
             ));
 
+            // Slide preset control
             if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
             if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
+
+            if (gamepads.isPressed(-1, "right_bumper")){
+                new Thread(() -> {
+                    try {
+                        int targetPos = vertSlides.getTargetPosition()-300;
+                        vertSlides.setTargetPosition(targetPos);
+
+                        while (Math.abs(vertSlides.getLeftPosition() - targetPos) > 20) {
+                            Thread.sleep(20);
+                        }
+
+                        Thread.sleep(500);
+
+                        grabber.open();
+
+                    } catch (InterruptedException e) {
+                        // Handle interruption
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
+            }
 
             if (gamepads.isPressed(-1, "dpad_right")) {
                 arm.up();
