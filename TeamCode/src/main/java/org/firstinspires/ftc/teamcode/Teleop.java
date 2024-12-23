@@ -122,8 +122,8 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepads.isPressed(-1, "left_bumper")) {
-                if (driveStyle.equals("robot-centric")) driveStyle = "field-centric";
-                else driveStyle = "robot-centric";
+                if (driveStyle.equals("robot-centric")) {driveStyle = "field-centric"; gamepads.setLed(1, 1, 0, 0);}
+                else {driveStyle = "robot-centric"; gamepads.setLed(1, 0, 0, 1);}
             }
 
 
@@ -134,6 +134,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("Slide preset", vertSlidePreset);
+            telemetry.addData("Drive style", driveStyle);
             telemetry.update();
 
         }
