@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
 @TeleOp(name = "Vert Slides Test", group = "Dev")
-public class SlidesTest extends LinearOpMode {
+public class VertSlidesTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
@@ -27,10 +27,10 @@ public class SlidesTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if (gamepad1.square) {
+            if (gamepads.isPressed(-1, "square")) {
                 slides.resetPosition();
             }
-            if (gamepad1.triangle){
+            if (gamepads.isPressed(-1, "triangle")){
                 if (slides.isActive()){
                     slides.setPower(0);
                 } else{
