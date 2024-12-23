@@ -74,8 +74,6 @@ public class Teleop extends LinearOpMode {
                 );
             }
 
-
-
             drive.setDrivePowers(new PoseVelocity2d(
                     driveVector,
                     -(gamepads.joystickValue(1, "right", "x")-gamepads.getTrigger(1, "right_trigger"))
@@ -100,7 +98,6 @@ public class Teleop extends LinearOpMode {
                         grabber.open();
 
                     } catch (InterruptedException e) {
-                        // Handle interruption
                         Thread.currentThread().interrupt();
                     }
                 }).start();
@@ -118,14 +115,16 @@ public class Teleop extends LinearOpMode {
                 else grabber.close();
             }
             if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
+                int finalVertSlidePreset = vertSlidePreset;
                 new Thread(() -> {
                     try {
                         grabber.close();
                         gamepads.blipRumble(-1, 1);
 
-                        Thread.sleep(500);
+                        Thread.sleep(300);
 
                         if (!grabber.getSwitchState()) {grabber.open(); gamepads.rumble(-1, RumbleEffects.alternating);}
+                        else if (finalVertSlidePreset == 2) vertSlides.setTargetPosition(vertSlides.getTargetPosition()+400);
 
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
