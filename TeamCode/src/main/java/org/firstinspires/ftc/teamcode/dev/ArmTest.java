@@ -12,12 +12,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.utils.Arm;
-import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
 @TeleOp(name = "Arm Test", group = "Dev")
 public class ArmTest extends LinearOpMode {
@@ -27,7 +24,7 @@ public class ArmTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Servo rServo = hardwareMap.servo.get("rightFlip");
-        Arm arm = new Arm(0.55, 0, rServo);
+        Arm arm = new Arm(0.55, 0, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();

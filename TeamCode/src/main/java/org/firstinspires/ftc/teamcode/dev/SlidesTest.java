@@ -10,22 +10,17 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.SlidePair;
+import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
 @TeleOp(name = "Slides Test", group = "Dev")
 public class SlidesTest extends LinearOpMode {
-    DcMotorEx leftSlide;
-    DcMotorEx rightSlide;
+
     @Override
     public void runOpMode() {
         double slidePower = 1.0;
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-        SlidePair slides = new SlidePair(leftSlide, rightSlide, 4100, slidePower);
+        VertSlidePair slides = new VertSlidePair(4100, slidePower, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();

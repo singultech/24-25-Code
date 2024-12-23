@@ -5,24 +5,25 @@ import static java.lang.Math.round;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class SlidePair {
+public class VertSlidePair {
     DcMotorEx rightSlide;
     DcMotorEx leftSlide;
     private boolean isActive;
     private final int maxHeight;
     private double power;
 
-    public SlidePair(DcMotorEx left, DcMotorEx right, int maxH, double startingPower){
-        rightSlide = right;
-        leftSlide = left;
+    public VertSlidePair(int maxH, double startingPower, HardwareMap hmap){
+        rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
+        leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
         maxHeight = maxH;
         power = startingPower;
         init();
     }
-    public SlidePair(DcMotorEx left, DcMotorEx right, int maxH){
-        rightSlide = right;
-        leftSlide = left;
+    public VertSlidePair(int maxH, HardwareMap hmap){
+        rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
+        leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
         maxHeight = maxH;
         power = 1.0;
         init();
@@ -78,6 +79,8 @@ public class SlidePair {
     public int getTargetPosition(){
         return leftSlide.getTargetPosition();
     }
+
+    public int getCurrentPosition() { return (leftSlide.getCurrentPosition()+rightSlide.getCurrentPosition())/2;}
 
     public int getLeftPosition(){
         return leftSlide.getCurrentPosition();

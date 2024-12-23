@@ -8,19 +8,16 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+
 import org.firstinspires.ftc.teamcode.utils.Arm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.SlidePair;
+import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
 @TeleOp(name = "Teleop")
 public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        DcMotorEx leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        DcMotorEx rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
@@ -30,8 +27,7 @@ public class Teleop extends LinearOpMode {
         long lastFrontOpened = 0;
 
         FrontGrabber grabber = new FrontGrabber(0.73, 1, hardwareMap);
-        SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 1);
-
+        VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         Arm arm = new Arm(0.55, 0, hardwareMap);
 
         int[] vertSlidePresets = {0, 300, 894, 2478, 2800, 3500, 4100};
@@ -75,7 +71,7 @@ public class Teleop extends LinearOpMode {
                         int targetPos = vertSlides.getTargetPosition()-300;
                         vertSlides.setTargetPosition(targetPos);
 
-                        while (Math.abs(vertSlides.getLeftPosition() - targetPos) > 20) {
+                        while (Math.abs(vertSlides.getCurrentPosition() - targetPos) > 20) {
                             continue;
                         }
 

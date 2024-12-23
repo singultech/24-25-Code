@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.SlidePair;
 
 @TeleOp(name = "Front Grabber Test", group = "Dev")
 public class GrabberTest extends LinearOpMode {
@@ -27,7 +26,7 @@ public class GrabberTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
         TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
-        FrontGrabber grabber = new FrontGrabber(0.72, 1, grabberServo, limitSwitch);
+        FrontGrabber grabber = new FrontGrabber(0.72, 1, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         long curTime;
         long lastOpened = 0;
