@@ -301,6 +301,14 @@ public class GamepadPair {
             gamepad2.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
         }
     }
+    public void blipRumble(int gamepadNum, int blips){
+        if (gamepadNum == 1) gamepad1.rumbleBlips(blips);
+        if (gamepadNum == 2) gamepad2.rumbleBlips(blips);
+        if (gamepadNum != 1 && gamepadNum != 2){
+            gamepad1.rumbleBlips(blips);
+            gamepad2.rumbleBlips(blips);
+        }
+    }
     public void setSecondControllerState(boolean state){
         secondControllerEnabled = state;
     }

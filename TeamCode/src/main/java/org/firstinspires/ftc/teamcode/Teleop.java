@@ -117,8 +117,19 @@ public class Teleop extends LinearOpMode {
                 else grabber.close();
             }
             if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
-                grabber.close();
-                gamepads.rumble(-1, 500);
+                new Thread(() -> {
+                    try {
+                        grabber.close();
+                        gamepads.rumble(-1, 500);
+
+                        Thread.sleep(500);
+
+                        if (!grabber.getSwitchState()) grabber.open();
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
             }
 
             if (gamepads.isPressed(-1, "left_bumper")) {
