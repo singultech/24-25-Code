@@ -99,6 +99,7 @@ public class Teleop extends LinearOpMode {
             }
             if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
                 grabber.close();
+                gamepads.rumble(-1, 500);
             }
 
 
