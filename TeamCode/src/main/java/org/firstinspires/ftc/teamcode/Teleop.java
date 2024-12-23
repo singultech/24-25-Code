@@ -39,7 +39,7 @@ public class Teleop extends LinearOpMode {
         slightly above top basket?
         */
         int vertSlidePreset = 0;
-        grabber.close();
+
         /*
         while (!isStarted()){
             if (gamepads.isHeld(-1, "triangle")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));

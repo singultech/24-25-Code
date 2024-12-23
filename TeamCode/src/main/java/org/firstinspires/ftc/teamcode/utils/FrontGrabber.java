@@ -17,6 +17,7 @@ public class FrontGrabber {
         limitSwitch = hmap.touchSensor.get("frontGrabberSwitch");
         closePosition = close;
         openPosition = open;
+        close();
     }
 
     public void close(){
