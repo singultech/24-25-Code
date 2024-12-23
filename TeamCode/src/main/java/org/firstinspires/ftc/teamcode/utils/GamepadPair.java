@@ -257,16 +257,6 @@ public class GamepadPair {
         }
         throw new IllegalArgumentException("Unknown joystick/direction combination: " + joystick + "/" + direction);
     }
-
-    public void rumble(int gamepadNum, int milliseconds){
-        if (gamepadNum == 1) gamepad1.rumble(milliseconds);
-        if (gamepadNum == 2) gamepad2.rumble(milliseconds);
-        else {
-            gamepad1.rumble(milliseconds);
-            gamepad2.rumble(milliseconds);
-        }
-    }
-
     public double getTrigger(int gamepadNum, String trigger) {
         if (gamepadNum == 2 && !secondControllerEnabled) return 0;
         if (gamepadNum == 1 || gamepadNum == 2) {
@@ -309,10 +299,26 @@ public class GamepadPair {
             gamepad2.rumbleBlips(blips);
         }
     }
+    public void rumble(int gamepadNum, int milliseconds){
+        if (gamepadNum == 1) gamepad1.rumble(milliseconds);
+        if (gamepadNum == 2) gamepad2.rumble(milliseconds);
+        else {
+            gamepad1.rumble(milliseconds);
+            gamepad2.rumble(milliseconds);
+        }
+    }
+    public void rumble(int gamepadNum, Gamepad.RumbleEffect effect){
+        if (gamepadNum == 1) gamepad1.runRumbleEffect(effect);
+        if (gamepadNum == 2) gamepad2.runRumbleEffect(effect);
+        else {
+            gamepad1.runRumbleEffect(effect);
+            gamepad2.runRumbleEffect(effect);
+        }
+    }
+
     public void setSecondControllerState(boolean state){
         secondControllerEnabled = state;
     }
-
     public boolean getSecondControllerState(){
         return secondControllerEnabled;
     }

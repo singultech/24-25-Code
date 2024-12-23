@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.utils.Arm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
 @TeleOp(name = "Teleop")
@@ -124,7 +125,7 @@ public class Teleop extends LinearOpMode {
 
                         Thread.sleep(500);
 
-                        if (!grabber.getSwitchState()) {grabber.open(); gamepads.blipRumble(-1, 2);}
+                        if (!grabber.getSwitchState()) {grabber.open(); gamepads.rumble(-1, RumbleEffects.alternating);}
 
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
