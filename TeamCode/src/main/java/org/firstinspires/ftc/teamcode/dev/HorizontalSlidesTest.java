@@ -1,8 +1,3 @@
-/*
-    SPDX-License-Identifier: MIT
-
-    Copyright (c) 2024 SparkFun Electronics
-*/
 package org.firstinspires.ftc.teamcode.dev;
 
 import com.acmerobotics.dashboard.FtcDashboard;
