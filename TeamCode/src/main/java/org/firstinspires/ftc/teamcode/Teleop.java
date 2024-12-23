@@ -23,6 +23,8 @@ public class Teleop extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        String driveStyle = "robot-centric";
+
         long curTime;
         long lastFrontOpened = 0;
 
@@ -47,17 +49,34 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isHeld(-1, "square")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
             if (gamepads.isHeld(-1, "cross")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
         }*/
+        Vector2d driveVector;
 
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
             curTime = System.currentTimeMillis();
+
+            driveVector = new Vector2d(
+                    -(gamepads.joystickValue(1, "left", "y")-gamepads.getTrigger(1, "right_trigger")),
+                    -(gamepads.joystickValue(1, "left", "x")-gamepads.getTrigger(1, "right_trigger"))
+            );
+            if (driveStyle.equals("field-centric")) {
+                float gpx = -gamepad1.left_stick_y;
+                float gpy = -gamepad1.left_stick_x;
+                float head = (float) -drive.pose.heading.toDouble();
+                float nx = (float) ((gpx * Math.cos(head)) - (gpy * Math.sin(head)));
+                float ny = (float) ((gpx * Math.sin(head)) + (gpy * Math.cos(head)));
+                driveVector = new Vector2d(
+                        nx,
+                        ny
+                );
+            }
+
+
+
             drive.setDrivePowers(new PoseVelocity2d(
-                    new Vector2d(
-                            -(gamepads.joystickValue(1, "left", "y")-gamepads.getTrigger(1, "right_trigger")),
-                            -(gamepads.joystickValue(1, "left", "x")-gamepads.getTrigger(1, "right_trigger"))
-                    ),
+                    driveVector,
                     -(gamepads.joystickValue(1, "right", "x")-gamepads.getTrigger(1, "right_trigger"))
             ));
 
@@ -100,6 +119,11 @@ public class Teleop extends LinearOpMode {
             if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
                 grabber.close();
                 gamepads.rumble(-1, 500);
+            }
+
+            if (gamepads.isPressed(-1, "left_bumper")) {
+                if (driveStyle.equals("robot-centric")) driveStyle = "field-centric";
+                else driveStyle = "robot-centric";
             }
 
 
