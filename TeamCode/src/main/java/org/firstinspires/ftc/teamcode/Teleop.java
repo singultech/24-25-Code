@@ -120,11 +120,11 @@ public class Teleop extends LinearOpMode {
                 new Thread(() -> {
                     try {
                         grabber.close();
-                        gamepads.rumble(-1, 500);
+                        gamepads.blipRumble(-1, 1);
 
                         Thread.sleep(500);
 
-                        if (!grabber.getSwitchState()) grabber.open();
+                        if (!grabber.getSwitchState()) {grabber.open(); gamepads.blipRumble(-1, 2);}
 
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
