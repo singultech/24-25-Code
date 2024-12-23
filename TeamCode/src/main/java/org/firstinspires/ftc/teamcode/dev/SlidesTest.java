@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
-@TeleOp(name = "Slides Test", group = "Dev")
+@TeleOp(name = "Vert Slides Test", group = "Dev")
 public class SlidesTest extends LinearOpMode {
 
     @Override
