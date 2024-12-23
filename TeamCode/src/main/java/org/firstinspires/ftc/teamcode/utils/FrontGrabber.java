@@ -13,9 +13,9 @@ public class FrontGrabber {
     private boolean isClosed;
 
 
-    public FrontGrabber(double close, double open, Servo gServo, TouchSensor lSwitch){
-        grabberServo = gServo;
-        limitSwitch = lSwitch;
+    public FrontGrabber(double close, double open, HardwareMap hmap){
+        grabberServo = hmap.servo.get("frontGrabberServo");;
+        limitSwitch = hmap.touchSensor.get("frontGrabberSwitch");
         closePosition = close;
         openPosition = open;
     }

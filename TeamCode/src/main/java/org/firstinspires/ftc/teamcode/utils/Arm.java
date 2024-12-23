@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Arm {
@@ -10,11 +10,11 @@ public class Arm {
     private final double downPosition;
     private boolean isUp;
 
-    public Arm(double upPos, double downPos, Servo servo){
-        armServo = servo;
+    public Arm(double upPos, double downPos, HardwareMap hmap){
+        armServo = hmap.servo.get("rightFlip");;
         upPosition = upPos;
         downPosition = downPos;
-        servo.setDirection(Servo.Direction.REVERSE);
+        armServo.setDirection(Servo.Direction.REVERSE);
         isUp = true;
     }
 

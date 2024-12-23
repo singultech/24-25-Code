@@ -101,7 +101,7 @@ public class SlidePair {
                 setTargetPosition(positionToGo);
 
                 while (Math.abs(getLeftPosition() - positionToGo) > 20) {
-                    Thread.sleep(20);
+                    continue;
                 }
 
                 Thread.sleep(waitTimeMillis);
@@ -109,7 +109,7 @@ public class SlidePair {
                 setTargetPosition(startPosition);
 
                 while (Math.abs(getLeftPosition()) > 20) {
-                    Thread.sleep(20);
+                    continue;
                 }
 
             } catch (InterruptedException e) {

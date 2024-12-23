@@ -2,18 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.teamcode.utils.Arm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
@@ -33,15 +29,19 @@ public class Teleop extends LinearOpMode {
         long curTime;
         long lastFrontOpened = 0;
 
-        Servo grabberServo = hardwareMap.servo.get("frontGrabberServo");
-        TouchSensor limitSwitch = hardwareMap.touchSensor.get("frontGrabberSwitch");
-        Servo rServo = hardwareMap.servo.get("rightFlip");
-        FrontGrabber grabber = new FrontGrabber(0.73, 1, grabberServo, limitSwitch);
+        FrontGrabber grabber = new FrontGrabber(0.73, 1, hardwareMap);
         SlidePair vertSlides = new SlidePair(leftSlide, rightSlide, 4100, 1);
 
-        Arm arm = new Arm(0.55, 0, rServo);
+        Arm arm = new Arm(0.55, 0, hardwareMap);
 
         int[] vertSlidePresets = {0, 300, 894, 2478, 2800, 3500, 4100};
+        /*
+        Zero
+        Slightly lifted for pickup from ground
+        Grab off wall
+        slightly above top bar
+        slightly above top basket?
+        */
         int vertSlidePreset = 0;
         grabber.close();
         /*
@@ -76,7 +76,7 @@ public class Teleop extends LinearOpMode {
                         vertSlides.setTargetPosition(targetPos);
 
                         while (Math.abs(vertSlides.getLeftPosition() - targetPos) > 20) {
-                            Thread.sleep(20);
+                            continue;
                         }
 
                         Thread.sleep(500);
