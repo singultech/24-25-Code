@@ -52,7 +52,7 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            curTime = System.currentTimeMillis() / 1000L;
+            curTime = System.currentTimeMillis();
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
                             -(gamepads.joystickValue(1, "left", "y")-gamepads.getTrigger(1, "right_trigger")),
@@ -97,7 +97,7 @@ public class Teleop extends LinearOpMode {
                 if (grabber.isClosed()) {grabber.open(); lastFrontOpened = curTime;}
                 else grabber.close();
             }
-            if (grabber.getSwitchState() && curTime - lastFrontOpened > 2){
+            if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
                 grabber.close();
             }
 
