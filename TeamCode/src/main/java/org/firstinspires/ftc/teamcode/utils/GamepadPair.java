@@ -293,6 +293,14 @@ public class GamepadPair {
         }
         throw new IllegalArgumentException("Unknown trigger: " + trigger);
     }
+    public void setLed(int gamepadNum, double r, double g, double b){
+        if (gamepadNum == 1) gamepad1.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+        if (gamepadNum == 2) gamepad2.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+        if (gamepadNum != 1 && gamepadNum != 2){
+            gamepad1.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+            gamepad2.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+        }
+    }
     public void setSecondControllerState(boolean state){
         secondControllerEnabled = state;
     }
