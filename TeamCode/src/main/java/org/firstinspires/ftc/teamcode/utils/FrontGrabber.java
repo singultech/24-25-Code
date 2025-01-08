@@ -13,7 +13,7 @@ public class FrontGrabber {
 
 
     public FrontGrabber(double close, double open, HardwareMap hmap){
-        grabberServo = hmap.servo.get("frontGrabberServo");;
+        grabberServo = hmap.servo.get("frontGrabberServo");
         limitSwitch = hmap.touchSensor.get("frontGrabberSwitch");
         closePosition = close;
         openPosition = open;
