@@ -22,7 +22,8 @@ public class HorizontalSlidesTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            slides.setPower(gamepads.getTrigger(-1, "right_trigger"));
+            if(gamepads.getTrigger(-1, "right_trigger")>0.1){slides.setPower(gamepads.getTrigger(-1, "right_trigger"));}
+            else if(gamepads.getTrigger(-1, "left_trigger")>0.1){slides.setPower(-gamepads.getTrigger(-1, "left_trigger"));}
             slides.updatePosition();
 
             telemetry.addLine("Use the D-pad to control the slides.");
