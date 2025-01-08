@@ -98,7 +98,7 @@ public class Teleop extends LinearOpMode {
                         grabber.open();
 
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                            Thread.currentThread().interrupt();
                     }
                 }).start();
             }
@@ -124,7 +124,7 @@ public class Teleop extends LinearOpMode {
                         Thread.sleep(300);
 
                         if (!grabber.getSwitchState()) {grabber.open(); gamepads.rumble(-1, RumbleEffects.alternating);}
-                        else if (finalVertSlidePreset == 2) vertSlides.setTargetPosition(vertSlides.getTargetPosition()+400);
+                        else if (finalVertSlidePreset == 2) vertSlides.setTargetPosition(vertSlides.getTargetPosition()+400); // if at slide position to grab from wall, move up after successful grab
 
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
