@@ -27,7 +27,7 @@ public class HorizontalSlidesTest extends LinearOpMode {
             else slides.setPower(0);
             slides.updatePosition();
 
-            telemetry.addLine("Use the D-pad to control the slides.");
+            telemetry.addLine("Use the triggers to control the slides");
             telemetry.addLine("Current Position " + slides.getCurrentPosition());
             telemetry.addLine("Full Rotation " + slides.getTotalRotation());
             telemetry.update();

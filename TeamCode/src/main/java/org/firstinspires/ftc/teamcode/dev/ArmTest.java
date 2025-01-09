@@ -18,8 +18,7 @@ public class ArmTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Servo rServo = hardwareMap.servo.get("rightFlip");
-        Arm arm = new Arm(0.55, 0, hardwareMap);
+        Arm arm = new Arm(1, 0, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
@@ -27,13 +26,13 @@ public class ArmTest extends LinearOpMode {
         while (opModeIsActive()) {
             gamepads.copyStates();
 
-            if (gamepads.isPressed(-1, "cross")) {
-                if (arm.isUp()) arm.down();
-                else arm.up();
-            }
+            if (gamepads.isHeld(-1, "cross")) {
+                arm.setPower(1);
+            } else if (gamepads.isHeld(-1, "circle")) arm.setPower(-1);
+            else arm.setPower(0);
 
-            telemetry.addLine("Press X to raise or lower the arm");
-            telemetry.addLine(arm.isUp() ? "Arm is up" : "Arm is down");
+            telemetry.addData("Current Angle", arm.getAngle());
+            telemetry.addData("TotalRotation", arm.getPosition());
             telemetry.update();
         }
     }
