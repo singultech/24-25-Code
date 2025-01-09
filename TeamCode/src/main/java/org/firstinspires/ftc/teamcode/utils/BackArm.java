@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
-public class Arm {
+public class BackArm {
     private final CRServo leftServo;
     private final CRServo rightServo;
     private final double upPosition;
@@ -18,7 +17,7 @@ public class Arm {
     private double previousAngle = 0.0;
     private double totalRotation = 0.0;
 
-    public Arm(double upPos, double downPos, HardwareMap hmap){
+    public BackArm(double upPos, double downPos, HardwareMap hmap){
         leftServo = hmap.crservo.get("leftFlip");
         rightServo = hmap.crservo.get("rightFlip");
         leftEncoder = hmap.get(AnalogInput.class, "leftArmEncoder");

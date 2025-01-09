@@ -6,25 +6,25 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.utils.Arm;
+import org.firstinspires.ftc.teamcode.utils.BackArm;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
-@TeleOp(name = "Arm Test", group = "Dev")
-public class ArmTest extends LinearOpMode {
+@TeleOp(name = "Back Arm Test", group = "Dev")
+public class BackArmTest extends LinearOpMode {
     DcMotorEx leftSlide;
     DcMotorEx rightSlide;
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Arm arm = new Arm(1, 0, hardwareMap);
+        BackArm arm = new BackArm(1, 0, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            arm.updatePosition();
 
             if (gamepads.isHeld(-1, "cross")) {
                 arm.setPower(1);

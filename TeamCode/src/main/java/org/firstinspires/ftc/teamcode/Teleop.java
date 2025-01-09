@@ -7,9 +7,8 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.utils.Arm;
+import org.firstinspires.ftc.teamcode.utils.BackArm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
@@ -31,7 +30,7 @@ public class Teleop extends LinearOpMode {
 
         FrontGrabber grabber = new FrontGrabber(0.73, 1, hardwareMap);
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
-        Arm arm = new Arm(0.55, 0, hardwareMap);
+        BackArm arm = new BackArm(0.55, 0, hardwareMap);
 
         int[] vertSlidePresets = {0, 300, 894, 2478, 2800, 3500, 4100};
         /*
@@ -101,13 +100,6 @@ public class Teleop extends LinearOpMode {
                             Thread.currentThread().interrupt();
                     }
                 }).start();
-            }
-
-            if (gamepads.isPressed(-1, "dpad_right")) {
-                arm.up();
-            }
-            if (gamepads.isPressed(-1, "dpad_left")) {
-                arm.down();
             }
 
             if (gamepads.isPressed(-1, "circle")) {
