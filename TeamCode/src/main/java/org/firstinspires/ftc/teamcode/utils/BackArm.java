@@ -27,8 +27,6 @@ public class BackArm {
     }
     public void updatePosition(){
         double currentAngle = leftEncoder.getVoltage() / 3.3 * 360;
-
-
         double angleDifference = currentAngle - previousAngle;
 
         if (angleDifference < -180) {
@@ -47,7 +45,6 @@ public class BackArm {
     public double getPosition(){
         return totalRotation;
     }
-
     public void setPower(double power){
         leftServo.setPower(power);
         rightServo.setPower(power);
