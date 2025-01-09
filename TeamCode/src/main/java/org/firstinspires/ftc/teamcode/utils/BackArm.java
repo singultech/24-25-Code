@@ -11,7 +11,7 @@ public class BackArm {
     private final CRServo rightServo;
     private final double upPosition;
     private final double downPosition;
-    AnalogInput leftEncoder;
+    AnalogInput rightEncoder;
 
     private double currentAngle = 0.0;
     private double previousAngle = 0.0;
@@ -20,13 +20,13 @@ public class BackArm {
     public BackArm(double upPos, double downPos, HardwareMap hmap){
         leftServo = hmap.crservo.get("leftFlip");
         rightServo = hmap.crservo.get("rightFlip");
-        leftEncoder = hmap.get(AnalogInput.class, "leftArmEncoder");
+        rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
         upPosition = upPos;
         downPosition = downPos;
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public void updatePosition(){
-        double currentAngle = leftEncoder.getVoltage() / 3.3 * 360;
+        double currentAngle = (rightEncoder.getVoltage() / 3.3 * 360)/3;
         double angleDifference = currentAngle - previousAngle;
 
         if (angleDifference < -180) {
@@ -49,7 +49,7 @@ public class BackArm {
         leftServo.setPower(power);
         rightServo.setPower(power);
     }
-
+    public double getRawOut() {return rightEncoder.getVoltage();}
 
 
 

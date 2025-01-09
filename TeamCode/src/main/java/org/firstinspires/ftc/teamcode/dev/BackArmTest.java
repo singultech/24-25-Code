@@ -33,6 +33,7 @@ public class BackArmTest extends LinearOpMode {
 
             telemetry.addData("Current Angle", arm.getAngle());
             telemetry.addData("TotalRotation", arm.getPosition());
+            telemetry.addData("Raw", arm.getRawOut());
             telemetry.update();
         }
     }
