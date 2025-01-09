@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class DiffyGrabber {
     Servo leftServo;
     Servo rightServo;
-    AnalogInput leftEncoder;
-    AnalogInput rightEncoder;
 
     private double leftTarget;
     private double rightTarget;
@@ -27,16 +25,12 @@ public class DiffyGrabber {
     }
 
     public void setLeftPosition(double position){
-        if (position>maximum) leftTarget = maximum;
-        else if (position<minimum) leftTarget = minimum;
-        else leftTarget=position;
+        leftTarget = Math.max(minimum, Math.min(maximum, position));
         leftServo.setPosition(leftTarget);
     }
 
     public void setRightPosition(double position){
-        if (position>maximum) rightTarget = maximum;
-        else if (position<minimum) rightTarget = minimum;
-        else rightTarget=position;
+        rightTarget = Math.max(minimum, Math.min(maximum, position));
         rightServo.setPosition(rightTarget);
     }
     public void changeLeftPosition(double change){

@@ -24,11 +24,12 @@ public class DiffyTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            gamepads.copyStates();
             if (gamepads.isPressed(-1, "y")) {
                 diffy.changeRightPosition(0.1);
             }
             if (gamepads.isPressed(-1, "dpad_up")){
-                diffy.changeLeftPosition(0.01);
+                diffy.changeLeftPosition(0.1);
             }
 
             if (gamepads.isPressed(-1, "a")){
