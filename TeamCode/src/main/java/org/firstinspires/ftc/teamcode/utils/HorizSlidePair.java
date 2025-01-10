@@ -14,8 +14,8 @@ public class HorizSlidePair {
     private double previousAngle = 0.0;
     private double totalRotation = 0.0;
     private double targetRotation = 0.0;
-    private double maxExtend;
-    private double minExtend;
+    private final double maxExtend;
+    private final double minExtend;
 
     public HorizSlidePair(HardwareMap hmap){
         rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
@@ -68,4 +68,5 @@ public class HorizSlidePair {
         if (target < maxExtend && target > minExtend)
             targetRotation = target;
     }
+    public double getTargetRotation(){return targetRotation;}
 }
