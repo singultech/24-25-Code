@@ -25,7 +25,7 @@ public class HorizSlidePair {
 
     public void updatePosition(){
         double leftAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
-        double rightAngle = rightSlideEncoder.getVoltage() / 3.3 * 360;
+        double rightAngle = -(rightSlideEncoder.getVoltage() / 3.3 * 360);
 
         currentAngle = (leftAngle + rightAngle) / 2.0;
 
