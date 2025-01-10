@@ -13,6 +13,9 @@ public class HorizSlidePair {
     private double currentAngle = 0.0;
     private double previousAngle = 0.0;
     private double totalRotation = 0.0;
+    private double targetRotation = 0.0;
+    private double maxExtend;
+    private double minExtend;
 
     public HorizSlidePair(HardwareMap hmap){
         rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
@@ -20,10 +23,12 @@ public class HorizSlidePair {
         rightSlideEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
         leftSlideEncoder = hmap.get(AnalogInput.class, "leftHorizSlideEncoder");
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        maxExtend = 0;
+        minExtend = 100000;
     }
     public double getCurrentPosition() { return currentAngle; }
 
-    public void updatePosition(){
+    public void update(){
         double leftAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
         double rightAngle = -(rightSlideEncoder.getVoltage() / 3.3 * 360);
 
@@ -49,5 +54,9 @@ public class HorizSlidePair {
     public void setPower(double power){
         rightSlide.setPower(power);
         leftSlide.setPower(power);
+    }
+    public void setTargetRotation(double target){
+        if (target < maxExtend && target > minExtend)
+            targetRotation = target;
     }
 }
