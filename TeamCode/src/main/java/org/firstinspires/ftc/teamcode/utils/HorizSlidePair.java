@@ -69,4 +69,7 @@ public class HorizSlidePair {
             targetRotation = target;
     }
     public double getTargetRotation(){return targetRotation;}
+    public String getRawEncoders(){
+        return leftSlideEncoder.getVoltage() / 3.3 * 360 + " " + -(rightSlideEncoder.getVoltage() / 3.3 * 360);
+    }
 }

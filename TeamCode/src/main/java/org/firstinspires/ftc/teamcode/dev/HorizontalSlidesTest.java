@@ -29,6 +29,7 @@ public class HorizontalSlidesTest extends LinearOpMode {
             telemetry.addLine("Use the triggers to control the slides");
             telemetry.addLine("Current Position " + slides.getCurrentPosition());
             telemetry.addLine("Full Rotation " + slides.getTotalRotation());
+            telemetry.addLine("Raw Encoders " + slides.getRawEncoders());
             telemetry.update();
         }
     }
