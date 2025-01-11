@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
 @TeleOp(name = "Front Grabber Test", group = "Dev")
-public class GrabberTest extends LinearOpMode {
+public class FrontGrabberTest extends LinearOpMode {
     DcMotorEx leftSlide;
     DcMotorEx rightSlide;
     @Override

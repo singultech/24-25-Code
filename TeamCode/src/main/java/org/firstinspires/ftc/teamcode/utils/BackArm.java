@@ -9,24 +9,28 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class BackArm {
     private final CRServo leftServo;
     private final CRServo rightServo;
-    private final double upPosition;
-    private final double downPosition;
     AnalogInput rightEncoder;
 
     private double currentAngle = 0.0;
     private double previousAngle = 0.0;
     private double totalRotation = 0.0;
+    private double targetRotation;
+    private double startingRotation;
 
     public BackArm(double upPos, double downPos, HardwareMap hmap){
         leftServo = hmap.crservo.get("leftFlip");
         rightServo = hmap.crservo.get("rightFlip");
         rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
-        upPosition = upPos;
-        downPosition = downPos;
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        targetRotation = 0;
+        startingRotation = ((rightEncoder.getVoltage() / 3.3) * 360)/3;
+
     }
-    public void updatePosition(){
-        double currentAngle = (rightEncoder.getVoltage() / 3.3 * 360)/3;
+    public void update(){
+        double leftAngle = (rightEncoder.getVoltage() / 3.3 * 360)/3;
+
+        currentAngle = leftAngle-startingRotation;
+
         double angleDifference = currentAngle - previousAngle;
 
         if (angleDifference < -180) {
@@ -38,7 +42,20 @@ public class BackArm {
         totalRotation += angleDifference;
 
         previousAngle = currentAngle;
+        /*
+        if (Math.abs(targetRotation-totalRotation)<10) {
+            setPower(0);
+            return;
+        }
+        else if (totalRotation<targetRotation) setPower(0.3);
+        else if (totalRotation>targetRotation) {
+            setPower(-0.3);
+        }*/
     }
+    public void setTargetRotation(double target){
+        targetRotation = target;
+    }
+    public double getTargetRotation(){return targetRotation;}
     public double getAngle(){
         return currentAngle;
     }
@@ -50,6 +67,7 @@ public class BackArm {
         rightServo.setPower(power);
     }
     public double getRawOut() {return rightEncoder.getVoltage();}
+
 
 
 

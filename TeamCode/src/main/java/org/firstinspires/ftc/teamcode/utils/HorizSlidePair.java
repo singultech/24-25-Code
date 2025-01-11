@@ -16,6 +16,7 @@ public class HorizSlidePair {
     private double targetRotation = 0.0;
     private final double maxExtend;
     private final double minExtend;
+    private final double startPosition;
 
     public HorizSlidePair(HardwareMap hmap){
         rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
@@ -23,16 +24,16 @@ public class HorizSlidePair {
         rightSlideEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
         leftSlideEncoder = hmap.get(AnalogInput.class, "leftHorizSlideEncoder");
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        maxExtend = 0;
-        minExtend = 100000;
+        maxExtend = 450;
+        minExtend = 0;
+        startPosition = leftSlideEncoder.getVoltage() / 3.3 * 360;
     }
     public double getCurrentPosition() { return currentAngle; }
 
     public void update(){
         double leftAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
-        double rightAngle = -(rightSlideEncoder.getVoltage() / 3.3 * 360);
 
-        currentAngle = (leftAngle + rightAngle) / 2.0;
+        currentAngle = leftAngle-startPosition;
 
         double angleDifference = currentAngle - previousAngle;
 
@@ -45,15 +46,15 @@ public class HorizSlidePair {
         totalRotation += angleDifference;
 
         previousAngle = currentAngle;
-        /*
+
         if (Math.abs(targetRotation-totalRotation)<10) {
             setPower(0);
             return;
         }
-        if (totalRotation<targetRotation) setPower(0.3);
+        else if (totalRotation<targetRotation) setPower(0.3);
         else if (totalRotation>targetRotation) {
             setPower(-0.3);
-        }*/
+        }
     }
 
     public double getTotalRotation() {
@@ -65,11 +66,11 @@ public class HorizSlidePair {
         leftSlide.setPower(power);
     }
     public void setTargetRotation(double target){
-        if (target < maxExtend && target > minExtend)
+        if (target <= maxExtend && target >= minExtend)
             targetRotation = target;
     }
     public double getTargetRotation(){return targetRotation;}
-    public String getRawEncoders(){
-        return leftSlideEncoder.getVoltage() / 3.3 * 360 + " " + -(rightSlideEncoder.getVoltage() / 3.3 * 360);
+    public double getRawEncoders(){
+        return leftSlideEncoder.getVoltage();
     }
 }

@@ -1,3 +1,8 @@
+/*
+    SPDX-License-Identifier: MIT
+
+    Copyright (c) 2024 SparkFun Electronics
+*/
 package org.firstinspires.ftc.teamcode.dev;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -6,33 +11,35 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.utils.BackArm;
+import org.firstinspires.ftc.teamcode.utils.FrontArm;
+import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
-@TeleOp(name = "Back Arm Test", group = "Dev")
-public class BackArmTest extends LinearOpMode {
+@TeleOp(name = "Arm Test", group = "Dev")
+public class FrontArmTest extends LinearOpMode {
     DcMotorEx leftSlide;
     DcMotorEx rightSlide;
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        BackArm arm = new BackArm(1, 0, hardwareMap);
+        FrontArm arm = new FrontArm(1, 0.35, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            arm.update();
 
-            if (gamepads.isHeld(-1, "cross")) {
-                arm.setPower(1);
-            } else if (gamepads.isHeld(-1, "circle")) arm.setPower(-1);
-            else arm.setPower(0);
+            if (gamepads.isPressed(-1, "cross")) {
+                if (arm.isForward()) arm.back();
+                else arm.forward();
+            }
 
-            telemetry.addData("Current Angle", arm.getAngle());
-            telemetry.addData("TotalRotation", arm.getPosition());
+            telemetry.addLine("Press X to raise or lower the arm");
+            telemetry.addLine(arm.isForward() ? "Arm is forward" : "Arm is back");
             telemetry.update();
         }
     }
