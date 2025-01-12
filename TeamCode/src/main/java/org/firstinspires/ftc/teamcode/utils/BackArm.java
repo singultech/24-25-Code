@@ -42,15 +42,6 @@ public class BackArm {
         totalRotation += angleDifference;
 
         previousAngle = currentAngle;
-        /*
-        if (Math.abs(targetRotation-totalRotation)<10) {
-            setPower(0);
-            return;
-        }
-        else if (totalRotation<targetRotation) setPower(0.3);
-        else if (totalRotation>targetRotation) {
-            setPower(-0.3);
-        }*/
     }
     public void setTargetRotation(double target){
         targetRotation = target;

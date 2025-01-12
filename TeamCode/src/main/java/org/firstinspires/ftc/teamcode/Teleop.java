@@ -9,8 +9,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utils.BackArm;
+import org.firstinspires.ftc.teamcode.utils.BackGrabber;
+import org.firstinspires.ftc.teamcode.utils.DiffyGrabber;
+import org.firstinspires.ftc.teamcode.utils.FrontArm;
 import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.utils.HorizSlidePair;
 import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
@@ -18,7 +22,7 @@ import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, Math.toRadians(90)));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -27,12 +31,20 @@ public class Teleop extends LinearOpMode {
 
         long curTime;
         long lastFrontOpened = 0;
+        long lastBackOpened = 0;
 
-        FrontGrabber grabber = new FrontGrabber(0.73, 1, hardwareMap);
+        boolean isHorizExtended = false;
+
+        FrontGrabber frontGrabber = new FrontGrabber(0.73, 1, hardwareMap);
+        BackGrabber backGrabber = new BackGrabber(0.73, 1, hardwareMap);
+
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
-        BackArm arm = new BackArm(0.55, 0, hardwareMap);
-
-        int[] vertSlidePresets = {0, 300, 894, 2478, 2800, 3500, 4100};
+        HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
+        BackArm backArm = new BackArm(0.55, 0, hardwareMap);
+        FrontArm frontArm = new FrontArm(1, 0.35, hardwareMap);
+        DiffyGrabber diffy = new DiffyGrabber(hardwareMap);
+        int[] vertSlidePresets = {0, 300, 894, 2100,                         2478, 2800, 3500, 4100};
+        frontArm.forward();
         /*
         Zero
         Slightly lifted for pickup from ground
@@ -55,6 +67,7 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            horizSlides.update();
             curTime = System.currentTimeMillis();
 
             driveVector = new Vector2d(
@@ -79,54 +92,60 @@ public class Teleop extends LinearOpMode {
             ));
 
             // Slide preset control
-            if (gamepads.isPressed(-1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
-            if (gamepads.isPressed(-1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
+            if (gamepads.isPressed(1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
+            if (gamepads.isPressed(1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
 
-            if (gamepads.isPressed(-1, "right_bumper")){
-                new Thread(() -> {
-                    try {
-                        int targetPos = vertSlides.getTargetPosition()-300;
-                        vertSlides.setTargetPosition(targetPos);
+            if (gamepads.isHeld(-1, "dpad_right")) {
+                backArm.setPower(1);
+            } else if (gamepads.isHeld(-1, "dpad_left")) backArm.setPower(-1);
+            else backArm.setPower(0);
 
-                        while (Math.abs(vertSlides.getCurrentPosition() - targetPos) > 20) {
-                            continue;
-                        }
 
-                        Thread.sleep(500);
-
-                        grabber.open();
-
-                    } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                    }
-                }).start();
+            if (gamepads.isPressed(1, "square")){
+                if (!isHorizExtended){
+                    isHorizExtended = true;
+                    horizSlides.setTargetRotation(400);
+                } else {
+                    isHorizExtended = false;
+                    horizSlides.setTargetRotation(0);
+                }
             }
 
-            if (gamepads.isPressed(-1, "circle")) {
-                if (grabber.isClosed()) {grabber.open(); lastFrontOpened = curTime;}
-                else grabber.close();
-            }
-            if (grabber.getSwitchState() && curTime - lastFrontOpened > 2000){
-                int finalVertSlidePreset = vertSlidePreset;
+            if (gamepads.isPressed(1, "circle")) {
+                if (frontGrabber.isClosed()) {frontGrabber.open(); lastFrontOpened = curTime;}
+                else frontGrabber.close();
+                if (backGrabber.isClosed()) {backGrabber.open(); lastBackOpened = curTime;}
+                else backGrabber.close();
+            }/*
+            if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000){
                 new Thread(() -> {
                     try {
-                        grabber.close();
+                        frontGrabber.close();
                         gamepads.blipRumble(-1, 1);
 
                         Thread.sleep(300);
 
-                        if (!grabber.getSwitchState()) {grabber.open(); gamepads.rumble(-1, RumbleEffects.alternating);}
-                        else if (finalVertSlidePreset == 2) vertSlides.setTargetPosition(vertSlides.getTargetPosition()+400); // if at slide position to grab from wall, move up after successful grab
+                        if (!frontGrabber.getSwitchState()) {frontGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
                 }).start();
-            }
+            }*/
+            if (backGrabber.getSwitchState() && curTime - lastBackOpened > 2000){
+                new Thread(() -> {
+                    try {
+                        backGrabber.close();
+                        gamepads.blipRumble(1, 1);
 
-            if (gamepads.isPressed(-1, "left_bumper")) {
-                if (driveStyle.equals("robot-centric")) {driveStyle = "field-centric"; gamepads.setLed(1, 1, 0, 0);}
-                else {driveStyle = "robot-centric"; gamepads.setLed(1, 0, 0, 1);}
+                        Thread.sleep(300);
+
+                        if (!backGrabber.getSwitchState()) {backGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
             }
 
 
