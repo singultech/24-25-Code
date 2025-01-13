@@ -21,7 +21,9 @@ public class Diffy {
     private final double leftStartingAngle;
     private double leftTargetRotation;
     private double rightTargetRotation;
-    public Diffy(HardwareMap hmap){
+    private boolean runToPosition;
+    public Diffy(HardwareMap hmap, boolean shouldRtp){
+        runToPosition = shouldRtp;
         leftServo = hmap.crservo.get("leftDiffy");
         rightServo = hmap.crservo.get("rightDiffy");
         leftEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
@@ -58,6 +60,16 @@ public class Diffy {
         rightTotalRotation += rightAngleDifference;
         leftPreviousLocalAngle = leftLocalAngle;
         rightPreviousLocalAngle = rightLocalAngle;
+
+        if (!runToPosition) return;
+        if (Math.abs(rightTargetRotation-rightTotalRotation)>10){
+            if (rightTotalRotation<rightTargetRotation) rightServo.setPower(1);
+            else rightServo.setPower(-1);
+        } else rightServo.setPower(0);
+        if (Math.abs(leftTargetRotation-leftTotalRotation)>10){
+            if (leftTotalRotation<leftTargetRotation) leftServo.setPower(1);
+            else leftServo.setPower(-1);
+        } else leftServo.setPower(0);
     }
 
     public double getLeftLocalAngle() {

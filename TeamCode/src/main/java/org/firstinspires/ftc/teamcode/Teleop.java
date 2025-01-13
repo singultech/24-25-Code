@@ -41,7 +41,7 @@ public class Teleop extends LinearOpMode {
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
         BackArm backArm = new BackArm(0.55, 0, hardwareMap);
         FrontArm frontArm = new FrontArm(1, 0.35, hardwareMap);
-        Diffy diffy = new Diffy(hardwareMap);
+        Diffy diffy = new Diffy(hardwareMap, true);
 
         int grabOffWall = 894;
         int aboveTopBar = 2478;
