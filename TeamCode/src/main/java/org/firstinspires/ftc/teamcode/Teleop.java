@@ -64,7 +64,6 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isHeld(-1, "square")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
             if (gamepads.isHeld(-1, "cross")) drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
         }*/
-        Vector2d driveVector;
 
         waitForStart();
 
@@ -74,7 +73,7 @@ public class Teleop extends LinearOpMode {
             curTime = System.currentTimeMillis();
 
             double driveScaleFactor = 1-gamepads.getTrigger(1, "right_trigger");
-            driveVector = new Vector2d(
+            Vector2d driveVector = new Vector2d(
                     -(gamepads.joystickValue(1, "left", "y")*driveScaleFactor),
                     -(gamepads.joystickValue(1, "left", "x")*driveScaleFactor)
             );
@@ -82,8 +81,8 @@ public class Teleop extends LinearOpMode {
                 float gpx = -gamepad1.left_stick_y;
                 float gpy = -gamepad1.left_stick_x;
                 float head = (float) -drive.pose.heading.toDouble();
-                float nx = (float) ((gpx * Math.cos(head)) - (gpy * Math.sin(head)));
-                float ny = (float) ((gpx * Math.sin(head)) + (gpy * Math.cos(head)));
+                float nx = (float) (((gpx * Math.cos(head)) - (gpy * Math.sin(head))) * driveScaleFactor);
+                float ny = (float) (((gpx * Math.sin(head)) + (gpy * Math.cos(head))) * driveScaleFactor);
                 driveVector = new Vector2d(
                         nx,
                         ny
@@ -99,12 +98,13 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
             if (gamepads.isPressed(1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
 
+            // Back Arm Control
             if (gamepads.isHeld(-1, "dpad_right")) {
                 backArm.setPower(1);
             } else if (gamepads.isHeld(-1, "dpad_left")) backArm.setPower(-1);
             else backArm.setPower(0);
 
-
+            // Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTotalRotation()==0){
                     horizSlides.setTargetRotation(400);
@@ -112,14 +112,14 @@ public class Teleop extends LinearOpMode {
                     horizSlides.setTargetRotation(0);
                 }
             }
-
+            // Toggle both grabbers
             if (gamepads.isPressed(1, "circle")) {
                 if (frontGrabber.isClosed()) {frontGrabber.open(); lastFrontOpened = curTime;}
                 else frontGrabber.close();
                 if (backGrabber.isClosed()) {backGrabber.open(); lastBackOpened = curTime;}
                 else backGrabber.close();
             }
-            if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000){
+            if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000 && !frontGrabber.isClosed()){
                 new Thread(() -> {
                     try {
                         frontGrabber.close();
@@ -134,7 +134,7 @@ public class Teleop extends LinearOpMode {
                     }
                 }).start();
             }
-            if (backGrabber.getSwitchState() && curTime - lastBackOpened > 2000){
+            if (backGrabber.getSwitchState() && curTime - lastBackOpened > 2000 && !backGrabber.isClosed()){
                 new Thread(() -> {
                     try {
                         backGrabber.close();
