@@ -21,7 +21,7 @@ public class Diffy {
     private final double leftStartingAngle;
     private double leftTargetRotation;
     private double rightTargetRotation;
-    private boolean runToPosition;
+    private final boolean runToPosition;
     public Diffy(HardwareMap hmap, boolean shouldRtp){
         runToPosition = shouldRtp;
         leftServo = hmap.crservo.get("leftDiffy");

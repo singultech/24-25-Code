@@ -10,32 +10,33 @@ public class HorizSlidePair {
     CRServo leftSlide;
     AnalogInput leftSlideEncoder;
     AnalogInput rightSlideEncoder;
-    private double currentAngle = 0.0;
+    private double localAngle = 0.0;
     private double previousAngle = 0.0;
     private double totalRotation = 0.0;
     private double targetRotation = 0.0;
     private final double maxExtend;
     private final double minExtend;
     private final double startPosition;
+    private final boolean runToPosition;
 
-    public HorizSlidePair(HardwareMap hmap){
+    public HorizSlidePair(HardwareMap hmap, boolean shouldRtp){
         rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
         leftSlide = hmap.get(CRServo.class, "leftHorizSlide");
         rightSlideEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
         leftSlideEncoder = hmap.get(AnalogInput.class, "leftHorizSlideEncoder");
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        runToPosition = shouldRtp;
         maxExtend = 450;
         minExtend = 0;
         startPosition = leftSlideEncoder.getVoltage() / 3.3 * 360;
+        totalRotation = -startPosition;
     }
-    public double getCurrentPosition() { return currentAngle; }
+    public double getCurrentPosition() { return localAngle; }
 
     public void update(){
-        double leftAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
+        localAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
 
-        currentAngle = leftAngle-startPosition;
-
-        double angleDifference = currentAngle - previousAngle;
+        double angleDifference = localAngle - previousAngle;
 
         if (angleDifference < -180) {
             angleDifference += 360;
@@ -45,8 +46,8 @@ public class HorizSlidePair {
 
         totalRotation += angleDifference;
 
-        previousAngle = currentAngle;
-
+        previousAngle = localAngle;
+        if (!runToPosition) return;
         if (Math.abs(targetRotation-totalRotation)<10) {
             setPower(0);
             return;

@@ -14,7 +14,7 @@ public class TargetHorizSlidesTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        HorizSlidePair slides = new HorizSlidePair(hardwareMap);
+        HorizSlidePair slides = new HorizSlidePair(hardwareMap, true);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
