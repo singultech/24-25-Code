@@ -19,6 +19,7 @@ public class DiffyTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            diffy.update();
             if (gamepads.isHeld(-1, "y")) {
                 diffy.setRightPower(1);
             }

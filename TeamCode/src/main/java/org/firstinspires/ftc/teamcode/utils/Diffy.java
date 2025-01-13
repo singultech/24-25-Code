@@ -28,7 +28,7 @@ public class Diffy {
         rightEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
         leftStartingAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightStartingAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
+        rightStartingAngle = -rightEncoder.getVoltage() / 3.3 * 360.0;
         rightTotalRotation = -rightStartingAngle;
         leftTotalRotation = -leftStartingAngle;
     }
@@ -39,26 +39,23 @@ public class Diffy {
     public void setRightPower(double power) {
         rightServo.setPower(power);
     }
-    public void updatePosition() {
+    public void update() {
         leftLocalAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightLocalAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
+        rightLocalAngle = -rightEncoder.getVoltage() / 3.3 * 360.0;
         double leftAngleDifference = leftLocalAngle - leftPreviousLocalAngle;
         if (leftAngleDifference < -180) {
             leftAngleDifference += 360;
         } else if (leftAngleDifference > 180) {
             leftAngleDifference -= 360;
         }
-
         double rightAngleDifference = rightLocalAngle - rightPreviousLocalAngle;
         if (rightAngleDifference < -180) {
             rightAngleDifference += 360;
         } else if (rightAngleDifference > 180) {
             rightAngleDifference -= 360;
         }
-
         leftTotalRotation += leftAngleDifference;
         rightTotalRotation += rightAngleDifference;
-
         leftPreviousLocalAngle = leftLocalAngle;
         rightPreviousLocalAngle = rightLocalAngle;
     }
