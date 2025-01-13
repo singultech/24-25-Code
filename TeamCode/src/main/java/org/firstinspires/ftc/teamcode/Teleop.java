@@ -157,6 +157,28 @@ public class Teleop extends LinearOpMode {
                 }).start();
             }
 
+            // Lower and release to bar
+            if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
+                new Thread(() -> {
+                    vertSlides.changeTargetPosition(-200);
+                    while (Math.abs(vertSlides.getCurrentPosition() - vertSlides.getTargetPosition()) > 15) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    frontGrabber.open();
+                    gamepads.blipRumble(1, 1);
+                }).start();
+            }
+            // Pick up from wall
+            if (vertSlidePresets[vertSlidePreset] == grabOffWall && gamepads.isPressed(1, "right_bumper")){
+                frontGrabber.close();
+                vertSlides.changeTargetPosition(200);
+                gamepads.blipRumble(1,  1);
+            }
+
 
             drive.updatePoseEstimate();
 
