@@ -125,7 +125,7 @@ public class Teleop extends LinearOpMode {
                         frontGrabber.close();
                         gamepads.blipRumble(-1, 1);
 
-                        Thread.sleep(300);
+                        Thread.sleep(500);
 
                         if (!frontGrabber.getSwitchState()) {frontGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 

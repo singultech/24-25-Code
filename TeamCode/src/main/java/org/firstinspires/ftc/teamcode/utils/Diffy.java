@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.utils;
 
-import com.acmerobotics.roadrunner.ftc.Encoder;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,8 +17,10 @@ public class Diffy {
     private double rightLocalAngle;
     private double rightPreviousLocalAngle;
     private double rightTotalRotation;
-    private double rightStartingAngle;
-    private double leftStartingAngle;
+    private final double rightStartingAngle;
+    private final double leftStartingAngle;
+    private double leftTargetRotation;
+    private double rightTargetRotation;
     public Diffy(HardwareMap hmap){
         leftServo = hmap.crservo.get("leftDiffy");
         rightServo = hmap.crservo.get("rightDiffy");
@@ -76,4 +77,8 @@ public class Diffy {
     }
     public double getRightStartingAngle(){return rightStartingAngle;}
     public double getLeftStartingAngle(){return leftStartingAngle;}
+    public void setRightTargetRotation(double target){rightTargetRotation = target;}
+    public double getRightTargetRotation(){return rightTargetRotation;}
+    public void setLeftTargetRotation(double target){leftTargetRotation = target;}
+    public double getLeftTargetRotation(){return leftTargetRotation;}
 }
