@@ -5,13 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-
-import org.firstinspires.ftc.teamcode.utils.DiffyGrabber;
-import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
+import org.firstinspires.ftc.teamcode.utils.Diffy;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
 @TeleOp(name = "Diffy Test", group = "Dev")
@@ -20,30 +14,32 @@ public class DiffyTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        DiffyGrabber diffy = new DiffyGrabber(hardwareMap);
+        Diffy diffy = new Diffy(hardwareMap);
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            if (gamepads.isPressed(-1, "y")) {
-                diffy.changeRightPosition(0.1);
+            if (gamepads.isHeld(-1, "y")) {
+                diffy.setRightPower(1);
             }
-            if (gamepads.isPressed(-1, "dpad_up")){
-                diffy.changeLeftPosition(0.1);
+            if (gamepads.isHeld(-1, "dpad_up")){
+                diffy.setLeftPower(1);
+            }
+            if (gamepads.isHeld(-1, "a")){
+                diffy.setRightPower(-1);
+            }
+            if (gamepads.isHeld(-1, "dpad_down")){
+                diffy.setLeftPower(-1);
+            }
+            if (!gamepads.isHeld(-1, "y") && !gamepads.isHeld(-1, "a")) {
+                diffy.setRightPower(0);
+            }
+            if (!gamepads.isHeld(-1, "dpad_up") && !gamepads.isHeld(-1, "dpad_down")) {
+                diffy.setLeftPower(0);
             }
 
-            if (gamepads.isPressed(-1, "a")){
-                diffy.changeRightPosition(-0.1);
-            }
-
-            if (gamepads.isPressed(-1, "dpad_down")){
-                diffy.changeLeftPosition(-0.1);
-            }
-
-            telemetry.addData("right angle", diffy.getRightPosition());
-            telemetry.addData("left angle", diffy.getLeftPosition());
-            telemetry.addData("right target", diffy.getRightTarget());
-            telemetry.addData("left target", diffy.getLeftTarget());
+            telemetry.addData("right total rotation", diffy.getRightTotalRotation());
+            telemetry.addData("left total rotation", diffy.getLeftTotalRotation());
             telemetry.update();
         }
     }

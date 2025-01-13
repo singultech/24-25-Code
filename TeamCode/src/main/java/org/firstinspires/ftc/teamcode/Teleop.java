@@ -9,11 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.utils.BackArm;
-import org.firstinspires.ftc.teamcode.utils.BackGrabber;
-import org.firstinspires.ftc.teamcode.utils.DiffyGrabber;
+import org.firstinspires.ftc.teamcode.utils.Diffy;
 import org.firstinspires.ftc.teamcode.utils.FrontArm;
-import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.utils.Grabber;
 import org.firstinspires.ftc.teamcode.utils.HorizSlidePair;
 import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
@@ -33,17 +32,21 @@ public class Teleop extends LinearOpMode {
         long lastFrontOpened = 0;
         long lastBackOpened = 0;
 
-        boolean isHorizExtended = false;
 
-        FrontGrabber frontGrabber = new FrontGrabber(0.73, 1, hardwareMap);
-        BackGrabber backGrabber = new BackGrabber(0.73, 1, hardwareMap);
+
+        Grabber frontGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
+        Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
 
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
         BackArm backArm = new BackArm(0.55, 0, hardwareMap);
         FrontArm frontArm = new FrontArm(1, 0.35, hardwareMap);
-        DiffyGrabber diffy = new DiffyGrabber(hardwareMap);
-        int[] vertSlidePresets = {0, 300, 894, 2100,                         2478, 2800, 3500, 4100};
+        Diffy diffy = new Diffy(hardwareMap);
+
+        int grabOffWall = 894;
+        int aboveTopBar = 2478;
+        int hangHeight = 4000;
+        int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
         frontArm.forward();
         /*
         Zero
@@ -70,9 +73,10 @@ public class Teleop extends LinearOpMode {
             horizSlides.update();
             curTime = System.currentTimeMillis();
 
+            double driveScaleFactor = 1-gamepads.getTrigger(1, "right_trigger");
             driveVector = new Vector2d(
-                    -(gamepads.joystickValue(1, "left", "y")-gamepads.getTrigger(1, "right_trigger")),
-                    -(gamepads.joystickValue(1, "left", "x")-gamepads.getTrigger(1, "right_trigger"))
+                    -(gamepads.joystickValue(1, "left", "y")*driveScaleFactor),
+                    -(gamepads.joystickValue(1, "left", "x")*driveScaleFactor)
             );
             if (driveStyle.equals("field-centric")) {
                 float gpx = -gamepad1.left_stick_y;
@@ -88,7 +92,7 @@ public class Teleop extends LinearOpMode {
 
             drive.setDrivePowers(new PoseVelocity2d(
                     driveVector,
-                    -(gamepads.joystickValue(1, "right", "x")-gamepads.getTrigger(1, "right_trigger"))
+                    -(gamepads.joystickValue(1, "right", "x")*driveScaleFactor)
             ));
 
             // Slide preset control
@@ -102,11 +106,9 @@ public class Teleop extends LinearOpMode {
 
 
             if (gamepads.isPressed(1, "square")){
-                if (!isHorizExtended){
-                    isHorizExtended = true;
+                if (horizSlides.getTotalRotation()==0){
                     horizSlides.setTargetRotation(400);
                 } else {
-                    isHorizExtended = false;
                     horizSlides.setTargetRotation(0);
                 }
             }
@@ -116,7 +118,7 @@ public class Teleop extends LinearOpMode {
                 else frontGrabber.close();
                 if (backGrabber.isClosed()) {backGrabber.open(); lastBackOpened = curTime;}
                 else backGrabber.close();
-            }/*
+            }
             if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000){
                 new Thread(() -> {
                     try {
@@ -131,7 +133,7 @@ public class Teleop extends LinearOpMode {
                         Thread.currentThread().interrupt();
                     }
                 }).start();
-            }*/
+            }
             if (backGrabber.getSwitchState() && curTime - lastBackOpened > 2000){
                 new Thread(() -> {
                     try {

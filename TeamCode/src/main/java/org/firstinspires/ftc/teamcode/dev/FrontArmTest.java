@@ -11,11 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.utils.FrontArm;
-import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
 @TeleOp(name = "Arm Test", group = "Dev")

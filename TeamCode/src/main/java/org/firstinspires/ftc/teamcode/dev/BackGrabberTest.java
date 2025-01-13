@@ -6,12 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.utils.BackGrabber;
-import org.firstinspires.ftc.teamcode.utils.FrontGrabber;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.utils.Grabber;
 
 @TeleOp(name = "Back Grabber Test", group = "Dev")
 public class BackGrabberTest extends LinearOpMode {
@@ -20,7 +17,7 @@ public class BackGrabberTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        BackGrabber grabber = new BackGrabber(0.72, 1, hardwareMap);
+        Grabber grabber = new Grabber(0.72, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         long curTime;
         long lastOpened = 0;

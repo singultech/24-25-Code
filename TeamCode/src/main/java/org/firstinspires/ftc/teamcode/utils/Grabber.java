@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-public class FrontGrabber {
+public class Grabber {
     private final Servo grabberServo;
     private final TouchSensor limitSwitch;
     private final double closePosition;
@@ -12,9 +12,9 @@ public class FrontGrabber {
     private boolean isClosed;
 
 
-    public FrontGrabber(double close, double open, HardwareMap hmap){
-        grabberServo = hmap.servo.get("frontGrabberServo");
-        limitSwitch = hmap.touchSensor.get("frontGrabberSwitch");
+    public Grabber(double close, double open, Servo grabber, TouchSensor limit){
+        grabberServo = grabber;
+        limitSwitch = limit;
         closePosition = close;
         openPosition = open;
         close();
