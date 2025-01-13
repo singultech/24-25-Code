@@ -104,6 +104,13 @@ public class Teleop extends LinearOpMode {
             } else if (gamepads.isHeld(-1, "dpad_left")) backArm.setPower(-1);
             else backArm.setPower(0);
 
+            // Switch Drive Style
+            if (gamepads.isPressed(1, "left_stick_button")){
+                if (driveStyle.equals("field-centric")) driveStyle = "robot-centric";
+                else driveStyle = "field-centric";
+            }
+
+
             // Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTotalRotation()==0){
