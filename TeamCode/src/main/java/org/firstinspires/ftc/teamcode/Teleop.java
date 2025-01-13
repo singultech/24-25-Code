@@ -48,13 +48,6 @@ public class Teleop extends LinearOpMode {
         int hangHeight = 4000;
         int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
         frontArm.forward();
-        /*
-        Zero
-        Slightly lifted for pickup from ground
-        Grab off wall
-        slightly above top bar
-        slightly above top basket?
-        */
         int vertSlidePreset = 0;
 
         /*
@@ -147,7 +140,7 @@ public class Teleop extends LinearOpMode {
                         backGrabber.close();
                         gamepads.blipRumble(1, 1);
 
-                        Thread.sleep(300);
+                        Thread.sleep(500);
 
                         if (!backGrabber.getSwitchState()) {backGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
