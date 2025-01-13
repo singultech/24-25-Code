@@ -36,10 +36,10 @@ public class Diffy {
     }
 
     public void setLeftPower(double power) {
-        leftServo.setPower(power);
+        if (!runToPosition)leftServo.setPower(power);
     }
     public void setRightPower(double power) {
-        rightServo.setPower(power);
+        if (!runToPosition)rightServo.setPower(power);
     }
     public void update() {
         leftLocalAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
