@@ -38,23 +38,16 @@ public class Teleop extends LinearOpMode {
         Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
 
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
-        HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
-        BackArm backArm = new BackArm(0.55, 0, hardwareMap);
+        HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap, true);
+        BackArm backArm = new BackArm(0.55, 0, hardwareMap, true);
         FrontArm frontArm = new FrontArm(1, 0.35, hardwareMap);
-        Diffy diffy = new Diffy(hardwareMap);
+        Diffy diffy = new Diffy(hardwareMap, true);
 
         int grabOffWall = 894;
         int aboveTopBar = 2478;
         int hangHeight = 4000;
         int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
         frontArm.forward();
-        /*
-        Zero
-        Slightly lifted for pickup from ground
-        Grab off wall
-        slightly above top bar
-        slightly above top basket?
-        */
         int vertSlidePreset = 0;
 
         /*
@@ -104,6 +97,13 @@ public class Teleop extends LinearOpMode {
             } else if (gamepads.isHeld(-1, "dpad_left")) backArm.setPower(-1);
             else backArm.setPower(0);
 
+            // Switch Drive Style
+            if (gamepads.isPressed(1, "left_stick_button")){
+                if (driveStyle.equals("field-centric")) driveStyle = "robot-centric";
+                else driveStyle = "field-centric";
+            }
+
+
             // Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTotalRotation()==0){
@@ -125,7 +125,7 @@ public class Teleop extends LinearOpMode {
                         frontGrabber.close();
                         gamepads.blipRumble(-1, 1);
 
-                        Thread.sleep(300);
+                        Thread.sleep(500);
 
                         if (!frontGrabber.getSwitchState()) {frontGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
@@ -140,7 +140,7 @@ public class Teleop extends LinearOpMode {
                         backGrabber.close();
                         gamepads.blipRumble(1, 1);
 
-                        Thread.sleep(300);
+                        Thread.sleep(500);
 
                         if (!backGrabber.getSwitchState()) {backGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
@@ -148,6 +148,28 @@ public class Teleop extends LinearOpMode {
                         Thread.currentThread().interrupt();
                     }
                 }).start();
+            }
+
+            // Lower and release to bar
+            if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
+                new Thread(() -> {
+                    vertSlides.changeTargetPosition(-200);
+                    while (Math.abs(vertSlides.getCurrentPosition() - vertSlides.getTargetPosition()) > 15) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    frontGrabber.open();
+                    gamepads.blipRumble(1, 1);
+                }).start();
+            }
+            // Pick up from wall
+            if (vertSlidePresets[vertSlidePreset] == grabOffWall && gamepads.isPressed(1, "right_bumper")){
+                frontGrabber.close();
+                vertSlides.changeTargetPosition(200);
+                gamepads.blipRumble(1,  1);
             }
 
 

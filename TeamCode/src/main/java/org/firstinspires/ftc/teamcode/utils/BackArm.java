@@ -10,28 +10,27 @@ public class BackArm {
     private final CRServo leftServo;
     private final CRServo rightServo;
     AnalogInput rightEncoder;
-
-    private double currentAngle = 0.0;
-    private double previousAngle = 0.0;
-    private double totalRotation = 0.0;
+    private double localAngle;
+    private double previousAngle;
+    private double totalRotation;
     private double targetRotation;
-    private double startingRotation;
+    private final double startingRotation;
+    private final boolean runToPosition;
 
-    public BackArm(double upPos, double downPos, HardwareMap hmap){
+    public BackArm(double upPos, double downPos, HardwareMap hmap, boolean shouldRtp){
+        runToPosition = shouldRtp;
         leftServo = hmap.crservo.get("leftFlip");
         rightServo = hmap.crservo.get("rightFlip");
         rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        targetRotation = 0;
         startingRotation = ((rightEncoder.getVoltage() / 3.3) * 360)/3;
+        targetRotation = -startingRotation;
 
     }
     public void update(){
-        double leftAngle = (rightEncoder.getVoltage() / 3.3 * 360)/3;
+        localAngle = (rightEncoder.getVoltage() / 3.3 * 360)/3;
 
-        currentAngle = leftAngle-startingRotation;
-
-        double angleDifference = currentAngle - previousAngle;
+        double angleDifference = localAngle - previousAngle;
 
         if (angleDifference < -180) {
             angleDifference += 360;
@@ -41,14 +40,23 @@ public class BackArm {
 
         totalRotation += angleDifference;
 
-        previousAngle = currentAngle;
+        previousAngle = localAngle;
+        if (!runToPosition) return;
+        if (Math.abs(targetRotation-totalRotation)<10) {
+            setPower(0);
+            return;
+        }
+        else if (totalRotation<targetRotation) setPower(0.3);
+        else if (totalRotation>targetRotation) {
+            setPower(-0.3);
+        }
     }
     public void setTargetRotation(double target){
         targetRotation = target;
     }
     public double getTargetRotation(){return targetRotation;}
     public double getAngle(){
-        return currentAngle;
+        return localAngle;
     }
     public double getPosition(){
         return totalRotation;
