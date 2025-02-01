@@ -14,7 +14,7 @@ public class ManualDiffyTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Diffy diffy = new Diffy(hardwareMap);
+        Diffy diffy = new Diffy(hardwareMap, false);
         waitForStart();
 
         while (opModeIsActive()) {
