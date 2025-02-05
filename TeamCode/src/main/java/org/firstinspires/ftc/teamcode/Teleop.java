@@ -114,10 +114,16 @@ public class Teleop extends LinearOpMode {
             }
             // Toggle both grabbers
             if (gamepads.isPressed(1, "circle")) {
-                if (frontGrabber.isClosed()) {frontGrabber.open(); lastFrontOpened = curTime;}
-                else frontGrabber.close();
-                if (backGrabber.isClosed()) {backGrabber.open(); lastBackOpened = curTime;}
-                else backGrabber.close();
+                if (frontGrabber.isClosed()) {
+                    frontGrabber.open();
+                    backGrabber.open();
+                    lastFrontOpened = curTime;
+                    lastBackOpened = curTime;
+                }
+                else {
+                    frontGrabber.close();
+                    backGrabber.close();
+                }
             }
             if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000 && !frontGrabber.isClosed()){
                 new Thread(() -> {
@@ -125,7 +131,7 @@ public class Teleop extends LinearOpMode {
                         frontGrabber.close();
                         gamepads.blipRumble(-1, 1);
 
-                        Thread.sleep(500);
+                        Thread.sleep(750);
 
                         if (!frontGrabber.getSwitchState()) {frontGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
@@ -140,7 +146,7 @@ public class Teleop extends LinearOpMode {
                         backGrabber.close();
                         gamepads.blipRumble(1, 1);
 
-                        Thread.sleep(500);
+                        Thread.sleep(750);
 
                         if (!backGrabber.getSwitchState()) {backGrabber.open(); gamepads.rumble(1, RumbleEffects.alternating);}
 
