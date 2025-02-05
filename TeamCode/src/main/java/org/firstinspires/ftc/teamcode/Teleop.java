@@ -103,7 +103,6 @@ public class Teleop extends LinearOpMode {
                 else driveStyle = "field-centric";
             }
 
-
             // Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTotalRotation()==0){
