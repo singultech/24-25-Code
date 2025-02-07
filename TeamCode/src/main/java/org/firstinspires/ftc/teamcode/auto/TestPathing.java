@@ -39,7 +39,7 @@ public class TestPathing extends LinearOpMode {
         TrajectoryActionBuilder turnTrajectory = drive.actionBuilder(initialPose)
                 .turn(Math.toRadians(90));
         TrajectoryActionBuilder cookedTrajectory = drive.actionBuilder(initialPose)
-                        .splineTo(new Vector2d(15, 15), Math.toRadians(0));
+                .splineTo(new Vector2d(15, 15), Math.toRadians(0));
 
 
         waitForStart();

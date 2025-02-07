@@ -22,6 +22,7 @@ public class Diffy {
     private double leftTargetRotation;
     private double rightTargetRotation;
     private final boolean runToPosition;
+
     public Diffy(HardwareMap hmap, boolean shouldRtp){
         runToPosition = shouldRtp;
         leftServo = hmap.crservo.get("leftDiffy");
@@ -34,6 +35,14 @@ public class Diffy {
         rightTotalRotation = -rightStartingAngle;
         leftTotalRotation = -leftStartingAngle;
     }
+    private double normalizeAngleDifference(double angleDifference) {
+        if (angleDifference < -180) {
+            return angleDifference + 360;
+        } else if (angleDifference > 180) {
+            return angleDifference - 360;
+        }
+        return angleDifference;
+    }
 
     public void setLeftPower(double power) {
         if (!runToPosition)leftServo.setPower(power);
@@ -44,31 +53,22 @@ public class Diffy {
     public void update() {
         leftLocalAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
         rightLocalAngle = -rightEncoder.getVoltage() / 3.3 * 360.0;
-        double leftAngleDifference = leftLocalAngle - leftPreviousLocalAngle;
-        if (leftAngleDifference < -180) {
-            leftAngleDifference += 360;
-        } else if (leftAngleDifference > 180) {
-            leftAngleDifference -= 360;
-        }
-        double rightAngleDifference = rightLocalAngle - rightPreviousLocalAngle;
-        if (rightAngleDifference < -180) {
-            rightAngleDifference += 360;
-        } else if (rightAngleDifference > 180) {
-            rightAngleDifference -= 360;
-        }
+        double leftAngleDifference = normalizeAngleDifference(leftLocalAngle - leftPreviousLocalAngle);
+        double rightAngleDifference = normalizeAngleDifference(rightLocalAngle - rightPreviousLocalAngle);
         leftTotalRotation += leftAngleDifference;
         rightTotalRotation += rightAngleDifference;
         leftPreviousLocalAngle = leftLocalAngle;
         rightPreviousLocalAngle = rightLocalAngle;
 
         if (!runToPosition) return;
+        double maxPower = 0.5;
         if (Math.abs(rightTargetRotation-rightTotalRotation)>10){
-            if (rightTotalRotation<rightTargetRotation) rightServo.setPower(1);
-            else rightServo.setPower(-1);
+            if (rightTotalRotation<rightTargetRotation) rightServo.setPower(maxPower);
+            else rightServo.setPower(-maxPower);
         } else rightServo.setPower(0);
         if (Math.abs(leftTargetRotation-leftTotalRotation)>10){
-            if (leftTotalRotation<leftTargetRotation) leftServo.setPower(1);
-            else leftServo.setPower(-1);
+            if (leftTotalRotation<leftTargetRotation) leftServo.setPower(maxPower);
+            else leftServo.setPower(-maxPower);
         } else leftServo.setPower(0);
     }
 
