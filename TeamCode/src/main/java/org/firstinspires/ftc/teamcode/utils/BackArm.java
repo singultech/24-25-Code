@@ -24,7 +24,7 @@ public class BackArm {
         rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
         startingRotation = ((rightEncoder.getVoltage() / 3.3) * 360)/3;
-        targetRotation = -startingRotation;
+        totalRotation = -startingRotation;
 
     }
     public void update(){
@@ -42,13 +42,14 @@ public class BackArm {
 
         previousAngle = localAngle;
         if (!runToPosition) return;
+        double power = 0.4;
         if (Math.abs(targetRotation-totalRotation)<10) {
             setPower(0);
             return;
         }
-        else if (totalRotation<targetRotation) setPower(0.3);
+        else if (totalRotation<targetRotation) setPower(power);
         else if (totalRotation>targetRotation) {
-            setPower(-0.3);
+            setPower(-power);
         }
     }
     public void setTargetRotation(double target){
