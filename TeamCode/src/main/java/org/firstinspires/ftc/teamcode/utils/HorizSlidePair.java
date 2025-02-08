@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class HorizSlidePair {
     CRServo rightSlide;
     CRServo leftSlide;
-    AnalogInput leftSlideEncoder;
     AnalogInput rightSlideEncoder;
     private double localAngle = 0.0;
     private double previousAngle = 0.0;
@@ -23,18 +22,17 @@ public class HorizSlidePair {
         rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
         leftSlide = hmap.get(CRServo.class, "leftHorizSlide");
         rightSlideEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
-        leftSlideEncoder = hmap.get(AnalogInput.class, "leftHorizSlideEncoder");
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         runToPosition = shouldRtp;
         maxExtend = 450;
         minExtend = 0;
-        startPosition = leftSlideEncoder.getVoltage() / 3.3 * 360;
+        startPosition = rightSlideEncoder.getVoltage() / 3.3 * 360;
         totalRotation = -startPosition;
     }
     public double getCurrentPosition() { return localAngle; }
 
     public void update(){
-        localAngle = leftSlideEncoder.getVoltage() / 3.3 * 360;
+        localAngle = rightSlideEncoder.getVoltage() / 3.3 * 360;
 
         double angleDifference = localAngle - previousAngle;
 
@@ -72,6 +70,6 @@ public class HorizSlidePair {
     }
     public double getTargetRotation(){return targetRotation;}
     public double getRawEncoders(){
-        return leftSlideEncoder.getVoltage();
+        return rightSlideEncoder.getVoltage();
     }
 }

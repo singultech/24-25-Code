@@ -15,7 +15,7 @@ public class ManualServoControl extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Servo servo = hardwareMap.servo.get("backGrabberServo");
+        Servo servo = hardwareMap.servo.get("frontFlip");
         double targetPosition = 0;
 
 

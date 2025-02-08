@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, Math.toRadians(90)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, Math.toRadians(0)));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -44,8 +44,8 @@ public class Teleop extends LinearOpMode {
         Diffy diffy = new Diffy(hardwareMap, true);
 
         int grabOffWall = 894;
-        int aboveTopBar = 2478;
-        int hangHeight = 4000;
+        int aboveTopBar = 3550;
+        int hangHeight = 2050;
         int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
         frontArm.forward();
         int vertSlidePreset = 0;
@@ -105,7 +105,7 @@ public class Teleop extends LinearOpMode {
 
             // Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
-                if (horizSlides.getTotalRotation()==0){
+                if (horizSlides.getTargetRotation()==0){
                     horizSlides.setTargetRotation(400);
                 } else {
                     horizSlides.setTargetRotation(0);
@@ -124,6 +124,7 @@ public class Teleop extends LinearOpMode {
                     backGrabber.close();
                 }
             }
+
             if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000 && !frontGrabber.isClosed()){
                 new Thread(() -> {
                     try {
@@ -157,8 +158,9 @@ public class Teleop extends LinearOpMode {
 
             // Lower and release to bar
             if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
+
                 new Thread(() -> {
-                    vertSlides.changeTargetPosition(-200);
+                    vertSlides.changeTargetPosition(-400);
                     while (Math.abs(vertSlides.getCurrentPosition() - vertSlides.getTargetPosition()) > 15) {
                         try {
                             Thread.sleep(10);
@@ -173,7 +175,7 @@ public class Teleop extends LinearOpMode {
             // Pick up from wall
             if (vertSlidePresets[vertSlidePreset] == grabOffWall && gamepads.isPressed(1, "right_bumper")){
                 frontGrabber.close();
-                vertSlides.changeTargetPosition(200);
+                vertSlides.changeTargetPosition(300);
                 gamepads.blipRumble(1,  1);
             }
 

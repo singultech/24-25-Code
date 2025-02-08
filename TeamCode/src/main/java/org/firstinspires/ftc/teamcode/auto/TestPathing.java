@@ -33,9 +33,9 @@ public class TestPathing extends LinearOpMode {
                 .waitSeconds(2)
                 .lineToY(15);
         TrajectoryActionBuilder sidewaysTrajectory = drive.actionBuilder(initialPose)
-                .lineToX(20)
+                .lineToY(20)
                 .waitSeconds(2)
-                .lineToX(15);
+                .lineToY(15);
         TrajectoryActionBuilder turnTrajectory = drive.actionBuilder(initialPose)
                 .turn(Math.toRadians(90));
         TrajectoryActionBuilder cookedTrajectory = drive.actionBuilder(initialPose)

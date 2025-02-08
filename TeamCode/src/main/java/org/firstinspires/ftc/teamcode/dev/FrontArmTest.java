@@ -22,7 +22,7 @@ public class FrontArmTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        FrontArm arm = new FrontArm(1, 0.35, hardwareMap);
+        FrontArm arm = new FrontArm(1, 0.7, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
