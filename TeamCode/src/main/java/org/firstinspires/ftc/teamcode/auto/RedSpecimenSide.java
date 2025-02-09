@@ -56,55 +56,48 @@ public class RedSpecimenSide extends LinearOpMode {
         Actions.runBlocking(goBack);
         vertSlides.setTargetPosition(0);
         Action shiftRight = drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(41,-45), Math.toRadians(90))
+                .strafeTo(new Vector2d(41,-45))
                 .build();
         Actions.runBlocking(shiftRight);
         Action shiftForward = drive.actionBuilder(drive.pose)
-                .splineToConstantHeading(new Vector2d(41,-20), Math.toRadians(90))
-                .turnTo(Math.toRadians(90))
+                .lineToY(-20)
+                .turnTo(Math.toRadians(0))
                 .build();
         Actions.runBlocking(shiftForward);
+        vertSlides.setTargetPosition(0);
         Action shiftFinalRight = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(56,-20))
-                .turnTo(Math.toRadians(90))
+                .lineToX(50)
+                .turnTo(Math.toRadians(0))
                 .build();
         Actions.runBlocking(shiftFinalRight);
         Action depo = drive.actionBuilder(drive.pose)
-                .lineToY(-70)
-                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d(50, -70))
+                .turnTo(Math.toRadians(0))
                 .build();
         Actions.runBlocking(depo);
-        Action shiftFAgain = drive.actionBuilder(drive.pose)
-                .lineToY(-20)
-                .turnTo(Math.toRadians(90))
+        Action returnto = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(50, -20))
+                .turnTo(Math.toRadians(0))
                 .build();
-        Actions.runBlocking(shiftFAgain);
-        Action shiftRAgain = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(65,-20))
-                .turnTo(Math.toRadians(90))
+        Actions.runBlocking(returnto);
+        Action fagain = drive.actionBuilder(drive.pose)
+                .lineToX(65)
+                .turnTo(Math.toRadians(0))
                 .build();
-        Actions.runBlocking(shiftRAgain);
-        Action shiftBAgain = drive.actionBuilder(drive.pose)
-                .lineToY(-70)
+        Actions.runBlocking(fagain);
+        Action returntoa = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(65, -70))
+                .turnTo(Math.toRadians(0))
                 .build();
-        Actions.runBlocking(shiftBAgain);
-        Action shiftFAAgain = drive.actionBuilder(drive.pose)
-                .lineToY(-20)
+        Actions.runBlocking(returntoa);
+        Action finalreturn = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(65, -20))
+                .turnTo(Math.toRadians(270))
+                .strafeTo(new Vector2d(68, -20))
+                .setTangent(Math.toRadians(270))
+                .lineToY(-67)
                 .build();
-        Actions.runBlocking(shiftFAAgain);
-        Action shiftRAAgain = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(70,-20))
-                .turnTo(Math.toRadians(90))
-                .build();
-        Actions.runBlocking(shiftRAAgain);
-        Action park = drive.actionBuilder(drive.pose)
-                .lineToY(-70)
-                .build();
-        Actions.runBlocking(park);
-        vertSlides.setTargetPosition(0);
-
-
-
+        Actions.runBlocking(finalreturn);
 
 
         telemetry.addData("x", drive.pose.position.x);

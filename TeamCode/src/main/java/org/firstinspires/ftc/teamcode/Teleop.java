@@ -40,10 +40,10 @@ public class Teleop extends LinearOpMode {
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap, true);
         BackArm backArm = new BackArm(0.55, 0, hardwareMap, true);
-        FrontArm frontArm = new FrontArm(1, 0.35, hardwareMap);
+        FrontArm frontArm = new FrontArm(0.98, 0.35, hardwareMap);
         Diffy diffy = new Diffy(hardwareMap, true);
 
-        int grabOffWall = 894;
+        int grabOffWall = 850;
         int aboveTopBar = 3550;
         int hangHeight = 2050;
         int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
@@ -87,6 +87,16 @@ public class Teleop extends LinearOpMode {
                     -(gamepads.joystickValue(1, "right", "x")*driveScaleFactor)
             ));
 
+            // Diffy Joystick Control
+            double diffyVerticalPower = -gamepads.joystickValue(-1, "left", "y");
+            double diffyRotationPower = gamepads.joystickValue(-1, "right", "x");
+
+            double leftDiffyPower = (diffyVerticalPower + diffyRotationPower) *0.5;
+            double rightDiffyPower = (diffyVerticalPower - diffyRotationPower) *0.5;
+
+            diffy.setLeftPower(leftDiffyPower);
+            diffy.setRightPower(rightDiffyPower);
+
             // Slide preset control
             if (gamepads.isPressed(1, "dpad_up") && vertSlidePreset+1 < vertSlidePresets.length) {vertSlidePreset++; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
             if (gamepads.isPressed(1, "dpad_down") && vertSlidePreset>0) {vertSlidePreset--; vertSlides.setTargetPosition(vertSlidePresets[vertSlidePreset]);}
@@ -111,16 +121,23 @@ public class Teleop extends LinearOpMode {
                     horizSlides.setTargetRotation(0);
                 }
             }
-            // Toggle both grabbers
+            // Toggle front grabber
             if (gamepads.isPressed(1, "circle")) {
                 if (frontGrabber.isClosed()) {
                     frontGrabber.open();
-                    backGrabber.open();
                     lastFrontOpened = curTime;
-                    lastBackOpened = curTime;
                 }
                 else {
                     frontGrabber.close();
+                }
+            }
+            // Toggle back grabber
+            if (gamepads.isPressed(2, "circle")) {
+                if (backGrabber.isClosed()) {
+                    backGrabber.open();
+                    lastBackOpened = curTime;
+                }
+                else {
                     backGrabber.close();
                 }
             }
@@ -160,7 +177,7 @@ public class Teleop extends LinearOpMode {
             if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
 
                 new Thread(() -> {
-                    vertSlides.changeTargetPosition(-400);
+                    vertSlides.changeTargetPosition(-1000);
                     while (Math.abs(vertSlides.getCurrentPosition() - vertSlides.getTargetPosition()) > 15) {
                         try {
                             Thread.sleep(10);
