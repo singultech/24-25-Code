@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.utils.HorizSlidePair;
 import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
 import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
 
-@TeleOp(name = "Teleop")
+@TeleOp(name = "*Teleop")
 public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
