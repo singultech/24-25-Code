@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -79,6 +81,19 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(1, "left_stick_button")){
                 if (driveStyle.equals("field-centric")) driveStyle = "robot-centric";
                 else driveStyle = "field-centric";
+            }
+            //endregion
+
+            //region Snap to 90 degree
+            if (gamepads.isPressed(1, "right_stick_button")){
+                double currentHeading = drive.pose.heading.toDouble();
+                double degrees = Math.toDegrees(currentHeading) % 360;
+                if (degrees < 0) degrees += 360;
+                double targetDegrees = Math.round(degrees / 90.0) * 90.0;
+                Action snapTo90 = drive.actionBuilder(drive.pose)
+                        .turnTo(Math.toRadians(targetDegrees))
+                        .build();
+                Actions.runBlocking(snapTo90);
             }
             //endregion
 
