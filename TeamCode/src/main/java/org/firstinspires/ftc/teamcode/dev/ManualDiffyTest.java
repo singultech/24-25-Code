@@ -20,8 +20,8 @@ public class ManualDiffyTest extends LinearOpMode {
         while (opModeIsActive()) {
             gamepads.copyStates();
 
-            double verticalPower = -gamepads.joystickValue(1, "left", "y");
-            double rotationPower = gamepads.joystickValue(1, "right", "x");
+            double verticalPower = -gamepads.joystickValue(2, "left", "y");
+            double rotationPower = gamepads.joystickValue(2, "right", "x");
 
             double leftPower = (verticalPower + rotationPower) *0.5;
             double rightPower = (verticalPower - rotationPower) *0.5;
