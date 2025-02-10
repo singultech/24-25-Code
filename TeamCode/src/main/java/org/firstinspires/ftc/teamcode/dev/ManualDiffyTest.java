@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.utils.BackArm;
 import org.firstinspires.ftc.teamcode.utils.Diffy;
 import org.firstinspires.ftc.teamcode.utils.GamepadPair;
 
@@ -15,10 +16,12 @@ public class ManualDiffyTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         Diffy diffy = new Diffy(hardwareMap, false);
+        BackArm arm = new BackArm(1, 0, hardwareMap, false);
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            arm.update();
 
             double verticalPower = -gamepads.joystickValue(2, "left", "y");
             double rotationPower = gamepads.joystickValue(2, "right", "x");
@@ -28,6 +31,12 @@ public class ManualDiffyTest extends LinearOpMode {
 
             diffy.setLeftPower(leftPower);
             diffy.setRightPower(rightPower);
+
+
+            if (gamepads.isHeld(-1, "dpad_right")) {
+                arm.setPower(1);
+            } else if (gamepads.isHeld(-1, "dpad_left")) arm.setPower(-1);
+            else arm.setPower(0);
 
             telemetry.addData("Right Power", rightPower);
             telemetry.addData("Left Power", leftPower);
