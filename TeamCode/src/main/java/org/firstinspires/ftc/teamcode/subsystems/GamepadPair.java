@@ -12,7 +12,6 @@ public class GamepadPair {
     private final Gamepad previousGamepad2;
     private boolean secondControllerEnabled = true;
 
-    // Button enum to prevent typos and provide better structure
     public enum Button {
         A("a", "cross"),
         B("b", "circle"),
