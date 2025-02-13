@@ -48,6 +48,7 @@ public class Huskylens {
 
     public Huskylens(HardwareMap hmap){
         huskyLens = hmap.get(HuskyLens.class, "huskylens");
+        selectAlgorithm(HuskyLens.Algorithm.OBJECT_RECOGNITION);
     }
 
     public boolean knock(){
