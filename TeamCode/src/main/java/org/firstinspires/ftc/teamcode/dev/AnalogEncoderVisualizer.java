@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
-import org.firstinspires.ftc.teamcode.utils.Diffy;
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-
 @TeleOp(name = "Encoder Visualizer", group = "Dev")
 public class AnalogEncoderVisualizer extends LinearOpMode {
     @Override

@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.utils.FrontArm;
-import org.firstinspires.ftc.teamcode.utils.Grabber;
-import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
+import org.firstinspires.ftc.teamcode.subsystems.Grabber;
+import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @Autonomous(name = "Specimen Side", group = "aRed", preselectTeleOp = "Teleop")
 public class SpecimenSide extends LinearOpMode {

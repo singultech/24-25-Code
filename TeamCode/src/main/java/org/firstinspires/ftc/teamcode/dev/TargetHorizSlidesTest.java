@@ -5,8 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.HorizSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
 
 @TeleOp(name = "Horiz Slides Test - Target", group = "Dev")
 public class TargetHorizSlidesTest extends LinearOpMode {

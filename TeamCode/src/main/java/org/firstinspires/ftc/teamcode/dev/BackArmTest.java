@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.utils.BackArm;
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.BackArm;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
 @TeleOp(name = "Back Arm Test", group = "Dev")
 public class BackArmTest extends LinearOpMode {

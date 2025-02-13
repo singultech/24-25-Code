@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.BackArm;
-import org.firstinspires.ftc.teamcode.utils.Diffy;
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.BackArm;
+import org.firstinspires.ftc.teamcode.subsystems.Diffy;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
 @TeleOp(name = "Manual Diffy Test", group = "Dev")
 public class ManualDiffyTest extends LinearOpMode {
@@ -23,8 +23,8 @@ public class ManualDiffyTest extends LinearOpMode {
             gamepads.copyStates();
             arm.update();
 
-            double verticalPower = -gamepads.joystickValue(2, "left", "y");
-            double rotationPower = gamepads.joystickValue(2, "right", "x");
+            double verticalPower = gamepads.joystickValue(2, "left", "y");
+            double rotationPower = -gamepads.joystickValue(2, "right", "x");
 
             double leftPower = (verticalPower + rotationPower) *0.5;
             double rightPower = (verticalPower - rotationPower) *0.5;

@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.utils.FrontArm;
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
 @TeleOp(name = "Arm Test", group = "Dev")
 public class FrontArmTest extends LinearOpMode {

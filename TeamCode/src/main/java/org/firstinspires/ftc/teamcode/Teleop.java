@@ -10,14 +10,14 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.BackArm;
-import org.firstinspires.ftc.teamcode.utils.Diffy;
-import org.firstinspires.ftc.teamcode.utils.FrontArm;
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.Grabber;
-import org.firstinspires.ftc.teamcode.utils.HorizSlidePair;
-import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
-import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.BackArm;
+import org.firstinspires.ftc.teamcode.subsystems.Diffy;
+import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.Grabber;
+import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.RumbleEffects;
+import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @TeleOp(name = "*Teleop")
 public class Teleop extends LinearOpMode {

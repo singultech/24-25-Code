@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.Grabber;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 
 @TeleOp(name = "Back Grabber Test", group = "Dev")
 public class BackGrabberTest extends LinearOpMode {

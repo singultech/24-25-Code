@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.Grabber;
-import org.firstinspires.ftc.teamcode.utils.RumbleEffects;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.Grabber;
+import org.firstinspires.ftc.teamcode.subsystems.RumbleEffects;
 
 @TeleOp(name = "Front Grabber Test", group = "Dev")
 public class FrontGrabberTest extends LinearOpMode {
