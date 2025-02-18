@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Underglow {
 
-    private static RevBlinkinLedDriver blinkin;
+    private final RevBlinkinLedDriver blinkin;
     private RevBlinkinLedDriver.BlinkinPattern curPattern;
     public Underglow(HardwareMap hmap) {
         blinkin = hmap.get(RevBlinkinLedDriver.class, "blinkin");
@@ -21,7 +21,7 @@ public class Underglow {
 
     public void setPattern(RevBlinkinLedDriver.BlinkinPattern pattern) {
         blinkin.setPattern(pattern);
-        curPattern = RevBlinkinLedDriver.BlinkinPattern.BLACK;
+        curPattern = pattern;
     }
 
     public RevBlinkinLedDriver.BlinkinPattern getPattern(){
