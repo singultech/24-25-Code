@@ -31,7 +31,7 @@ public class Teleop extends LinearOpMode {
         Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap, true);
-        BackArm backArm = new BackArm(0.55, 0, hardwareMap, true);
+        BackArm backArm = new BackArm(hardwareMap, true);
         FrontArm frontArm = new FrontArm(0.98, 0.35, hardwareMap);
         Diffy diffy = new Diffy(hardwareMap, true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

@@ -17,7 +17,7 @@ public class BackArmTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        BackArm arm = new BackArm(1, 0, hardwareMap, false);
+        BackArm arm = new BackArm(hardwareMap, false);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();

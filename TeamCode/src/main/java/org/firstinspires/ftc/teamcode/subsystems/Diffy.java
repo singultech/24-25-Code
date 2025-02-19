@@ -21,6 +21,7 @@ public class Diffy {
     private final double leftStartingAngle;
     private double leftTargetRotation;
     private double rightTargetRotation;
+    private double grabberRotation;
     private final boolean runToPosition;
 
     public Diffy(HardwareMap hmap, boolean shouldRtp){
@@ -30,6 +31,7 @@ public class Diffy {
         leftEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
         rightEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
         leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        grabberRotation = 0;
 
         // Get initial angles
         leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
@@ -72,22 +74,35 @@ public class Diffy {
         leftPreviousLocalAngle = leftLocalAngle;
         rightPreviousLocalAngle = rightLocalAngle;
 
+        if (!runToPosition) return;
+
         double maxPower = 0.25;
         double kP = 0.015;
         double rightError = rightTargetRotation - rightTotalRotation;
         if (Math.abs(rightError) > 1) {
             double rightPower = Math.min(maxPower, Math.abs(rightError * kP)) * Math.signum(rightError);
-            rightServo.setPower(rightPower);
+            rightServo.setPower(-rightPower);
         } else {
             rightServo.setPower(0);
         }
         double leftError = leftTargetRotation - leftTotalRotation;
         if (Math.abs(leftError) > 1) {
             double leftPower = Math.min(maxPower, Math.abs(leftError * kP)) * Math.signum(leftError);
-            leftServo.setPower(leftPower);
+            leftServo.setPower(-leftPower);
         } else {
             leftServo.setPower(0);
         }
+
+        /*double rightError = rightTargetRotation - rightTotalRotation;
+        leftServo.setPower(0);
+        if (Math.abs(rightError) > 5){
+            if(rightError<0){
+                rightServo.setPower(0.25);
+            }else{
+                rightServo.setPower(-0.25);
+            }
+        }*/
+
     }
 
     public double getLeftLocalAngle() {
@@ -108,4 +123,22 @@ public class Diffy {
     public double getRightTargetRotation(){return rightTargetRotation;}
     public void setLeftTargetRotation(double target){leftTargetRotation = target;}
     public double getLeftTargetRotation(){return leftTargetRotation;}
+    public void changeLeftTargetRotation(double amount){
+        leftTargetRotation += amount;
+    }
+    public void changeRightTargetRotation(double amount){
+        rightTargetRotation += amount;
+    }
+    public void rotateGrabber(double degrees){
+        if(grabberRotation+degrees<=50 && grabberRotation+degrees>=-50) {
+            grabberRotation += degrees;
+            changeLeftTargetRotation(degrees);
+            changeRightTargetRotation(-degrees);
+        }
+    }
+    public double getGrabberRotation(){
+        return grabberRotation;
+    }
+
+
 }
