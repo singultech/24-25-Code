@@ -23,7 +23,7 @@ public class VertSlidePair {
         rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
         rightHook = hmap.get(Servo.class, "rightHook");
-        rightHook = hmap.get(Servo.class, "leftHook");
+        leftHook = hmap.get(Servo.class, "leftHook");
         maxHeight = maxH;
         power = startingPower;
         init();
@@ -32,7 +32,7 @@ public class VertSlidePair {
         rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
         rightHook = hmap.get(Servo.class, "rightHook");
-        rightHook = hmap.get(Servo.class, "leftHook");
+        leftHook = hmap.get(Servo.class, "leftHook");
         maxHeight = maxH;
         power = 1.0;
         init();
