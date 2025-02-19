@@ -48,6 +48,12 @@ public class MoveSlidesSeparate extends LinearOpMode {
             if (gamepads.isPressed(1, "right_bumper")){
                 slides.lowerHook("r");
             }
+            if (gamepads.isPressed(1, "left_dpad")){
+                slides.raiseHook("l");
+            }
+            if (gamepads.isPressed(1, "right_dpad")){
+                slides.raiseHook("r");
+            }
             gamepads.copyStates();
             telemetry.addLine("Vertical D-pad control to increment left Slide.");
             telemetry.addLine("Vertical face button control to increment right Slide.");
