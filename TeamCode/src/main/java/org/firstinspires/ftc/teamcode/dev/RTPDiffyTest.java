@@ -19,20 +19,25 @@ public class RTPDiffyTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            diffy.update();
 
-            double verticalPower = -gamepads.joystickValue(1, "left", "y");
-            double rotationPower = gamepads.joystickValue(1, "right", "x");
+            if (gamepads.isPressed(-1, "dpad_up")){
+                diffy.setLeftTargetRotation(diffy.getLeftTargetRotation()+5);
+            }
+            if (gamepads.isPressed(-1, "dpad_down")){
+                diffy.setLeftTargetRotation(diffy.getLeftTargetRotation()-5);
+            }
+            if (gamepads.isPressed(-1, "triangle")){
+                diffy.setRightTargetRotation(diffy.getRightTargetRotation()+5);
+            }
+            if (gamepads.isPressed(-1, "cross")){
+                diffy.setRightTargetRotation(diffy.getRightTargetRotation()-5);
+            }
 
-            double leftPower = (verticalPower + rotationPower) *0.5;
-            double rightPower = (verticalPower - rotationPower) *0.5;
-
-            diffy.setLeftPower(leftPower);
-            diffy.setRightPower(rightPower);
-
-            telemetry.addData("Right Power", rightPower);
-            telemetry.addData("Left Power", leftPower);
-            telemetry.addData("Right Total Rotation", diffy.getRightTotalRotation());
-            telemetry.addData("Left Total Rotation", diffy.getLeftTotalRotation());
+            telemetry.addData("Left Target", diffy.getLeftTargetRotation());
+            telemetry.addData("Left Current", diffy.getLeftTotalRotation());
+            telemetry.addData("Right Target", diffy.getRightTargetRotation());
+            telemetry.addData("Right Current", diffy.getRightTotalRotation());
             telemetry.update();
         }
     }

@@ -29,11 +29,23 @@ public class Diffy {
         rightServo = hmap.crservo.get("rightDiffy");
         leftEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
         rightEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
-        rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftStartingAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightStartingAngle = -rightEncoder.getVoltage() / 3.3 * 360.0;
-        rightTotalRotation = -rightStartingAngle;
-        leftTotalRotation = -leftStartingAngle;
+        leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Get initial angles
+        leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
+        rightLocalAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
+
+        // Store starting angles for reference
+        leftStartingAngle = leftLocalAngle;
+        rightStartingAngle = rightLocalAngle;
+
+        // Initialize previous angles to match current angles
+        leftPreviousLocalAngle = leftLocalAngle;
+        rightPreviousLocalAngle = rightLocalAngle;
+
+        // Start total rotation at 0
+        leftTotalRotation = 0;
+        rightTotalRotation = 0;
     }
     private double normalizeAngleDifference(double angleDifference) {
         if (angleDifference < -180) {
@@ -51,8 +63,8 @@ public class Diffy {
         if (!runToPosition)rightServo.setPower(power);
     }
     public void update() {
-        leftLocalAngle = leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightLocalAngle = -rightEncoder.getVoltage() / 3.3 * 360.0;
+        leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
+        rightLocalAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
         double leftAngleDifference = normalizeAngleDifference(leftLocalAngle - leftPreviousLocalAngle);
         double rightAngleDifference = normalizeAngleDifference(rightLocalAngle - rightPreviousLocalAngle);
         leftTotalRotation += leftAngleDifference;
@@ -60,16 +72,22 @@ public class Diffy {
         leftPreviousLocalAngle = leftLocalAngle;
         rightPreviousLocalAngle = rightLocalAngle;
 
-        if (!runToPosition) return;
-        double maxPower = 0.5;
-        if (Math.abs(rightTargetRotation-rightTotalRotation)>10){
-            if (rightTotalRotation<rightTargetRotation) rightServo.setPower(maxPower);
-            else rightServo.setPower(-maxPower);
-        } else rightServo.setPower(0);
-        if (Math.abs(leftTargetRotation-leftTotalRotation)>10){
-            if (leftTotalRotation<leftTargetRotation) leftServo.setPower(maxPower);
-            else leftServo.setPower(-maxPower);
-        } else leftServo.setPower(0);
+        double maxPower = 0.25;
+        double kP = 0.015;
+        double rightError = rightTargetRotation - rightTotalRotation;
+        if (Math.abs(rightError) > 1) {
+            double rightPower = Math.min(maxPower, Math.abs(rightError * kP)) * Math.signum(rightError);
+            rightServo.setPower(rightPower);
+        } else {
+            rightServo.setPower(0);
+        }
+        double leftError = leftTargetRotation - leftTotalRotation;
+        if (Math.abs(leftError) > 1) {
+            double leftPower = Math.min(maxPower, Math.abs(leftError * kP)) * Math.signum(leftError);
+            leftServo.setPower(leftPower);
+        } else {
+            leftServo.setPower(0);
+        }
     }
 
     public double getLeftLocalAngle() {
