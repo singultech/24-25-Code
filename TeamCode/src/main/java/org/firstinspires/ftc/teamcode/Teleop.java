@@ -190,7 +190,7 @@ public class Teleop extends LinearOpMode {
             if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
                 new Thread(() -> {
                     vertSlides.changeTargetPosition(-1000);
-                    while (Math.abs(vertSlides.getCurrentPosition() - vertSlides.getTargetPosition()) > 15) {
+                    while (Math.abs(vertSlides.getAvgCurrentPosition() - vertSlides.getLeftTargetPosition()) > 15) {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {

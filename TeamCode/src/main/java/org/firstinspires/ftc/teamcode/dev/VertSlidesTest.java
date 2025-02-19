@@ -47,7 +47,7 @@ public class VertSlidesTest extends LinearOpMode {
             telemetry.addLine("Press ▲ to toggle the holding motors");
             telemetry.addLine("Current Left Position " + slides.getLeftPosition());
             telemetry.addLine("Current Right Position " + slides.getRightPosition());
-            telemetry.addLine("Target Position " + slides.getTargetPosition());
+            telemetry.addLine("Target Position " + slides.getLeftTargetPosition());
             telemetry.update();
         }
     }

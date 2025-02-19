@@ -7,10 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @TeleOp(name = "MoveSlidesSeparate", group = "Dev")
 public class MoveSlidesSeparate extends LinearOpMode {
@@ -21,40 +23,32 @@ public class MoveSlidesSeparate extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        rightSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
-        leftSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
-        int maxHeight = 3000;
-        leftSlide.setTargetPosition(0);
-        rightSlide.setTargetPosition(0);
-        leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftSlide.setPower(1.0);
-        rightSlide.setPower(1.0);
+        VertSlidePair slides = new VertSlidePair(4100, hardwareMap);
 
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            if (gamepads.isPressed(-1, "dpad_up") && leftSlide.getCurrentPosition() < maxHeight) {
-                leftSlide.setTargetPosition(leftSlide.getCurrentPosition() + 100);
+            if (gamepads.isHeld(1, "dpad_up")) {
+                slides.changeTargetPosition("l", 100);
             }
-            if (gamepads.isPressed(-1, "dpad_down") && (leftSlide.getCurrentPosition()-100) >= 0) {
-                leftSlide.setTargetPosition(leftSlide.getCurrentPosition() - 100);
+            if (gamepads.isHeld(1, "dpad_down")) {
+                slides.changeTargetPosition("l", -100);
             }
-            if (gamepads.isPressed(-1, "triangle") && rightSlide.getCurrentPosition() < maxHeight){
-                rightSlide.setTargetPosition(rightSlide.getCurrentPosition() + 100);
+            if (gamepads.isHeld(1, "triangle")){
+                slides.changeTargetPosition("r", 100);
             }
-            if (gamepads.isPressed(-1, "cross") && (rightSlide.getCurrentPosition()-100) >= 0){
-                rightSlide.setTargetPosition(rightSlide.getCurrentPosition() - 100);
+            if (gamepads.isHeld(1, "cross")){
+                slides.changeTargetPosition("r", -100);
             }
             gamepads.copyStates();
             telemetry.addLine("Vertical D-pad control to increment left Slide.");
-            telemetry.addLine("Vert D-pad control to increment right Slide.");
-            telemetry.addData("Left Slide Position", leftSlide.getCurrentPosition());
-            telemetry.addData("Right Slide Position", rightSlide.getCurrentPosition());
+            telemetry.addLine("Vertical face button control to increment right Slide.");
+            telemetry.addData("Left Slide Position", slides.getLeftPosition());
+            telemetry.addData("Right Slide Position", slides.getRightPosition());
+            telemetry.addData("Left Slide Target", slides.getLeftTargetPosition());
+            telemetry.addData("Right Slide Target", slides.getRightTargetPosition());
             telemetry.update();
         }
     }
