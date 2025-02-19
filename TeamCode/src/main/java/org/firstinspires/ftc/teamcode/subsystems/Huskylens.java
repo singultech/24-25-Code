@@ -9,7 +9,7 @@ public class Huskylens {
 
     public Huskylens(HardwareMap hmap){
         huskyLens = hmap.get(HuskyLens.class, "huskylens");
-        selectAlgorithm(HuskyLens.Algorithm.OBJECT_RECOGNITION);
+        selectAlgorithm(HuskyLens.Algorithm.COLOR_RECOGNITION);
     }
 
     public boolean knock(){
