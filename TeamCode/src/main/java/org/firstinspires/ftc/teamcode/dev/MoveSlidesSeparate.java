@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
-@TeleOp(name = "MoveSlidesSeparate", group = "Dev")
+@TeleOp(name = "Seperate Slide Test", group = "Dev")
 public class MoveSlidesSeparate extends LinearOpMode {
 
     DcMotorEx rightSlide;
@@ -41,6 +41,12 @@ public class MoveSlidesSeparate extends LinearOpMode {
             }
             if (gamepads.isHeld(1, "cross")){
                 slides.changeTargetPosition("r", -100);
+            }
+            if (gamepads.isPressed(1, "left_bumper")){
+                slides.lowerHook("l");
+            }
+            if (gamepads.isPressed(1, "right_bumper")){
+                slides.lowerHook("r");
             }
             gamepads.copyStates();
             telemetry.addLine("Vertical D-pad control to increment left Slide.");

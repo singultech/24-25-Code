@@ -13,6 +13,8 @@ public class VertSlidePair {
     DcMotorEx leftSlide;
     Servo leftHook;
     Servo rightHook;
+    private boolean isLeftHookOut;
+    private boolean isRightHookOut;
     private boolean isActive;
     private final int maxHeight;
     private double power;
@@ -46,6 +48,10 @@ public class VertSlidePair {
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         rightHook.setDirection(Servo.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        isLeftHookOut = false;
+        isRightHookOut = false;
+        raiseHook("l");
+        raiseHook("r");
     }
 
     public void raiseHook(String side){
@@ -56,6 +62,8 @@ public class VertSlidePair {
         if (side.equals("l")) leftHook.setPosition(0);
         else rightHook.setPosition(0);
     }
+    public boolean isLeftHookOut(){return isLeftHookOut;}
+    public boolean isRightHookOut(){return isRightHookOut;}
 
     public void setTargetPosition(int pos){
         if (pos > maxHeight) {
