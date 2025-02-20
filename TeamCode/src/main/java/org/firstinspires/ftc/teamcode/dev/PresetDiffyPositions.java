@@ -1,8 +1,3 @@
-/*
-    SPDX-License-Identifier: MIT
-
-    Copyright (c) 2024 SparkFun Electronics
-*/
 package org.firstinspires.ftc.teamcode.dev;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -10,35 +5,31 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
+import org.firstinspires.ftc.teamcode.subsystems.Diffy;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
-@TeleOp(name = "Arm Test", group = "Dev")
-public class FrontArmTest extends LinearOpMode {
-    DcMotorEx leftSlide;
-    DcMotorEx rightSlide;
+@TeleOp(name = "Preset Diffy Pos'", group = "Dev")
+public class PresetDiffyPositions extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        FrontArm arm = new FrontArm(1, 0.7, hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-
+        Diffy diffy = new Diffy(hardwareMap, true);
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
+            diffy.update();
 
-            if (gamepads.isPressed(-1, "cross")) {
-                if (arm.isForward()) arm.back();
-                else arm.forward();
+            if (gamepads.isPressed(-1, "cross")){
+                diffy.setLeftTargetRotation(diffy.getLeftTargetRotation()+5);
             }
 
-            telemetry.addLine("Press X to raise or lower the arm");
-            telemetry.addLine(arm.isForward() ? "Arm is forward" : "Arm is back");
+            telemetry.addData("Left Target", diffy.getLeftTargetRotation());
+            telemetry.addData("Left Current", diffy.getLeftTotalRotation());
+            telemetry.addData("Right Target", diffy.getRightTargetRotation());
+            telemetry.addData("Right Current", diffy.getRightTotalRotation());
             telemetry.update();
         }
     }
 }
-

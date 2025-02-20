@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -50,9 +50,9 @@ public class HorizSlidePair {
             setPower(0);
             return;
         }
-        else if (totalRotation<targetRotation) setPower(0.3);
+        else if (totalRotation<targetRotation) setPower(0.5);
         else if (totalRotation>targetRotation) {
-            setPower(-0.3);
+            setPower(-0.5);
         }
     }
 

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
 @TeleOp(name = "Servo Controller", group = "Dev")
 public class ManualServoControl extends LinearOpMode {

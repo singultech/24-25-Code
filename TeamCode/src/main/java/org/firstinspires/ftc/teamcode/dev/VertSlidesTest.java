@@ -5,8 +5,8 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.GamepadPair;
-import org.firstinspires.ftc.teamcode.utils.VertSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
+import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @TeleOp(name = "Vert Slides Test", group = "Dev")
 public class VertSlidesTest extends LinearOpMode {
@@ -47,7 +47,7 @@ public class VertSlidesTest extends LinearOpMode {
             telemetry.addLine("Press ▲ to toggle the holding motors");
             telemetry.addLine("Current Left Position " + slides.getLeftPosition());
             telemetry.addLine("Current Right Position " + slides.getRightPosition());
-            telemetry.addLine("Target Position " + slides.getTargetPosition());
+            telemetry.addLine("Target Position " + slides.getLeftTargetPosition());
             telemetry.update();
         }
     }

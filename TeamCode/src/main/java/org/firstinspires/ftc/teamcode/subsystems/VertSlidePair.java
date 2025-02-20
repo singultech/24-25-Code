@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utils;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import static java.lang.Math.round;
 
@@ -6,10 +6,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class VertSlidePair {
     DcMotorEx rightSlide;
     DcMotorEx leftSlide;
+    Servo leftHook;
+    Servo rightHook;
+    private boolean isLeftHookOut;
+    private boolean isRightHookOut;
     private boolean isActive;
     private final int maxHeight;
     private double power;
@@ -17,6 +22,8 @@ public class VertSlidePair {
     public VertSlidePair(int maxH, double startingPower, HardwareMap hmap){
         rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
+        rightHook = hmap.get(Servo.class, "rightHook");
+        leftHook = hmap.get(Servo.class, "leftHook");
         maxHeight = maxH;
         power = startingPower;
         init();
@@ -24,6 +31,8 @@ public class VertSlidePair {
     public VertSlidePair(int maxH, HardwareMap hmap){
         rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
+        rightHook = hmap.get(Servo.class, "rightHook");
+        leftHook = hmap.get(Servo.class, "leftHook");
         maxHeight = maxH;
         power = 1.0;
         init();
@@ -36,10 +45,25 @@ public class VertSlidePair {
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(power);
-
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightHook.setDirection(Servo.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        isLeftHookOut = false;
+        isRightHookOut = false;
+        raiseHook("l");
+        raiseHook("r");
     }
+
+    public void raiseHook(String side){
+        if (side.equals("l")) leftHook.setPosition(0.5);
+        else rightHook.setPosition(0.5);
+    }
+    public void lowerHook(String side){
+        if (side.equals("l")) leftHook.setPosition(0);
+        else rightHook.setPosition(0);
+    }
+    public boolean isLeftHookOut(){return isLeftHookOut;}
+    public boolean isRightHookOut(){return isRightHookOut;}
 
     public void setTargetPosition(int pos){
         if (pos > maxHeight) {
@@ -57,9 +81,47 @@ public class VertSlidePair {
 
     }
 
+    public void setTargetPosition(String side, int pos){
+        if (side.equals("l")){
+            if (pos > maxHeight) {
+                leftSlide.setTargetPosition(maxHeight);
+                return;
+            }
+            if (pos <= 0){
+                leftSlide.setTargetPosition(0);
+                return;
+            }
+            leftSlide.setTargetPosition(pos);
+        }
+        else{
+            if (pos > maxHeight) {
+                rightSlide.setTargetPosition(maxHeight);
+                return;
+            }
+            if (pos <= 0){
+                rightSlide.setTargetPosition(0);
+                return;
+            }
+            rightSlide.setTargetPosition(pos);
+        }
+    }
+
     public void changeTargetPosition(int amt){
         if (leftSlide.getTargetPosition() + amt >= 0 && leftSlide.getTargetPosition() + amt <= maxHeight){
             setTargetPosition(leftSlide.getTargetPosition() + amt);
+        }
+    }
+
+    public void changeTargetPosition(String side, int amt){
+        if (side.equals("l")){
+            if (leftSlide.getTargetPosition() + amt >= 0 && leftSlide.getTargetPosition() + amt <= maxHeight){
+                setTargetPosition("l",leftSlide.getTargetPosition() + amt);
+            }
+        }
+        else{
+            if (rightSlide.getTargetPosition() + amt >= 0 && rightSlide.getTargetPosition() + amt <= maxHeight){
+                setTargetPosition("r",rightSlide.getTargetPosition() + amt);
+            }
         }
     }
 
@@ -76,11 +138,15 @@ public class VertSlidePair {
         return isActive;
     }
 
-    public int getTargetPosition(){
+    public int getLeftTargetPosition(){
         return leftSlide.getTargetPosition();
     }
+    public int getRightTargetPosition(){
+        return rightSlide.getTargetPosition();
+    }
 
-    public int getCurrentPosition() { return (leftSlide.getCurrentPosition()+rightSlide.getCurrentPosition())/2;}
+    public int getAvgCurrentPosition() { return (leftSlide.getCurrentPosition()+rightSlide.getCurrentPosition())/2;}
+
 
     public int getLeftPosition(){
         return leftSlide.getCurrentPosition();
