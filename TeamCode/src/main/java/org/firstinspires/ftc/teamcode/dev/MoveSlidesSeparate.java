@@ -31,16 +31,16 @@ public class MoveSlidesSeparate extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepads.isHeld(1, "dpad_up")) {
-                slides.changeTargetPosition("l", 100);
+                slides.changeTargetPosition("l", 60);
             }
             if (gamepads.isHeld(1, "dpad_down")) {
-                slides.changeTargetPosition("l", -100);
+                slides.changeTargetPosition("l", -60);
             }
             if (gamepads.isHeld(1, "triangle")){
-                slides.changeTargetPosition("r", 100);
+                slides.changeTargetPosition("r", 60);
             }
             if (gamepads.isHeld(1, "cross")){
-                slides.changeTargetPosition("r", -100);
+                slides.changeTargetPosition("r", -60);
             }
             if (gamepads.isPressed(1, "left_bumper")){
                 slides.lowerHook("l");
