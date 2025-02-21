@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.TranslationalVelConstraint;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -20,67 +21,79 @@ import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @Autonomous(name = "Pathing Tests", group = "Testing")
 public class TestPathing extends LinearOpMode {
+    private MecanumDrive drive;
+    private Grabber grabber;
+    private VertSlidePair slides;
+    private FrontArm arm;
+
     @Override
-    public void runOpMode() {
-        Action trajectoryAction;
+    public void runOpMode() throws InterruptedException {
+        // Initialize telemetry
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Pose2d initialPose = new Pose2d(10, -60, Math.toRadians(90));
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-        GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Grabber frontGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
-        VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
+
+        // Robot initialization
+        Grabber grabber = new Grabber(0.73, 1,
+                hardwareMap.servo.get("frontGrabberServo"),
+                hardwareMap.touchSensor.get("frontGrabberSwitch"));
+        VertSlidePair slides = new VertSlidePair(4100, 1, hardwareMap);
         FrontArm arm = new FrontArm(hardwareMap);
-        AutoSubsystems robot = new AutoSubsystems(arm, vertSlides, frontGrabber);
-        Action Spec1 = drive.actionBuilder(initialPose)
-                .lineToY(-34)
-                .build();
-        Action Samples = drive.actionBuilder(new Pose2d(10, -34, Math.toRadians(90)))
-                .waitSeconds(1)
-                .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(47, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(48, -60), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(57, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(0))
-                .turnTo(Math.toRadians(270))
-                .build();
-        Action Spec2p2 = drive.actionBuilder(new Pose2d(47, -58, Math.toRadians(270)))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(10, -34))
-                .build();
-        Action Spec3p1 = drive.actionBuilder(new Pose2d(10, -34, Math.toRadians(270)))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(47, -58))
-                .build();
-        Action Spec3p2 = drive.actionBuilder(new Pose2d(47, -58, Math.toRadians(270)))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(10, -34))
-                .build();
-        Action Spec4p1 = drive.actionBuilder(new Pose2d(10, -34, Math.toRadians(270)))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(47, -58))
-                .build();
-        Action Spec4p2 = drive.actionBuilder(new Pose2d(47, -58, Math.toRadians(270)))
-                .waitSeconds(1)
-                .strafeTo(new Vector2d(10, -34))
-                .build();
-
-
-
-
+        initializeRobot();
 
         waitForStart();
 
-        Actions.runBlocking(Spec1);
-        Actions.runBlocking(Samples);
-        Actions.runBlocking(Spec2p2);
-        Actions.runBlocking(Spec3p1);
-        Actions.runBlocking(Spec3p2);
-        Actions.runBlocking(Spec4p1);
-        Actions.runBlocking(Spec4p2);
+        grabber.close();
+        arm.setPosition(1);
+        slides.changeTargetPosition("l", 2000);
+        runAction(drive.actionBuilder(drive.pose)
+                .lineToY(-44)
+                .build());
+        slides.setTargetPosition("l", 3700);
+        sleep(950);
+        grabber.open();
+        arm.setPosition(0);
+        slides.setTargetPosition("l", 0);
 
 
+        // Sample movements
+        runAction(drive.actionBuilder(drive.pose)
+                .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(49, -10), Math.toRadians(0))
+                .strafeTo(new Vector2d(49, -52))
+                .splineToConstantHeading(new Vector2d(60, -10), Math.toRadians(0))
+                .strafeTo(new Vector2d(60, -60))
+                .splineToConstantHeading(new Vector2d(48.25, -58), Math.toRadians(270))
+                .turnTo(Math.toRadians(90))
+                .lineToY(-63.25, new TranslationalVelConstraint(20.0))
+                .build());
+        grabber.close();
+        sleep(500);
+        /*
+        // Run repeated movement patterns
+        for (int i = 0; i < 3; i++) {
+            runAction(drive.actionBuilder(drive.pose)
+                    .waitSeconds(1)
+                    .strafeTo(new Vector2d(10, -34))
+                    .build());
 
+            // Move to second position
+            runAction(drive.actionBuilder(drive.pose)
+                    .waitSeconds(1)
+                    .strafeTo(new Vector2d(47, -58))
+                    .build());
+        }
+         */
+    }
+
+    private void initializeRobot() {
+        Pose2d initialPose = new Pose2d(10, -60, Math.toRadians(90));
+        drive = new MecanumDrive(hardwareMap, initialPose);
+
+        // Initialize subsystems
+        GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
+    }
+
+    private void runAction(Action action) {
+        Actions.runBlocking(action);
     }
 }
-

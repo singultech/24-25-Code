@@ -16,26 +16,16 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                .lineToY(-34)
-                .waitSeconds(1)
-                .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(47, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(48, -60), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(57, -10), Math.toRadians(0))
-
-                .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(90))
-                        .turnTo(Math.toRadians(270))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(10, -34))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(47, -58))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(10, -34))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(47, -58))
-                        .waitSeconds(1)
-                        .strafeTo(new Vector2d(10, -34))
+                        .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(46, -10), Math.toRadians(0))
+                        .strafeTo(new Vector2d(47, -56))
+                        .splineToConstantHeading(new Vector2d(60, -10), Math.toRadians(270))
+                        .strafeTo(new Vector2d(60, -60))
+                        .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(270))
+                        .turnTo(Math.toRadians(90))
+                        .lineToY(-61)
+                                .build());
 /*
 
                 .splineToConstantHeading(new Vector2d(62, -10), Math.toRadians(0))
@@ -68,8 +58,8 @@ public class MeepMeepTesting {
                 .splineToConstantHeading(new Vector2d(10, -34), Math.toRadians(270))
 
                     */
-                .build()
-        );
+
+
 
 
 
