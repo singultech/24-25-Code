@@ -31,16 +31,18 @@ public class TestPathing extends LinearOpMode {
                 .splineToConstantHeading(new Vector2d(47, -10), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(48, -60), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(57, -10), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(55, -60), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(66    , -10), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(90))
                 .turnTo(Math.toRadians(270))
-                .lineToY(-58)
-                .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(270))
                 .waitSeconds(1)
-                .lineToY(-44)
-                .splineToConstantHeading(new Vector2d(10, -40), Math.toRadians(270))
-                .turnTo(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(10, -34), Math.toRadians(270));
+                .strafeTo(new Vector2d(10, -34))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(47, -58))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(10, -34))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(47, -58))
+                .waitSeconds(1)
+                .strafeTo(new Vector2d(10, -34));
 
 
 
