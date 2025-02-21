@@ -43,10 +43,16 @@ public class RTPDiffyTest extends LinearOpMode {
                 arm.setTargetRotation(arm.getTargetRotation()+15);
             }
             if (gamepads.isPressed(1, "left_bumper")){
-                diffy.rotateGrabber(-90);
+                diffy.twistGrabber(-90);
             }
             if (gamepads.isPressed(1, "right_bumper")){
-                diffy.rotateGrabber(90);
+                diffy.twistGrabber(90);
+            }
+            if (gamepads.isPressed(1, "square")){
+                diffy.rotateGrabber(45);
+            }
+            if (gamepads.isPressed(1, "circle")) {
+                diffy.rotateGrabber(-45);
             }
 
 
@@ -56,6 +62,7 @@ public class RTPDiffyTest extends LinearOpMode {
             telemetry.addData("Right Current", diffy.getRightTotalRotation());
             telemetry.addData("Arm Target", arm.getTargetRotation());
             telemetry.addData("Arm Current", arm.getPosition());
+            telemetry.addData("Grabber twist", diffy.getGrabberTwist());
             telemetry.addData("Grabber rotation", diffy.getGrabberRotation());
             telemetry.update();
         }

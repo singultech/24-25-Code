@@ -21,6 +21,7 @@ public class Diffy {
     private final double leftStartingAngle;
     private double leftTargetRotation;
     private double rightTargetRotation;
+    private double grabberTwist;
     private double grabberRotation;
     private final boolean runToPosition;
 
@@ -31,7 +32,8 @@ public class Diffy {
         leftEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
         rightEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
         leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        grabberRotation = 0;
+        grabberTwist = 0;
+        grabberRotation = 315;
 
         // Get initial angles
         leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
@@ -129,12 +131,23 @@ public class Diffy {
     public void changeRightTargetRotation(double amount){
         rightTargetRotation += amount;
     }
-    public void rotateGrabber(double degrees){
+    public void twistGrabber(double degrees){
         double formattedRotation = degrees * 0.55555555;
-        if(grabberRotation+degrees<=90 && grabberRotation+degrees>=-90) {
-            grabberRotation += degrees;
+        if(grabberTwist +degrees<=90 && grabberTwist +degrees>=-90) {
+            grabberTwist += degrees;
             changeLeftTargetRotation(formattedRotation);
             changeRightTargetRotation(-formattedRotation);
+        }
+    }
+    public double getGrabberTwist(){
+        return grabberTwist;
+    }
+
+    public void rotateGrabber(double degrees){
+        if(grabberRotation+degrees<=315 && grabberRotation+degrees>=0){
+            grabberRotation += degrees;
+            changeLeftTargetRotation(-degrees);
+            changeRightTargetRotation(-degrees);
         }
     }
     public double getGrabberRotation(){
