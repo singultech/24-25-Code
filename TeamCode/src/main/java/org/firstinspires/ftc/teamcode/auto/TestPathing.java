@@ -18,45 +18,41 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 public class TestPathing extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Action trajectoryActionChosen;
+        Action trajectoryAction;
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(10, -62, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        TrajectoryActionBuilder forwardTrajectory = drive.actionBuilder(initialPose)
-                .lineToY(20)
-                .waitSeconds(2)
-                .lineToY(15);
-        TrajectoryActionBuilder sidewaysTrajectory = drive.actionBuilder(initialPose)
-                .lineToY(20)
-                .waitSeconds(2)
-                .lineToY(15);
-        TrajectoryActionBuilder turnTrajectory = drive.actionBuilder(initialPose)
-                .turn(Math.toRadians(90));
-        TrajectoryActionBuilder cookedTrajectory = drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(15, 15), Math.toRadians(0));
+        TrajectoryActionBuilder testTraj = drive.actionBuilder(initialPose)
+                .lineToY(-34)
+                .waitSeconds(1)
+                .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(47, -10), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(48, -60), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(57, -10), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(55, -60), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(66    , -10), Math.toRadians(0))
+                .turnTo(Math.toRadians(270))
+                .lineToY(-58)
+                .splineToConstantHeading(new Vector2d(47, -58), Math.toRadians(270))
+                .waitSeconds(1)
+                .lineToY(-44)
+                .splineToConstantHeading(new Vector2d(10, -40), Math.toRadians(270))
+                .turnTo(Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(10, -34), Math.toRadians(270));
+
+
 
 
         waitForStart();
 
         while (opModeIsActive()) {
+
             gamepads.copyStates();
-            if(gamepads.isPressed(-1, "circle")){
-                trajectoryActionChosen = forwardTrajectory.build();
-                Actions.runBlocking(new SequentialAction(trajectoryActionChosen));
-            }
             if(gamepads.isPressed(-1, "cross")){
-                trajectoryActionChosen = sidewaysTrajectory.build();
-                Actions.runBlocking(new SequentialAction(trajectoryActionChosen));
-            }
-            if(gamepads.isPressed(-1, "square")){
-                trajectoryActionChosen = turnTrajectory.build();
-                Actions.runBlocking(new SequentialAction(trajectoryActionChosen));
-            }
-            if(gamepads.isPressed(-1, "triangle")){
-                trajectoryActionChosen = cookedTrajectory.build();
-                Actions.runBlocking(new SequentialAction(trajectoryActionChosen));
-            }
+            trajectoryAction = testTraj.build();
+            Actions.runBlocking(new SequentialAction(trajectoryAction));}
 
 
             telemetry.addData("x", drive.pose.position.x);
