@@ -7,25 +7,32 @@ public class FrontArm {
     private final Servo armServo;
     private final double forwardPosition;
     private final double backPosition;
-    private boolean isForward;
+    private double currentPos;
 
-    public FrontArm(double forwardPos, double backPos, HardwareMap hmap){
+    public FrontArm(HardwareMap hmap){
         armServo = hmap.servo.get("frontFlip");
-        armServo.setDirection(Servo.Direction.REVERSE);
-        forwardPosition = forwardPos;
-        backPosition = backPos;
-        isForward = true;
+        //armServo.setDirection(Servo.Direction.REVERSE);
+        forwardPosition = 1;
+        backPosition = 0;
     }
 
     public void forward(){
-        armServo.setPosition(forwardPosition);
-        isForward = true;
+        setPosition(forwardPosition);
     }
 
     public void back(){
-        armServo.setPosition(backPosition);
-        isForward = false;
+        setPosition(backPosition);
     }
 
-    public boolean isForward(){ return  isForward; }
+    public boolean isForward(){ return (currentPos == 1); }
+
+    public boolean isBack(){ return (currentPos == 0);}
+
+    public void setPosition(double position){
+        if(position >= 0 && position <= 1) {
+            armServo.setPosition(position);
+            currentPos = position;
+        }
+    }
+    public double getSetPosition(){return currentPos;}
 }

@@ -24,29 +24,29 @@ public class RTPDiffyTest extends LinearOpMode {
             diffy.update();
             arm.update();
 
-            if (gamepads.isPressed(-1, "dpad_up")){
+            if (gamepads.isPressed(1, "dpad_up")){
                 diffy.setLeftTargetRotation(diffy.getLeftTargetRotation()+5);
             }
-            if (gamepads.isPressed(-1, "dpad_down")){
+            if (gamepads.isPressed(1, "dpad_down")){
                 diffy.setLeftTargetRotation(diffy.getLeftTargetRotation()-5);
             }
-            if (gamepads.isPressed(-1, "triangle")){
+            if (gamepads.isPressed(1, "triangle")){
                 diffy.setRightTargetRotation(diffy.getRightTargetRotation()+5);
             }
-            if (gamepads.isPressed(-1, "cross")){
+            if (gamepads.isPressed(1, "cross")){
                 diffy.setRightTargetRotation(diffy.getRightTargetRotation()-5);
             }
-            if (gamepads.isPressed(-1, "dpad_left")){
+            if (gamepads.isPressed(1, "dpad_left")){
                 arm.setTargetRotation(arm.getTargetRotation()-15);
             }
-            if (gamepads.isPressed(-1, "dpad_right")){
+            if (gamepads.isPressed(1, "dpad_right")){
                 arm.setTargetRotation(arm.getTargetRotation()+15);
             }
-            if (gamepads.isPressed(-1, "left_bumper")){
-                diffy.rotateGrabber(-10);
+            if (gamepads.isPressed(1, "left_bumper")){
+                diffy.rotateGrabber(-90);
             }
-            if (gamepads.isPressed(-1, "right_bumper")){
-                diffy.rotateGrabber(10);
+            if (gamepads.isPressed(1, "right_bumper")){
+                diffy.rotateGrabber(90);
             }
 
 
@@ -56,6 +56,7 @@ public class RTPDiffyTest extends LinearOpMode {
             telemetry.addData("Right Current", diffy.getRightTotalRotation());
             telemetry.addData("Arm Target", arm.getTargetRotation());
             telemetry.addData("Arm Current", arm.getPosition());
+            telemetry.addData("Grabber rotation", diffy.getGrabberRotation());
             telemetry.update();
         }
     }

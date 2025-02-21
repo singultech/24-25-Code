@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GamepadPair {
     private final Gamepad gamepad1;
@@ -11,6 +13,9 @@ public class GamepadPair {
     private final Gamepad previousGamepad1;
     private final Gamepad previousGamepad2;
     private boolean secondControllerEnabled = true;
+
+    private final Map<String, Long> lastPressTime;
+    private long defaultDebounceTime = 175;
 
     public enum Button {
         A("a", "cross"),
@@ -51,6 +56,7 @@ public class GamepadPair {
         this.currentGamepad2 = new Gamepad();
         this.previousGamepad1 = new Gamepad();
         this.previousGamepad2 = new Gamepad();
+        this.lastPressTime = new HashMap<>();
         copyStates();
     }
 
@@ -59,6 +65,43 @@ public class GamepadPair {
         previousGamepad2.copy(currentGamepad2);
         currentGamepad1.copy(gamepad1);
         currentGamepad2.copy(gamepad2);
+    }
+
+    public void setDebounceTime(long milliseconds) {
+        if (milliseconds < 0) {
+            throw new IllegalArgumentException("Debounce time cannot be negative");
+        }
+        this.defaultDebounceTime = milliseconds;
+    }
+
+    public void setDebounceTime(String buttonStr, int gamepadNum, long milliseconds) {
+        if (milliseconds < 0) {
+            throw new IllegalArgumentException("Debounce time cannot be negative");
+        }
+        String key = getButtonKey(buttonStr, gamepadNum);
+        lastPressTime.put(key + "_debounce", milliseconds);
+    }
+
+    private String getButtonKey(String buttonStr, int gamepadNum) {
+        return gamepadNum + "_" + buttonStr;
+    }
+
+    private long getDebounceTime(String buttonStr, int gamepadNum) {
+        String key = getButtonKey(buttonStr, gamepadNum) + "_debounce";
+        return lastPressTime.getOrDefault(key, defaultDebounceTime);
+    }
+
+    private boolean isDebounced(String buttonStr, int gamepadNum) {
+        String key = getButtonKey(buttonStr, gamepadNum);
+        long currentTime = System.currentTimeMillis();
+        long lastPress = lastPressTime.getOrDefault(key, 0L);
+        long debounceTime = getDebounceTime(buttonStr, gamepadNum);
+
+        if (currentTime - lastPress >= debounceTime) {
+            lastPressTime.put(key, currentTime);
+            return true;
+        }
+        return false;
     }
 
     private Gamepad getGamepad(int gamepadNum) {
@@ -99,15 +142,20 @@ public class GamepadPair {
         if (gamepadNum == 2 && !secondControllerEnabled) return false;
 
         Button button = Button.fromString(buttonStr);
+        boolean isButtonPressed = false;
+
         if (gamepadNum == 1 || gamepadNum == 2) {
             Gamepad current = getGamepad(gamepadNum);
             Gamepad previous = getPreviousGamepad(gamepadNum);
-            return getButtonState(current, button) && !getButtonState(previous, button);
+            isButtonPressed = getButtonState(current, button) && !getButtonState(previous, button);
+        } else {
+            isButtonPressed = (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
+                    (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
+
+            gamepadNum = 1;
         }
 
-        // If no specific gamepad is selected, check both
-        return (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
-                (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
+        return isButtonPressed && isDebounced(buttonStr, gamepadNum);
     }
 
     public boolean isHeld(int gamepadNum, String buttonStr) {
@@ -118,7 +166,6 @@ public class GamepadPair {
             return getButtonState(getGamepad(gamepadNum), button);
         }
 
-        // If no specific gamepad is selected, check both
         return getButtonState(gamepad1, button) ||
                 (secondControllerEnabled && getButtonState(gamepad2, button));
     }

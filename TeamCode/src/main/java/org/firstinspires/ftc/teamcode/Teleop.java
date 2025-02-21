@@ -32,7 +32,7 @@ public class Teleop extends LinearOpMode {
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap, true);
         BackArm backArm = new BackArm(hardwareMap, true);
-        FrontArm frontArm = new FrontArm(0.98, 0.35, hardwareMap);
+        FrontArm frontArm = new FrontArm(hardwareMap);
         Diffy diffy = new Diffy(hardwareMap, true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //endregion

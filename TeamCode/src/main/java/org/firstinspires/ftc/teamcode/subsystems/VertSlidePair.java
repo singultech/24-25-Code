@@ -46,7 +46,7 @@ public class VertSlidePair {
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(power);
         rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightHook.setDirection(Servo.Direction.REVERSE);
+        //rightHook.setDirection(Servo.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         isLeftHookOut = false;
         isRightHookOut = false;
@@ -55,12 +55,12 @@ public class VertSlidePair {
     }
 
     public void raiseHook(String side){
-        if (side.equals("l")) leftHook.setPosition(0.5);
-        else rightHook.setPosition(0.5);
-    }
-    public void lowerHook(String side){
         if (side.equals("l")) leftHook.setPosition(0);
         else rightHook.setPosition(0);
+    }
+    public void lowerHook(String side){
+        if (side.equals("l")) leftHook.setPosition(0.55);
+        else rightHook.setPosition(0.56);
     }
     public boolean isLeftHookOut(){return isLeftHookOut;}
     public boolean isRightHookOut(){return isRightHookOut;}

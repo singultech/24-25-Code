@@ -130,10 +130,11 @@ public class Diffy {
         rightTargetRotation += amount;
     }
     public void rotateGrabber(double degrees){
-        if(grabberRotation+degrees<=50 && grabberRotation+degrees>=-50) {
+        double formattedRotation = degrees * 0.55555555;
+        if(grabberRotation+degrees<=90 && grabberRotation+degrees>=-90) {
             grabberRotation += degrees;
-            changeLeftTargetRotation(degrees);
-            changeRightTargetRotation(-degrees);
+            changeLeftTargetRotation(formattedRotation);
+            changeRightTargetRotation(-formattedRotation);
         }
     }
     public double getGrabberRotation(){

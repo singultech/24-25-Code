@@ -23,7 +23,7 @@ public class SpecimenSide extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         VertSlidePair vertSlides = new VertSlidePair(4100, hardwareMap);
         Grabber frontGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
-        FrontArm arm = new FrontArm(1, 0.7, hardwareMap);
+        FrontArm arm = new FrontArm(hardwareMap);
         waitForStart();
         frontGrabber.close();
         arm.forward();
