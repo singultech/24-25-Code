@@ -28,7 +28,7 @@ public class HuskyAlign extends LinearOpMode {
     private static final double CENTER_X = 160.0;
     private static final double MAX_SPEED = 0.3; // Maximum speed
     private static final double MIN_SPEED = 0.22; // Minimum speed to maintain movement
-    private static final double DEAD_ZONE = 6; // Dead zone around center
+    private static final double DEAD_ZONE = 15; // Dead zone around center
     private static final double FORWARD_SPEED = 0.3; // Speed for forward movement when centered
 
     @Override
@@ -54,12 +54,11 @@ public class HuskyAlign extends LinearOpMode {
             for(HuskyLens.Block block : husky.getBlocks()) {
                 double distanceFromCenter = block.x - CENTER_X;
 
-                if (Math.abs(distanceFromCenter) < DEAD_ZONE || isCentered) {
+                if (Math.abs(distanceFromCenter) < DEAD_ZONE) {
                     direction = "Center";
                     strafeSpeed = 0;
                     forwardSpeed = -FORWARD_SPEED; // Move forward once centered
-                    isCentered = true; // Set flag to keep moving forward
-                } else if (!isCentered) {
+                } else {
                     // Only align if not yet centered
                     direction = distanceFromCenter < 0 ? "Left" : "Right";
                     strafeSpeed = Math.abs(distanceFromCenter) / CENTER_X * MAX_SPEED;
@@ -78,7 +77,9 @@ public class HuskyAlign extends LinearOpMode {
                 telemetry.addLine("Forward Speed: " + String.format("%.3f", forwardSpeed));
                 telemetry.addData("button:", grabber.getSwitchState());
             }
-
+            if (husky.getBlocks().length == 0){
+                forwardSpeed = -FORWARD_SPEED;
+            }
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(forwardSpeed, strafeSpeed),
                     0

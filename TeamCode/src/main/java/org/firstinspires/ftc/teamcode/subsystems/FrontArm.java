@@ -11,7 +11,7 @@ public class FrontArm {
 
     public FrontArm(HardwareMap hmap){
         armServo = hmap.servo.get("frontFlip");
-        //armServo.setDirection(Servo.Direction.REVERSE);
+        armServo.setDirection(Servo.Direction.REVERSE);
         forwardPosition = 1;
         backPosition = 0;
     }
@@ -26,7 +26,7 @@ public class FrontArm {
 
     public boolean isForward(){ return (currentPos == 1); }
 
-    public boolean isBack(){ return (currentPos == 0);}
+    public boolean isBack(){ return (currentPos == backPosition);}
 
     public void setPosition(double position){
         if(position >= 0 && position <= 1) {

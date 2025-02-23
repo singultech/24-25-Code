@@ -31,9 +31,9 @@ public class Teleop extends LinearOpMode {
         Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
         VertSlidePair vertSlides = new VertSlidePair(4100, 1, hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap, true);
-        BackArm backArm = new BackArm(hardwareMap, true);
+        BackArm backArm = new BackArm(hardwareMap, false);
         FrontArm frontArm = new FrontArm(hardwareMap);
-        Diffy diffy = new Diffy(hardwareMap, true);
+        Diffy diffy = new Diffy(hardwareMap, false);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //endregion
 
@@ -42,11 +42,11 @@ public class Teleop extends LinearOpMode {
         long curTime;
         long lastFrontOpened = 0;
         long lastBackOpened = 0;
-        int grabOffWall = 850;
-        int aboveTopBar = 3550;
-        int hangHeight = 2050;
-        int[] vertSlidePresets = {0, grabOffWall, aboveTopBar, hangHeight};
-        frontArm.forward();
+        int grabOffWall = 0;
+        int topBar = 2900;
+        int hangHeight = 3445;
+        int[] vertSlidePresets = {grabOffWall, topBar, hangHeight};
+        frontArm.back();
         int vertSlidePreset = 0;
         //endregion
 
@@ -108,20 +108,38 @@ public class Teleop extends LinearOpMode {
             }
             //endregion
 
-            //region Back Arm Control
-            if (gamepads.isHeld(-1, "dpad_right")) {
+
+            //region Diffy control
+            double verticalPower = gamepads.joystickValue(2, "left", "y");
+            double rotationPower = -gamepads.joystickValue(2, "right", "x");
+
+            double leftPower = (verticalPower + rotationPower) *0.5;
+            double rightPower = (verticalPower - rotationPower) *0.5;
+
+            diffy.setLeftPower(leftPower);
+            diffy.setRightPower(rightPower);
+
+
+            if (gamepads.isHeld(2, "dpad_right")) {
                 backArm.setPower(1);
-            } else if (gamepads.isHeld(-1, "dpad_left")) backArm.setPower(-1);
+            } else if (gamepads.isHeld(2, "dpad_left")) backArm.setPower(-1);
             else backArm.setPower(0);
             //endregion
 
             //region Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTargetRotation()==0){
-                    horizSlides.setTargetRotation(400);
+                    horizSlides.setTargetRotation(350);
                 } else {
                     horizSlides.setTargetRotation(0);
                 }
+            }
+            //endregion
+
+            //region front arm toggle
+            if (gamepads.isPressed(1, "triangle")){
+                if (frontArm.isBack()) frontArm.forward();
+                else frontArm.back();
             }
             //endregion
 
@@ -187,9 +205,9 @@ public class Teleop extends LinearOpMode {
             //endregion
 
             //region Lower and release to bar on bumper press
-            if (vertSlidePresets[vertSlidePreset] == aboveTopBar && gamepads.isPressed(1, "right_bumper")){
+            if (vertSlidePresets[vertSlidePreset] == topBar && gamepads.isPressed(1, "right_bumper")){
                 new Thread(() -> {
-                    vertSlides.changeTargetPosition(-1000);
+                    vertSlides.changeTargetPosition(1100);
                     while (Math.abs(vertSlides.getAvgCurrentPosition() - vertSlides.getLeftTargetPosition()) > 15) {
                         try {
                             Thread.sleep(10);
