@@ -23,7 +23,7 @@ public class BackArm {
         rightServo = hmap.crservo.get("rightFlip");
         rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
 
-        rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Initialize encoder angles
         localAngle = getCurrentAngle();
@@ -36,7 +36,7 @@ public class BackArm {
 
     private double getCurrentAngle() {
         // Convert voltage to degrees (assuming 3.3V corresponds to full range)
-        return (rightEncoder.getVoltage() / 3.3) * 360;
+        return (rightEncoder.getVoltage() / 3.3) * -360;
     }
 
     public void update() {
