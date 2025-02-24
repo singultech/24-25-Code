@@ -35,7 +35,6 @@ public class BackArm {
     }
 
     private double getCurrentAngle() {
-        // Convert voltage to degrees (assuming 3.3V corresponds to full range)
         return (rightEncoder.getVoltage() / 3.3) * -360;
     }
 
@@ -43,7 +42,6 @@ public class BackArm {
         localAngle = getCurrentAngle();
         double angleDifference = localAngle - previousAngle;
 
-        // Handle rollover conditions
         if (angleDifference > 180) {
             angleDifference -= 360;
         } else if (angleDifference < -180) {
