@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -70,6 +72,12 @@ public class CRAxon {
         if (servoEncoder == null) return 0;
         return (servoEncoder.getVoltage() / 3.3) * (direction.equals(DcMotorSimple.Direction.REVERSE) ? -360 : 360);
     }
+    private double getTotalRotation(){
+        return totalRotation;
+    }
+    private double getTargetRotation(){
+        return targetRotation;
+    }
     public void update() {
         if (!rtp) return;
         double angleDifference = getCurrentAngle() - previousAngle;
@@ -94,5 +102,10 @@ public class CRAxon {
 //        } else {
 //            setPower(0);
 //        }
+    }
+    //endregion
+    @SuppressLint("DefaultLocale")
+    public String log(){
+        return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f", getCurrentAngle(), totalRotation, targetRotation);
     }
 }
