@@ -56,7 +56,7 @@ public class CRAxon {
 
     public void setPower(double power) {
         this.power = power;
-        if (!rtp) servo.setPower(this.power);
+        servo.setPower(this.power * (direction == DcMotorSimple.Direction.REVERSE ? -1 : 1));
     }
     public double getPower(){
         return power;
@@ -78,6 +78,14 @@ public class CRAxon {
     private double getTargetRotation(){
         return targetRotation;
     }
+
+    public void changeTargetRotation(double change){
+        targetRotation += change;
+    }
+    public void setTargetRotation(double target){
+        targetRotation = target;
+    }
+
     public void update() {
         if (!rtp) return;
         double angleDifference = getCurrentAngle() - previousAngle;
@@ -92,20 +100,20 @@ public class CRAxon {
         previousAngle = getCurrentAngle();
 
 
-//        double maxPower = 0.25;
-//        double kP = 0.015;
-//        double error = targetRotation - totalRotation;
-//
-//        if (Math.abs(error) > 1) {
-//            double power = Math.min(maxPower, Math.abs(error * kP)) * Math.signum(error);
-//            setPower(power);
-//        } else {
-//            setPower(0);
-//        }
+        double maxPower = 0.25;
+        double kP = 0.015;
+        double error = targetRotation - totalRotation;
+
+        if (Math.abs(error) > 1) {
+            double power = Math.min(maxPower, Math.abs(error * kP)) * Math.signum(error);
+            setPower(-power);
+        } else {
+            setPower(0);
+        }
     }
     //endregion
     @SuppressLint("DefaultLocale")
     public String log(){
-        return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f", getCurrentAngle(), totalRotation, targetRotation);
+        return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f\nCurrent Power: %f", getCurrentAngle(), totalRotation, targetRotation, power);
     }
 }
