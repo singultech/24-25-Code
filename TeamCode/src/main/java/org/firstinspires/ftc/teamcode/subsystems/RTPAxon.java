@@ -5,61 +5,64 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
-public class CRAxon {
+public class RTPAxon {
     private final AnalogInput servoEncoder;
     private final CRServo servo;
     private boolean rtp;
     private double power;
-    private final DcMotorSimple.Direction direction;
+    private double maxPower;
+    private Direction direction;
     private double previousAngle;
     private double totalRotation;
     private double targetRotation;
-    private final double startingAngle;
+    private double kP;
+
+    public enum Direction{
+        FORWARD,
+        REVERSE
+    }
 
     //region constructors
-    public CRAxon(CRServo s) {
-        rtp = false;
-        servo = s;
-        servoEncoder = null;
-        direction = DcMotorSimple.Direction.FORWARD;
-        startingAngle = 0.0;
-    }
-    public CRAxon(CRServo servo, AnalogInput encoder) {
+    public RTPAxon(CRServo servo, AnalogInput encoder) {
         rtp = true;
         this.servo = servo;
         servoEncoder = encoder;
-        direction = DcMotorSimple.Direction.FORWARD;
-        startingAngle = getCurrentAngle();
-        previousAngle = getCurrentAngle();
-        totalRotation = 0;
+        direction = Direction.FORWARD;
+        initialize();
     }
-    public CRAxon(CRServo s, DcMotorSimple.Direction direction) {
-        rtp = false;
-        servo = s;
-        servoEncoder = null;
-        this.direction = direction;
-        startingAngle = 0.0;
-    }
-    public CRAxon(CRServo servo, AnalogInput encoder, DcMotorSimple.Direction direction) {
+    public RTPAxon(CRServo servo, AnalogInput encoder, Direction direction) {
         rtp = true;
         this.servo = servo;
         servoEncoder = encoder;
         this.direction = direction;
-        startingAngle = getCurrentAngle();
+        initialize();
+    }
+    private void initialize(){
         previousAngle = getCurrentAngle();
         totalRotation = 0;
+        kP = 0.015;
+        maxPower = 0.25;
     }
     //endregion
 
+
+    public void setDirection(Direction direction){
+        this.direction = direction;
+    }
     public void setPower(double power) {
-        this.power = power;
-        servo.setPower(this.power * (direction == DcMotorSimple.Direction.REVERSE ? -1 : 1));
+        this.power = Math.max(-maxPower, Math.min(maxPower, power));
+        servo.setPower(this.power * (direction == Direction.REVERSE ? -1 : 1));
     }
     public double getPower(){
         return power;
+    }
+    public void setMaxPower(double maxPower){
+        this.maxPower = maxPower;
+    }
+    public double getMaxPower(){
+        return maxPower;
     }
     public void setRtp(boolean rtp){
         this.rtp = rtp;
@@ -67,10 +70,16 @@ public class CRAxon {
     public boolean getRtp(){
         return rtp;
     }
+    public void setK(double k){
+        kP = k;
+    }
+    public double getK() {
+        return kP;
+    }
     //region rtp stuff
     private double getCurrentAngle() {
         if (servoEncoder == null) return 0;
-        return (servoEncoder.getVoltage() / 3.3) * (direction.equals(DcMotorSimple.Direction.REVERSE) ? -360 : 360);
+        return (servoEncoder.getVoltage() / 3.3) * (direction.equals(Direction.REVERSE) ? -360 : 360);
     }
     private double getTotalRotation(){
         return totalRotation;
@@ -86,8 +95,8 @@ public class CRAxon {
         targetRotation = target;
     }
 
-    public void update() {
-        if (!rtp) return;
+    public synchronized void update() {
+
         double angleDifference = getCurrentAngle() - previousAngle;
 
         if (angleDifference > 180) {
@@ -98,13 +107,10 @@ public class CRAxon {
 
         totalRotation += angleDifference;
         previousAngle = getCurrentAngle();
-
-
-        double maxPower = 0.25;
-        double kP = 0.015;
         double error = targetRotation - totalRotation;
-
-        if (Math.abs(error) > 1) {
+        if (!rtp) return;
+        double DEADZONE = 0.5;
+        if (Math.abs(error) > DEADZONE) {
             double power = Math.min(maxPower, Math.abs(error * kP)) * Math.signum(error);
             setPower(-power);
         } else {
