@@ -47,7 +47,7 @@ public class RTPAxon {
     }
     //endregion
 
-
+    //region getters & setters
     public void setDirection(Direction direction){
         this.direction = direction;
     }
@@ -76,39 +76,38 @@ public class RTPAxon {
     public double getK() {
         return kP;
     }
-    //region rtp stuff
-    private double getCurrentAngle() {
-        if (servoEncoder == null) return 0;
-        return (servoEncoder.getVoltage() / 3.3) * (direction.equals(Direction.REVERSE) ? -360 : 360);
-    }
-    private double getTotalRotation(){
+    public double getTotalRotation(){
         return totalRotation;
     }
-    private double getTargetRotation(){
+    public double getTargetRotation(){
         return targetRotation;
     }
-
     public void changeTargetRotation(double change){
         targetRotation += change;
     }
     public void setTargetRotation(double target){
         targetRotation = target;
     }
+    public double getCurrentAngle() {
+        if (servoEncoder == null) return 0;
+        return (servoEncoder.getVoltage() / 3.3) * (direction.equals(Direction.REVERSE) ? -360 : 360);
+    }
+    //endregion
 
     public synchronized void update() {
-
+        // This code calculated when the axon has wrapped around its 360 degree encoder limit and adds to the total rotation accordingly.
         double angleDifference = getCurrentAngle() - previousAngle;
-
         if (angleDifference > 180) {
             angleDifference -= 360;
         } else if (angleDifference < -180) {
             angleDifference += 360;
         }
-
         totalRotation += angleDifference;
         previousAngle = getCurrentAngle();
-        double error = targetRotation - totalRotation;
+
+        // Proportional controller to move the servo to the target rotation.
         if (!rtp) return;
+        double error = targetRotation - totalRotation;
         double DEADZONE = 0.5;
         if (Math.abs(error) > DEADZONE) {
             double power = Math.min(maxPower, Math.abs(error * kP)) * Math.signum(error);
@@ -117,7 +116,6 @@ public class RTPAxon {
             setPower(0);
         }
     }
-    //endregion
     @SuppressLint("DefaultLocale")
     public String log(){
         return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f\nCurrent Power: %f", getCurrentAngle(), totalRotation, targetRotation, power);
