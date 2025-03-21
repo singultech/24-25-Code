@@ -21,8 +21,8 @@ public class BackArm {
     }
 
     public void update() {
+        rightServo.update();
         if (!manualMode) {
-            rightServo.update();
             leftServo.setPower(rightServo.getPower());
         }
     }
@@ -37,12 +37,12 @@ public class BackArm {
     }
 
     public void setManualPower(double power) {
-        if (manualMode) {
-            double limitedPower = Math.max(-rightServo.getMaxPower(),
-                    Math.min(rightServo.getMaxPower(), power));
-            rightServo.setPower(limitedPower);
-            leftServo.setPower(limitedPower);
-        }
+        if (!manualMode) throw new IllegalStateException("Not in manual mode");
+
+        double limitedPower = Math.max(-rightServo.getMaxPower(),
+                Math.min(rightServo.getMaxPower(), power));
+        rightServo.setPower(limitedPower);
+        leftServo.setPower(limitedPower);
     }
 
     public void setTargetRotation(double target) {
