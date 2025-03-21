@@ -16,12 +16,11 @@ public class ManualDiffyTest extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         Diffy diffy = new Diffy(hardwareMap, false);
-        BackArm arm = new BackArm(hardwareMap, false);
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            arm.update();
+            //arm.update();
             diffy.update();
 
             double verticalPower = gamepads.joystickValue(2, "left", "y");
@@ -34,10 +33,10 @@ public class ManualDiffyTest extends LinearOpMode {
             diffy.setRightPower(rightPower);
 
 
-            if (gamepads.isHeld(-1, "dpad_right")) {
-                arm.setPower(1);
-            } else if (gamepads.isHeld(-1, "dpad_left")) arm.setPower(-1);
-            else arm.setPower(0);
+//            if (gamepads.isHeld(-1, "dpad_right")) {
+//                arm.setPower(1);
+//            } else if (gamepads.isHeld(-1, "dpad_left")) arm.setPower(-1);
+//            else arm.setPower(0);
 
             telemetry.addData("Right Power", rightPower);
             telemetry.addData("Left Power", leftPower);

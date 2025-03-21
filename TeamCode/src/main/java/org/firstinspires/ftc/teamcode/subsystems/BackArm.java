@@ -11,6 +11,7 @@ public class BackArm {
     private final CRServo leftServo;
     private final RTPAxon rightServo;
     private boolean manualMode = false;
+    private final double GEAR_RATIO = 3; // 3:1
 
     public BackArm(HardwareMap hmap) {
         leftServo = hmap.crservo.get("leftFlip");
@@ -47,21 +48,21 @@ public class BackArm {
 
     public void setTargetRotation(double target) {
         if (!manualMode) {
-            rightServo.setTargetRotation(target);
+            rightServo.setTargetRotation(target*GEAR_RATIO);
         }
     }
     public void changeTargetRotation(double delta) {
         if (!manualMode) {
-            rightServo.changeTargetRotation(delta);
+            rightServo.changeTargetRotation(delta*GEAR_RATIO);
         }
     }
 
     public double getTargetRotation() {
-        return rightServo.getTargetRotation();
+        return rightServo.getTargetRotation()/GEAR_RATIO;
     }
 
     public double getRotation() {
-        return rightServo.getTotalRotation();
+        return rightServo.getTotalRotation()/GEAR_RATIO;
     }
 
     public void setMaxPower(double power) {
@@ -70,8 +71,8 @@ public class BackArm {
 
     @SuppressLint("DefaultLocale")
     public String log(){
-        return String.format("%s\nManual Mode: %b",
+        return String.format("%s\nManual Mode: %b\nTotal Rotation w/ Gear ratio %f",
                 rightServo.log(),
-                manualMode);
+                manualMode, getRotation());
     }
 }

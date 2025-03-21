@@ -17,7 +17,6 @@ public class BackArmTest extends LinearOpMode {
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         boolean manualMode = false;
         double maxPower = 0.5;
-        int target = 0;
         
         waitForStart();
         while (!isStopRequested()) {
