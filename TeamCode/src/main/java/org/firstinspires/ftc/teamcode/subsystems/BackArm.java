@@ -50,6 +50,11 @@ public class BackArm {
             rightServo.setTargetRotation(target);
         }
     }
+    public void changeTargetRotation(double delta) {
+        if (!manualMode) {
+            rightServo.changeTargetRotation(delta);
+        }
+    }
 
     public double getTargetRotation() {
         return rightServo.getTargetRotation();

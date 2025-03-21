@@ -152,8 +152,26 @@ public class GamepadPair {
             isButtonPressed = (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
                     (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
 
-            gamepadNum = 1;
+            if(getButtonState(gamepad1, button)) gamepadNum = 1;
+            else if(secondControllerEnabled && getButtonState(gamepad2, button)) gamepadNum = 2;
+            else return false;
         }
+
+        return isButtonPressed && isDebounced(buttonStr, gamepadNum);
+    }
+
+    public boolean isPressed(String buttonStr) {
+
+        Button button = Button.fromString(buttonStr);
+        boolean isButtonPressed = false;
+
+        isButtonPressed = (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
+                (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
+
+        int gamepadNum;
+        if(getButtonState(gamepad1, button)) gamepadNum = 1;
+        else if(secondControllerEnabled && getButtonState(gamepad2, button)) gamepadNum = 2;
+        else return false;
 
         return isButtonPressed && isDebounced(buttonStr, gamepadNum);
     }
