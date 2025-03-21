@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -7,87 +9,64 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class BackArm {
     private final CRServo leftServo;
-    private final CRServo rightServo;
-    private final AnalogInput rightEncoder;
+    private final RTPAxon rightServo;
+    private boolean manualMode = false;
 
-    private double localAngle;
-    private double previousAngle;
-    private double totalRotation;
-    private double targetRotation;
-    private final double startingRotation;
-    private final boolean runToPosition;
-
-    public BackArm(HardwareMap hmap, boolean shouldRtp) {
-        runToPosition = shouldRtp;
+    public BackArm(HardwareMap hmap) {
         leftServo = hmap.crservo.get("leftFlip");
-        rightServo = hmap.crservo.get("rightFlip");
-        rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
-
+        CRServo rServo = hmap.crservo.get("rightFlip");
+        AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
+        rightServo = new RTPAxon(rServo, rightEncoder);
         leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // Initialize encoder angles
-        localAngle = getCurrentAngle();
-        startingRotation = localAngle;
-
-        // Set previous angle and total rotation
-        previousAngle = localAngle;
-        totalRotation = 0;
-    }
-
-    private double getCurrentAngle() {
-        return (rightEncoder.getVoltage() / 3.3) * -360;
     }
 
     public void update() {
-        localAngle = getCurrentAngle();
-        double angleDifference = localAngle - previousAngle;
-
-        if (angleDifference > 180) {
-            angleDifference -= 360;
-        } else if (angleDifference < -180) {
-            angleDifference += 360;
+        if (!manualMode) {
+            rightServo.update();
+            leftServo.setPower(rightServo.getPower());
         }
+    }
 
-        totalRotation += angleDifference;
-        previousAngle = localAngle;
+    public void setManualMode(boolean manual) {
+        manualMode = manual;
+        rightServo.setRtp(!manual);
+    }
 
-        if (!runToPosition) return;
+    public boolean isManualMode() {
+        return manualMode;
+    }
 
-        // Run-to-position control
-        double maxPower = 0.25;
-        double kP = 0.015;
-        double error = targetRotation - totalRotation;
-
-        if (Math.abs(error) > 1) {
-            double power = Math.min(maxPower, Math.abs(error * kP)) * Math.signum(error);
-            setPower(power);
-        } else {
-            setPower(0);
+    public void setManualPower(double power) {
+        if (manualMode) {
+            double limitedPower = Math.max(-rightServo.getMaxPower(),
+                    Math.min(rightServo.getMaxPower(), power));
+            rightServo.setPower(limitedPower);
+            leftServo.setPower(limitedPower);
         }
     }
 
     public void setTargetRotation(double target) {
-        targetRotation = target;
+        if (!manualMode) {
+            rightServo.setTargetRotation(target);
+        }
     }
 
     public double getTargetRotation() {
-        return targetRotation;
+        return rightServo.getTargetRotation();
     }
 
-    public double getAngle() {
-        return localAngle;
+    public double getRotation() {
+        return rightServo.getTotalRotation();
     }
 
-    public double getPosition() {
-        return totalRotation;
+    public void setMaxPower(double power) {
+        rightServo.setMaxPower(power);
     }
 
-    public void setPower(double power) {
-        leftServo.setPower(power);
-        rightServo.setPower(power);
-    }
-
-    public double getRawOut() {
-        return rightEncoder.getVoltage();
+    @SuppressLint("DefaultLocale")
+    public String log(){
+        return String.format("%s\nManual Mode: %b",
+                rightServo.log(),
+                manualMode);
     }
 }
