@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Diffy {
@@ -12,12 +11,8 @@ public class Diffy {
     private double grabberRotation;
 
     public Diffy(HardwareMap hmap) {
-        CRServo lServo = hmap.crservo.get("leftDiffy");
-        CRServo rServo = hmap.crservo.get("rightDiffy");
-        AnalogInput lEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
-        AnalogInput rEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
-        leftServo = new RTPAxon(lServo, lEncoder, RTPAxon.Direction.REVERSE);
-        rightServo = new RTPAxon(rServo, rEncoder, RTPAxon.Direction.FORWARD);
+        leftServo = new RTPAxon(hmap.crservo.get("leftDiffy"), hmap.get(AnalogInput.class, "leftDiffyEncoder"), RTPAxon.Direction.REVERSE);
+        rightServo = new RTPAxon(hmap.crservo.get("rightDiffy"), hmap.get(AnalogInput.class, "rightDiffyEncoder"), RTPAxon.Direction.FORWARD);
         grabberTwist = 0;
         grabberRotation = 315;
     }
