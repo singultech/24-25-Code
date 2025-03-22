@@ -17,22 +17,31 @@ public class HorizontalSlidesTest extends LinearOpMode {
         HorizSlidePair slides = new HorizSlidePair(hardwareMap);
         slides.setManualMode(true);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
+        boolean manualMode = false;
+        double maxPower = 0.5;
 
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            if (gamepads.getTrigger(1, "right_trigger") > 0.1) {
-                slides.setManualPower(gamepads.getTrigger(1, "right_trigger"));
-            } else if (gamepads.getTrigger(1, "left_trigger") > 0.1) {
-                slides.setManualPower(-gamepads.getTrigger(1, "left_trigger"));
-            } else {
-                slides.setManualPower(0);
-            }
             slides.update();
+            
+            if(gamepads.isPressed("triangle")){
+                manualMode = !manualMode;
+                slides.setManualMode(manualMode);
+            }
 
-            telemetry.addLine("Use the triggers to control the slides");
+            if(manualMode) {
+                if (gamepads.isPressed("left_dpad")) slides.setManualPower(-maxPower);
+                else if (gamepads.isPressed("right_dpad")) slides.setManualPower(maxPower);
+                else slides.setManualPower(0);
+            } else {
+                if (gamepads.isPressed("up_dpad")) slides.changeTargetRotation(10);
+                if (gamepads.isPressed("down_dpad")) slides.changeTargetRotation(-10);
+            }
+
             telemetry.addLine(slides.log());
+            telemetry.addData("Manual Mode", manualMode ? "ON" : "OFF");
             telemetry.update();
         }
     }
