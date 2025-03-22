@@ -15,6 +15,7 @@ public class HorizontalSlidesTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         HorizSlidePair slides = new HorizSlidePair(hardwareMap);
+        slides.setManualMode(true);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
@@ -31,9 +32,7 @@ public class HorizontalSlidesTest extends LinearOpMode {
             slides.update();
 
             telemetry.addLine("Use the triggers to control the slides");
-            telemetry.addLine("Current Rotation: " + slides.getRotation());
-            telemetry.addLine("Target Rotation: " + slides.getTargetRotation());
-            telemetry.addLine("Log: " + slides.log());
+            telemetry.addLine(slides.log());
             telemetry.update();
         }
     }

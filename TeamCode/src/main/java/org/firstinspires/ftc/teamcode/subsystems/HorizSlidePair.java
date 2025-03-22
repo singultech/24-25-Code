@@ -8,29 +8,26 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class HorizSlidePair {
-    private final CRServo leftSlides;
-    private final RTPAxon rightSlides;
+    private final CRServo leftSlide;
+    private final RTPAxon rightSlide;
     private boolean manualMode = false;
-    private final double GEAR_RATIO = 3; // 3:1
 
     public HorizSlidePair(HardwareMap hmap) {
-        leftSlides = hmap.crservo.get("leftFlip");
-        CRServo rServo = hmap.crservo.get("rightFlip");
-        AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
-        rightSlides = new RTPAxon(rServo, rightEncoder);
-        leftSlides.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftSlide = hmap.crservo.get("leftFlip");
+        rightSlide = new RTPAxon(hmap.crservo.get("rightFlip"), hmap.get(AnalogInput.class, "rightArmEncoder"));
+        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void update() {
-        rightSlides.update();
+        rightSlide.update();
         if (!manualMode) {
-            leftSlides.setPower(rightSlides.getPower());
+            leftSlide.setPower(rightSlide.getPower());
         }
     }
 
     public void setManualMode(boolean manual) {
         manualMode = manual;
-        rightSlides.setRtp(!manual);
+        rightSlide.setRtp(!manual);
     }
 
     public boolean isManualMode() {
@@ -40,39 +37,39 @@ public class HorizSlidePair {
     public void setManualPower(double power) {
         if (!manualMode) throw new IllegalStateException("Not in manual mode");
 
-        double limitedPower = Math.max(-rightSlides.getMaxPower(),
-                Math.min(rightSlides.getMaxPower(), power));
-        rightSlides.setPower(limitedPower);
-        leftSlides.setPower(limitedPower);
+        double limitedPower = Math.max(-rightSlide.getMaxPower(),
+                Math.min(rightSlide.getMaxPower(), power));
+        rightSlide.setPower(limitedPower);
+        leftSlide.setPower(limitedPower);
     }
 
     public void setTargetRotation(double target) {
         if (!manualMode) {
-            rightSlides.setTargetRotation(target*GEAR_RATIO);
+            rightSlide.setTargetRotation(target);
         }
     }
     public void changeTargetRotation(double delta) {
         if (!manualMode) {
-            rightSlides.changeTargetRotation(delta*GEAR_RATIO);
+            rightSlide.changeTargetRotation(delta);
         }
     }
 
     public double getTargetRotation() {
-        return rightSlides.getTargetRotation()/GEAR_RATIO;
+        return rightSlide.getTargetRotation();
     }
 
     public double getRotation() {
-        return rightSlides.getTotalRotation()/GEAR_RATIO;
+        return rightSlide.getTotalRotation();
     }
 
     public void setMaxPower(double power) {
-        rightSlides.setMaxPower(power);
+        rightSlide.setMaxPower(power);
     }
 
     @SuppressLint("DefaultLocale")
     public String log(){
-        return String.format("%s\nManual Mode: %b\nTotal Rotation w/ Gear ratio %f",
-                rightSlides.log(),
-                manualMode, getRotation());
+        return String.format("%s\nManual Mode: %b\nTotal Rotation",
+                rightSlide.log(),
+                manualMode);
     }
 }
