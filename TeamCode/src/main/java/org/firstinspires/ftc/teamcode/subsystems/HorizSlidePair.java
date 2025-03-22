@@ -1,75 +1,78 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class HorizSlidePair {
-    CRServo rightSlide;
-    CRServo leftSlide;
-    AnalogInput rightSlideEncoder;
-    private double localAngle = 0.0;
-    private double previousAngle = 0.0;
-    private double totalRotation = 0.0;
-    private double targetRotation = 0.0;
-    private final double maxExtend;
-    private final double minExtend;
-    private final double startPosition;
-    private final boolean runToPosition;
+    private final CRServo leftSlides;
+    private final RTPAxon rightSlides;
+    private boolean manualMode = false;
+    private final double GEAR_RATIO = 3; // 3:1
 
-    public HorizSlidePair(HardwareMap hmap, boolean shouldRtp){
-        rightSlide = hmap.get(CRServo.class, "rightHorizSlide");
-        leftSlide = hmap.get(CRServo.class, "leftHorizSlide");
-        rightSlideEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
-        rightSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        runToPosition = shouldRtp;
-        maxExtend = 450;
-        minExtend = 0;
-        startPosition = rightSlideEncoder.getVoltage() / 3.3 * 360;
-        totalRotation = -startPosition;
+    public HorizSlidePair(HardwareMap hmap) {
+        leftSlides = hmap.crservo.get("leftFlip");
+        CRServo rServo = hmap.crservo.get("rightFlip");
+        AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
+        rightSlides = new RTPAxon(rServo, rightEncoder);
+        leftSlides.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-    public double getCurrentPosition() { return localAngle; }
 
-    public void update(){
-        localAngle = rightSlideEncoder.getVoltage() / 3.3 * 360;
-
-        double angleDifference = localAngle - previousAngle;
-
-        if (angleDifference < -180) {
-            angleDifference += 360;
-        } else if (angleDifference > 180) {
-            angleDifference -= 360;
-        }
-
-        totalRotation += angleDifference;
-
-        previousAngle = localAngle;
-        if (!runToPosition) return;
-        if (Math.abs(targetRotation-totalRotation)<10) {
-            setPower(0);
-            return;
-        }
-        else if (totalRotation<targetRotation) setPower(0.5);
-        else if (totalRotation>targetRotation) {
-            setPower(-0.5);
+    public void update() {
+        rightSlides.update();
+        if (!manualMode) {
+            leftSlides.setPower(rightSlides.getPower());
         }
     }
 
-    public double getTotalRotation() {
-        return totalRotation;
+    public void setManualMode(boolean manual) {
+        manualMode = manual;
+        rightSlides.setRtp(!manual);
     }
 
-    public void setPower(double power){
-        rightSlide.setPower(power);
-        leftSlide.setPower(power);
+    public boolean isManualMode() {
+        return manualMode;
     }
-    public void setTargetRotation(double target){
-        if (target <= maxExtend && target >= minExtend)
-            targetRotation = target;
+
+    public void setManualPower(double power) {
+        if (!manualMode) throw new IllegalStateException("Not in manual mode");
+
+        double limitedPower = Math.max(-rightSlides.getMaxPower(),
+                Math.min(rightSlides.getMaxPower(), power));
+        rightSlides.setPower(limitedPower);
+        leftSlides.setPower(limitedPower);
     }
-    public double getTargetRotation(){return targetRotation;}
-    public double getRawEncoders(){
-        return rightSlideEncoder.getVoltage();
+
+    public void setTargetRotation(double target) {
+        if (!manualMode) {
+            rightSlides.setTargetRotation(target*GEAR_RATIO);
+        }
+    }
+    public void changeTargetRotation(double delta) {
+        if (!manualMode) {
+            rightSlides.changeTargetRotation(delta*GEAR_RATIO);
+        }
+    }
+
+    public double getTargetRotation() {
+        return rightSlides.getTargetRotation()/GEAR_RATIO;
+    }
+
+    public double getRotation() {
+        return rightSlides.getTotalRotation()/GEAR_RATIO;
+    }
+
+    public void setMaxPower(double power) {
+        rightSlides.setMaxPower(power);
+    }
+
+    @SuppressLint("DefaultLocale")
+    public String log(){
+        return String.format("%s\nManual Mode: %b\nTotal Rotation w/ Gear ratio %f",
+                rightSlides.log(),
+                manualMode, getRotation());
     }
 }

@@ -14,24 +14,27 @@ public class HorizontalSlidesTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        HorizSlidePair slides = new HorizSlidePair(hardwareMap, false);
+        HorizSlidePair slides = new HorizSlidePair(hardwareMap);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
         waitForStart();
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            if(gamepads.getTrigger(1, "right_trigger")>0.1){slides.setPower(gamepads.getTrigger(1, "right_trigger"));}
-            else if(gamepads.getTrigger(1, "left_trigger")>0.1){slides.setPower(-gamepads.getTrigger(1, "left_trigger"));}
-            else slides.setPower(0);
+            if (gamepads.getTrigger(1, "right_trigger") > 0.1) {
+                slides.setManualPower(gamepads.getTrigger(1, "right_trigger"));
+            } else if (gamepads.getTrigger(1, "left_trigger") > 0.1) {
+                slides.setManualPower(-gamepads.getTrigger(1, "left_trigger"));
+            } else {
+                slides.setManualPower(0);
+            }
             slides.update();
 
             telemetry.addLine("Use the triggers to control the slides");
-            telemetry.addLine("Current Position " + slides.getCurrentPosition());
-            telemetry.addLine("Full Rotation " + slides.getTotalRotation());
-            telemetry.addLine("Raw Encoders " + slides.getRawEncoders());
+            telemetry.addLine("Current Rotation: " + slides.getRotation());
+            telemetry.addLine("Target Rotation: " + slides.getTargetRotation());
+            telemetry.addLine("Log: " + slides.log());
             telemetry.update();
         }
     }
 }
-
