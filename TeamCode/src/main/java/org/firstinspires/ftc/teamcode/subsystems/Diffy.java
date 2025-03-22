@@ -1,154 +1,85 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Diffy {
-    private final CRServo leftServo;
-    private final CRServo rightServo;
-    private final AnalogInput leftEncoder;
-    private final AnalogInput rightEncoder;
-
-    private double leftLocalAngle;
-    private double leftPreviousLocalAngle;
-    private double leftTotalRotation;
-    private double rightLocalAngle;
-    private double rightPreviousLocalAngle;
-    private double rightTotalRotation;
-    private final double rightStartingAngle;
-    private final double leftStartingAngle;
-    private double leftTargetRotation;
-    private double rightTargetRotation;
+    private final RTPAxon leftServo;
+    private final RTPAxon rightServo;
     private double grabberTwist;
     private double grabberRotation;
-    private final boolean runToPosition;
 
-    public Diffy(HardwareMap hmap, boolean shouldRtp){
-        runToPosition = shouldRtp;
-        leftServo = hmap.crservo.get("leftDiffy");
-        rightServo = hmap.crservo.get("rightDiffy");
-        leftEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
-        rightEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
-        leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
+    public Diffy(HardwareMap hmap) {
+        CRServo lServo = hmap.crservo.get("leftDiffy");
+        CRServo rServo = hmap.crservo.get("rightDiffy");
+        AnalogInput lEncoder = hmap.get(AnalogInput.class, "leftDiffyEncoder");
+        AnalogInput rEncoder = hmap.get(AnalogInput.class, "rightDiffyEncoder");
+        leftServo = new RTPAxon(lServo, lEncoder, RTPAxon.Direction.REVERSE);
+        rightServo = new RTPAxon(rServo, rEncoder, RTPAxon.Direction.FORWARD);
         grabberTwist = 0;
         grabberRotation = 315;
-
-        leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightLocalAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
-
-        leftStartingAngle = leftLocalAngle;
-        rightStartingAngle = rightLocalAngle;
-
-        leftPreviousLocalAngle = leftLocalAngle;
-        rightPreviousLocalAngle = rightLocalAngle;
-
-        leftTotalRotation = 0;
-        rightTotalRotation = 0;
-    }
-
-    private double normalizeAngleDifference(double angleDifference) {
-        if (angleDifference < -180) {
-            return angleDifference + 360;
-        } else if (angleDifference > 180) {
-            return angleDifference - 360;
-        }
-        return angleDifference;
     }
 
     public void setLeftPower(double power) {
-        if (!runToPosition) {
-            leftServo.setPower(power);
-        }
+        leftServo.setPower(power);
     }
 
     public void setRightPower(double power) {
-        if (!runToPosition) {
-            rightServo.setPower(power);
-        }
+        rightServo.setPower(power);
     }
 
     public void update() {
-        leftLocalAngle = -leftEncoder.getVoltage() / 3.3 * 360.0;
-        rightLocalAngle = rightEncoder.getVoltage() / 3.3 * 360.0;
-
-        double leftAngleDifference = normalizeAngleDifference(leftLocalAngle - leftPreviousLocalAngle);
-        double rightAngleDifference = normalizeAngleDifference(rightLocalAngle - rightPreviousLocalAngle);
-
-        leftTotalRotation += leftAngleDifference;
-        rightTotalRotation += rightAngleDifference;
-
-        leftPreviousLocalAngle = leftLocalAngle;
-        rightPreviousLocalAngle = rightLocalAngle;
-
-        if (!runToPosition) return;
-
-        double maxPower = 0.25;
-        double kP = 0.015;
-        double rightError = rightTargetRotation - rightTotalRotation;
-        if (Math.abs(rightError) > 1) {
-            double rightPower = Math.min(maxPower, Math.abs(rightError * kP)) * Math.signum(rightError);
-            rightServo.setPower(-rightPower);
-        } else {
-            rightServo.setPower(0);
-        }
-
-        double leftError = leftTargetRotation - leftTotalRotation;
-        if (Math.abs(leftError) > 1) {
-            double leftPower = Math.min(maxPower, Math.abs(leftError * kP)) * Math.signum(leftError);
-            leftServo.setPower(-leftPower);
-        } else {
-            leftServo.setPower(0);
-        }
+        leftServo.update();
+        rightServo.update();
     }
 
-    public double getLeftLocalAngle() {
-        return leftLocalAngle;
+    public void setManualMode(boolean manual) {
+        leftServo.setRtp(!manual);
+        rightServo.setRtp(!manual);
     }
 
-    public double getRightLocalAngle() {
-        return rightLocalAngle;
+    public boolean isManualMode() {
+        return !leftServo.getRtp();
     }
 
-    public double getRightTotalRotation(){
-        return rightTotalRotation;
+    public void setMaxPower(double power) {
+        leftServo.setMaxPower(power);
+        rightServo.setMaxPower(power);
     }
 
-    public double getLeftTotalRotation(){
-        return leftTotalRotation;
+    public double getLeftRotation() {
+        return leftServo.getTotalRotation();
     }
 
-    public double getRightStartingAngle() {
-        return rightStartingAngle;
-    }
-
-    public double getLeftStartingAngle() {
-        return leftStartingAngle;
-    }
-
-    public void setRightTargetRotation(double target) {
-        rightTargetRotation = target;
-    }
-
-    public double getRightTargetRotation() {
-        return rightTargetRotation;
+    public double getRightRotation() {
+        return rightServo.getTotalRotation();
     }
 
     public void setLeftTargetRotation(double target) {
-        leftTargetRotation = target;
+        leftServo.setTargetRotation(target);
+    }
+
+    public void setRightTargetRotation(double target) {
+        rightServo.setTargetRotation(target);
     }
 
     public double getLeftTargetRotation() {
-        return leftTargetRotation;
+        return leftServo.getTargetRotation();
+    }
+
+    public double getRightTargetRotation() {
+        return rightServo.getTargetRotation();
     }
 
     public void changeLeftTargetRotation(double amount) {
-        leftTargetRotation += amount;
+        leftServo.changeTargetRotation(amount);
     }
 
     public void changeRightTargetRotation(double amount) {
-        rightTargetRotation += amount;
+        rightServo.changeTargetRotation(amount);
     }
 
     public void twistGrabber(double degrees) {
@@ -174,5 +105,14 @@ public class Diffy {
 
     public double getGrabberRotation() {
         return grabberRotation;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public String log() {
+        return String.format("Left Servo: %s\nRight Servo: %s\nGrabber Twist: %f\nGrabber Rotation: %f",
+                leftServo.log(),
+                rightServo.log(),
+                grabberTwist,
+                grabberRotation);
     }
 }
