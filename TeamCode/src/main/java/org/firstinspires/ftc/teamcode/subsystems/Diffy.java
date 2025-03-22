@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.annotation.SuppressLint;
-
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -80,6 +79,11 @@ public class Diffy {
 
     public void changeRightTargetRotation(double amount) {
         rightServo.changeTargetRotation(amount);
+    }
+
+    public void setPosition(double leftTarget, double rightTarget) {
+        setLeftTargetRotation(leftTarget);
+        setRightTargetRotation(rightTarget);
     }
 
     public void twistGrabber(double degrees) {
