@@ -10,7 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
 
 @TeleOp(name = "Horiz Slides Test", group = "test")
 public class HorizontalSlidesTest extends LinearOpMode {
-
+    public static int DEGREE_INCREMENT = 15;
+    public static double MAX_MANUAL_POWER = 0.5;
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -18,7 +19,6 @@ public class HorizontalSlidesTest extends LinearOpMode {
         slides.setManualMode(true);
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         boolean manualMode = false;
-        double maxPower = 0.5;
 
         waitForStart();
 
@@ -32,12 +32,12 @@ public class HorizontalSlidesTest extends LinearOpMode {
             }
 
             if(manualMode) {
-                if (gamepads.isHeld(-1,"left_dpad")) slides.setManualPower(-maxPower);
-                else if (gamepads.isHeld(-1,"right_dpad")) slides.setManualPower(maxPower);
+                if (gamepads.isHeld(-1,"left_dpad")) slides.setManualPower(-MAX_MANUAL_POWER);
+                else if (gamepads.isHeld(-1,"right_dpad")) slides.setManualPower(MAX_MANUAL_POWER);
                 else slides.setManualPower(0);
             } else {
-                if (gamepads.isPressed("up_dpad")) slides.changeTargetRotation(10);
-                if (gamepads.isPressed("down_dpad")) slides.changeTargetRotation(-10);
+                if (gamepads.isPressed("up_dpad")) slides.changeTargetRotation(DEGREE_INCREMENT);
+                if (gamepads.isPressed("down_dpad")) slides.changeTargetRotation(-DEGREE_INCREMENT);
             }
 
             telemetry.addLine(slides.log());
