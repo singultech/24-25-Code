@@ -64,6 +64,11 @@ public class Diffy {
         setTargetRotation(Side.RIGHT, rightTarget);
     }
 
+    public void setTargetRotation(double target) {
+        setTargetRotation(Side.LEFT, target);
+        setTargetRotation(Side.RIGHT, target);
+    }
+
     public double getTargetRotation(Side side) {
         if (side == Side.LEFT) return leftServo.getTargetRotation();
         return rightServo.getTargetRotation();
@@ -78,8 +83,10 @@ public class Diffy {
         changeTargetRotation(Side.LEFT, leftAmount);
         changeTargetRotation(Side.RIGHT, rightAmount);
     }
-
-
+    public void changeTargetRotation(double amount) {
+        changeTargetRotation(Side.LEFT, amount);
+        changeTargetRotation(Side.RIGHT, amount);
+    }
 
     public void rollGrabber(double degrees) {
         double formattedRotation = degrees * 0.55555555;
