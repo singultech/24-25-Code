@@ -23,7 +23,7 @@ public class DiffyTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            diffy.update();
+
 
             if(gamepads.isPressed("triangle")) diffy.setManualMode(!diffy.isManualMode());
 
@@ -47,6 +47,7 @@ public class DiffyTest extends LinearOpMode {
             telemetry.addLine(diffy.log());
             telemetry.addLine(diffy.isManualMode() ? "Manual Mode" : "Auto Mode(Run to position)");
             telemetry.update();
+            diffy.update();
         }
     }
 }

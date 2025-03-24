@@ -16,8 +16,8 @@ public class CRAxonTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        CRServo crservo = hardwareMap.crservo.get("leftDiffy");
-        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "leftDiffyEncoder");
+        CRServo crservo = hardwareMap.crservo.get("rightDiffy");
+        AnalogInput encoder = hardwareMap.get(AnalogInput.class, "rightDiffyEncoder");
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
         RTPAxon servo = new RTPAxon(crservo, encoder);
         waitForStart();

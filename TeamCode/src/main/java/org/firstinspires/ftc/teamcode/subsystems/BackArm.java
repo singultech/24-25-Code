@@ -17,8 +17,8 @@ public class BackArm {
         leftServo = hmap.crservo.get("leftFlip");
         CRServo rServo = hmap.crservo.get("rightFlip");
         AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
-        rightServo = new RTPAxon(rServo, rightEncoder);
-        leftServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightServo = new RTPAxon(rServo, rightEncoder, RTPAxon.Direction.REVERSE);
+        leftServo.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void update() {
