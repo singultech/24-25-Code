@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.BackArm;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
-@TeleOp(name = "Back Arm Test")
+@TeleOp(name = "Back Arm Test", group = "test")
 public class BackArmTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,8 +29,8 @@ public class BackArmTest extends LinearOpMode {
             }
 
             if(manualMode) {
-                if (gamepads.isPressed("left_dpad")) backArm.setManualPower(-maxPower);
-                else if (gamepads.isPressed("right_dpad")) backArm.setManualPower(maxPower);
+                if (gamepads.isHeld(-1,"left_dpad")) backArm.setManualPower(-maxPower);
+                else if (gamepads.isHeld(-1, "right_dpad")) backArm.setManualPower(maxPower);
                 else backArm.setManualPower(0);
             } else {
                 if (gamepads.isPressed("up_dpad")) backArm.changeTargetRotation(10);

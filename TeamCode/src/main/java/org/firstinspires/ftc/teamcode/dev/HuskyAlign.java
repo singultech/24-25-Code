@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 import org.firstinspires.ftc.teamcode.subsystems.Huskylens;
 
-@Autonomous(name = "Husky Align", group = "Testing")
+@Autonomous(name = "Husky Align", group = "dev")
 public class HuskyAlign extends LinearOpMode {
     private MecanumDrive drive;
     private static final double CENTER_X = 160.0;

@@ -10,6 +10,11 @@ public class Diffy {
     private double grabberTwist;
     private double grabberRotation;
 
+    public enum Side {
+        LEFT,
+        RIGHT
+    }
+
     public Diffy(HardwareMap hmap) {
         leftServo = new RTPAxon(hmap.crservo.get("leftDiffy"), hmap.get(AnalogInput.class, "leftDiffyEncoder"), RTPAxon.Direction.REVERSE);
         rightServo = new RTPAxon(hmap.crservo.get("rightDiffy"), hmap.get(AnalogInput.class, "rightDiffyEncoder"), RTPAxon.Direction.FORWARD);
@@ -44,49 +49,43 @@ public class Diffy {
         rightServo.setMaxPower(power);
     }
 
-    public double getLeftRotation() {
-        return leftServo.getTotalRotation();
-    }
-
-    public double getRightRotation() {
+    public double getRotation(Side side) {
+        if (side == Side.LEFT) return leftServo.getTotalRotation();
         return rightServo.getTotalRotation();
     }
 
-    public void setLeftTargetRotation(double target) {
-        leftServo.setTargetRotation(target);
+    public void setTargetRotation(Side side, double target) {
+        if (side == Side.LEFT) leftServo.setTargetRotation(target);
+        else rightServo.setTargetRotation(target);
     }
 
-    public void setRightTargetRotation(double target) {
-        rightServo.setTargetRotation(target);
+    public void setTargetRotation(double leftTarget, double rightTarget) {
+        setTargetRotation(Side.LEFT, leftTarget);
+        setTargetRotation(Side.RIGHT, rightTarget);
     }
 
-    public double getLeftTargetRotation() {
-        return leftServo.getTargetRotation();
-    }
-
-    public double getRightTargetRotation() {
+    public double getTargetRotation(Side side) {
+        if (side == Side.LEFT) return leftServo.getTargetRotation();
         return rightServo.getTargetRotation();
     }
 
-    public void changeLeftTargetRotation(double amount) {
-        leftServo.changeTargetRotation(amount);
+    public void changeTargetRotation(Side side, double amount) {
+        if (side == Side.LEFT) leftServo.changeTargetRotation(amount);
+        else rightServo.changeTargetRotation(amount);
     }
 
-    public void changeRightTargetRotation(double amount) {
-        rightServo.changeTargetRotation(amount);
+    public void changeTargetRotation(double leftAmount, double rightAmount) {
+        changeTargetRotation(Side.LEFT, leftAmount);
+        changeTargetRotation(Side.RIGHT, rightAmount);
     }
 
-    public void setPosition(double leftTarget, double rightTarget) {
-        setLeftTargetRotation(leftTarget);
-        setRightTargetRotation(rightTarget);
-    }
+
 
     public void twistGrabber(double degrees) {
         double formattedRotation = degrees * 0.55555555;
         if (grabberTwist + degrees <= 90 && grabberTwist + degrees >= -90) {
             grabberTwist += degrees;
-            changeLeftTargetRotation(formattedRotation);
-            changeRightTargetRotation(-formattedRotation);
+            changeTargetRotation(formattedRotation, -formattedRotation);
         }
     }
 
@@ -97,8 +96,7 @@ public class Diffy {
     public void rotateGrabber(double degrees) {
         if (grabberRotation + degrees <= 315 && grabberRotation + degrees >= 0) {
             grabberRotation += degrees;
-            changeLeftTargetRotation(-degrees);
-            changeRightTargetRotation(-degrees);
+            changeTargetRotation(-degrees, -degrees);
         }
     }
 

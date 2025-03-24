@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
 
-@TeleOp(name = "Horiz Slides Test", group = "Dev")
+@TeleOp(name = "Horiz Slides Test", group = "test")
 public class HorizontalSlidesTest extends LinearOpMode {
 
     @Override
@@ -32,8 +32,8 @@ public class HorizontalSlidesTest extends LinearOpMode {
             }
 
             if(manualMode) {
-                if (gamepads.isPressed("left_dpad")) slides.setManualPower(-maxPower);
-                else if (gamepads.isPressed("right_dpad")) slides.setManualPower(maxPower);
+                if (gamepads.isHeld(-1,"left_dpad")) slides.setManualPower(-maxPower);
+                else if (gamepads.isHeld(-1,"right_dpad")) slides.setManualPower(maxPower);
                 else slides.setManualPower(0);
             } else {
                 if (gamepads.isPressed("up_dpad")) slides.changeTargetRotation(10);

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.teamcode.subsystems.RTPAxon;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
-@TeleOp(name = "Cont. Rotation Axon Test", group = "Testing")
+@TeleOp(name = "Cont. Rotation Axon Test", group = "test")
 public class CRAxonTest extends LinearOpMode {
 
     @Override

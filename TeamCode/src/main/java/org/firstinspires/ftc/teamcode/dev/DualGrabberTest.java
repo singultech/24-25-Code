@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 import org.firstinspires.ftc.teamcode.subsystems.RumbleEffects;
 
-@TeleOp(name = "Dual Grabber Test", group = "Dev")
+@TeleOp(name = "Dual Grabber Test", group = "test")
 public class DualGrabberTest extends LinearOpMode {
     @Override
     public void runOpMode() {
