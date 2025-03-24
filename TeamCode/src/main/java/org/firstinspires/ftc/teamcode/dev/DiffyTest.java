@@ -21,6 +21,9 @@ public class DiffyTest extends LinearOpMode {
         while (opModeIsActive()) {
             gamepads.copyStates();
             diffy.update();
+
+            if(gamepads.isPressed("triangle")) diffy.setManualMode(!diffy.isManualMode());
+
             if(diffy.isManualMode()) {
                 double verticalPower = gamepads.joystickValue(2, "left", "y");
                 double rotationPower = -gamepads.joystickValue(2, "right", "x");
@@ -32,10 +35,14 @@ public class DiffyTest extends LinearOpMode {
                 diffy.setRightPower(rightPower);
             }
             else {
-                if(gamepads.isPressed("dpad_right")) diffy.change
+                if(gamepads.isPressed("dpad_right")) diffy.changeTargetRotation(Diffy.Side.LEFT, 15);
+                if(gamepads.isPressed("dpad_left")) diffy.changeTargetRotation(Diffy.Side.LEFT, -15);
+                if(gamepads.isPressed("circle")) diffy.changeTargetRotation(Diffy.Side.RIGHT, 15);
+                if(gamepads.isPressed("square")) diffy.changeTargetRotation(Diffy.Side.RIGHT, -15);
             }
 
             telemetry.addLine(diffy.log());
+            telemetry.addLine(diffy.isManualMode() ? "Manual Mode" : "Auto Mode(Run to position)");
             telemetry.update();
         }
     }
