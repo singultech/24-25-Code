@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Diffy {
     private final RTPAxon leftServo;
     private final RTPAxon rightServo;
-    private double grabberTwist;
-    private double grabberRotation;
+    private double grabberRoll;
+    private double grabberPitch;
 
     public enum Side {
         LEFT,
@@ -18,8 +18,8 @@ public class Diffy {
     public Diffy(HardwareMap hmap) {
         leftServo = new RTPAxon(hmap.crservo.get("leftDiffy"), hmap.get(AnalogInput.class, "leftDiffyEncoder"), RTPAxon.Direction.REVERSE);
         rightServo = new RTPAxon(hmap.crservo.get("rightDiffy"), hmap.get(AnalogInput.class, "rightDiffyEncoder"), RTPAxon.Direction.FORWARD);
-        grabberTwist = 0;
-        grabberRotation = 315;
+        grabberRoll = 0;
+        grabberPitch = 315;
     }
 
     public void setLeftPower(double power) {
@@ -81,35 +81,35 @@ public class Diffy {
 
 
 
-    public void twistGrabber(double degrees) {
+    public void rollGrabber(double degrees) {
         double formattedRotation = degrees * 0.55555555;
-        if (grabberTwist + degrees <= 90 && grabberTwist + degrees >= -90) {
-            grabberTwist += degrees;
+        if (grabberRoll + degrees <= 90 && grabberRoll + degrees >= -90) {
+            grabberRoll += degrees;
             changeTargetRotation(formattedRotation, -formattedRotation);
         }
     }
 
-    public double getGrabberTwist() {
-        return grabberTwist;
+    public double getGrabberRoll() {
+        return grabberRoll;
     }
 
-    public void rotateGrabber(double degrees) {
-        if (grabberRotation + degrees <= 315 && grabberRotation + degrees >= 0) {
-            grabberRotation += degrees;
+    public void pitchGrabber(double degrees) {
+        if (grabberPitch + degrees <= 315 && grabberPitch + degrees >= 0) {
+            grabberPitch += degrees;
             changeTargetRotation(-degrees, -degrees);
         }
     }
 
-    public double getGrabberRotation() {
-        return grabberRotation;
+    public double getGrabberPitch() {
+        return grabberPitch;
     }
 
     @SuppressLint("DefaultLocale")
     public String log() {
-        return String.format("Left Servo: %s\nRight Servo: %s\nGrabber Twist: %f\nGrabber Rotation: %f",
+        return String.format("Left Servo: %s\nRight Servo: %s\nGrabber Roll: %f\nGrabber Pitch: %f",
                 leftServo.log(),
                 rightServo.log(),
-                grabberTwist,
-                grabberRotation);
+                grabberRoll,
+                grabberPitch);
     }
 }

@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 
 @TeleOp(name = "Back Arm Test", group = "test")
 public class BackArmTest extends LinearOpMode {
+
+    public static int DEGREE_INCREMENT = 15;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -33,8 +35,8 @@ public class BackArmTest extends LinearOpMode {
                 else if (gamepads.isHeld(-1, "right_dpad")) backArm.setManualPower(maxPower);
                 else backArm.setManualPower(0);
             } else {
-                if (gamepads.isPressed("up_dpad")) backArm.changeTargetRotation(10);
-                if (gamepads.isPressed("down_dpad")) backArm.changeTargetRotation(-10);
+                if (gamepads.isPressed("up_dpad")) backArm.changeTargetRotation(DEGREE_INCREMENT);
+                if (gamepads.isPressed("down_dpad")) backArm.changeTargetRotation(-DEGREE_INCREMENT);
             }
 
             telemetry.addLine(backArm.log());
