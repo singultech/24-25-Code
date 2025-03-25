@@ -12,7 +12,6 @@ public class GamepadPair {
     private final Gamepad currentGamepad2;
     private final Gamepad previousGamepad1;
     private final Gamepad previousGamepad2;
-    private boolean secondControllerEnabled = true;
 
     private final Map<String, Long> lastPressTime;
     private long defaultDebounceTime = 175;
@@ -139,7 +138,6 @@ public class GamepadPair {
     }
 
     public boolean isPressed(int gamepadNum, String buttonStr) {
-        if (gamepadNum == 2 && !secondControllerEnabled) return false;
 
         Button button = Button.fromString(buttonStr);
         boolean isButtonPressed = false;
@@ -150,10 +148,10 @@ public class GamepadPair {
             isButtonPressed = getButtonState(current, button) && !getButtonState(previous, button);
         } else {
             isButtonPressed = (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
-                    (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
+                    (getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
 
             if(getButtonState(gamepad1, button)) gamepadNum = 1;
-            else if(secondControllerEnabled && getButtonState(gamepad2, button)) gamepadNum = 2;
+            else if(getButtonState(gamepad2, button)) gamepadNum = 2;
             else return false;
         }
 
@@ -161,23 +159,11 @@ public class GamepadPair {
     }
 
     public boolean isPressed(String buttonStr) {
-
-        Button button = Button.fromString(buttonStr);
-        boolean isButtonPressed = false;
-
-        isButtonPressed = (getButtonState(gamepad1, button) && !getButtonState(previousGamepad1, button)) ||
-                (secondControllerEnabled && getButtonState(gamepad2, button) && !getButtonState(previousGamepad2, button));
-
-        int gamepadNum;
-        if(getButtonState(gamepad1, button)) gamepadNum = 1;
-        else if(secondControllerEnabled && getButtonState(gamepad2, button)) gamepadNum = 2;
-        else return false;
-
-        return isButtonPressed && isDebounced(buttonStr, gamepadNum);
+        return isPressed(1, buttonStr) || isPressed(2, buttonStr);
     }
 
+
     public boolean isHeld(int gamepadNum, String buttonStr) {
-        if (gamepadNum == 2 && !secondControllerEnabled) return false;
 
         Button button = Button.fromString(buttonStr);
         if (gamepadNum == 1 || gamepadNum == 2) {
@@ -185,11 +171,16 @@ public class GamepadPair {
         }
 
         return getButtonState(gamepad1, button) ||
-                (secondControllerEnabled && getButtonState(gamepad2, button));
+                getButtonState(gamepad2, button);
+    }
+
+    public boolean isHeld(String buttonStr){
+        Button button = Button.fromString(buttonStr);
+        return getButtonState(gamepad1, button) ||
+                getButtonState(gamepad2, button);
     }
 
     public float joystickValue(int gamepadNum, String joystick, String direction) {
-        if (gamepadNum == 2 && !secondControllerEnabled) return 0;
         validateGamepadNum(gamepadNum);
 
         Gamepad currentGamepad = getGamepad(gamepadNum);
@@ -213,7 +204,6 @@ public class GamepadPair {
     }
 
     public double getTrigger(int gamepadNum, String trigger) {
-        if (gamepadNum == 2 && !secondControllerEnabled) return 0;
         validateGamepadNum(gamepadNum);
 
         Gamepad currentGamepad = getGamepad(gamepadNum);
@@ -225,60 +215,47 @@ public class GamepadPair {
     }
 
     public void setLed(int gamepadNum, double r, double g, double b) {
-        if (gamepadNum == 1 || (gamepadNum == 2 && secondControllerEnabled)) {
+        if (gamepadNum == 1 || gamepadNum == 2) {
             getGamepad(gamepadNum).setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
-        } else if (gamepadNum != 2) {
-            gamepad1.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
-            if (secondControllerEnabled) {
-                gamepad2.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
-            }
         }
     }
 
     public void blipRumble(int gamepadNum, int blips) {
         if (gamepadNum == 1) {
             gamepad1.rumbleBlips(blips);
-        } else if (gamepadNum == 2 && secondControllerEnabled) {
+        } else {
             gamepad2.rumbleBlips(blips);
-        } else if (gamepadNum != 2) {
-            gamepad1.rumbleBlips(blips);
-            if (secondControllerEnabled) {
-                gamepad2.rumbleBlips(blips);
-            }
         }
+    }
+
+    public void blipRumble(int blips){
+        gamepad1.rumbleBlips(blips);
+        gamepad2.rumbleBlips(blips);
     }
 
     public void rumble(int gamepadNum, int milliseconds) {
         if (gamepadNum == 1) {
             gamepad1.rumble(milliseconds);
-        } else if (gamepadNum == 2 && secondControllerEnabled) {
+        } else if (gamepadNum == 2) {
             gamepad2.rumble(milliseconds);
-        } else if (gamepadNum != 2) {
-            gamepad1.rumble(milliseconds);
-            if (secondControllerEnabled) {
-                gamepad2.rumble(milliseconds);
-            }
         }
+    }
+
+    public void rumble(int milliseconds){
+        gamepad1.rumble(milliseconds);
+        gamepad2.rumble(milliseconds);
     }
 
     public void rumble(int gamepadNum, Gamepad.RumbleEffect effect) {
         if (gamepadNum == 1) {
             gamepad1.runRumbleEffect(effect);
-        } else if (gamepadNum == 2 && secondControllerEnabled) {
+        } else if (gamepadNum == 2) {
             gamepad2.runRumbleEffect(effect);
-        } else if (gamepadNum != 2) {
-            gamepad1.runRumbleEffect(effect);
-            if (secondControllerEnabled) {
-                gamepad2.runRumbleEffect(effect);
-            }
         }
     }
 
-    public void setSecondControllerState(boolean state) {
-        secondControllerEnabled = state;
-    }
-
-    public boolean getSecondControllerState() {
-        return secondControllerEnabled;
+    public void rumble(Gamepad.RumbleEffect effect){
+        gamepad1.runRumbleEffect(effect);
+        gamepad2.runRumbleEffect(effect);
     }
 }
