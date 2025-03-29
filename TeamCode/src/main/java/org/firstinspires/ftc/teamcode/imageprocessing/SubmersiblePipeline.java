@@ -5,86 +5,80 @@ import java.util.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+class RectangleCorners {
+    public Point topLeft, topRight, bottomRight, bottomLeft;
+
+    public RectangleCorners(Point[] points) {
+        if (points.length == 4) {
+            this.topLeft = points[0];
+            this.topRight = points[1];
+            this.bottomRight = points[2];
+            this.bottomLeft = points[3];
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "TL: " + topLeft + ", TR: " + topRight +
+                ", BR: " + bottomRight + ", BL: " + bottomLeft;
+    }
+}
+
 public class SubmersiblePipeline extends OpenCvPipeline {
+
+    private final ArrayList<RectangleCorners> detectedRectangles = new ArrayList<>();
+    private final Mat rgbaBinaryMat = new Mat();
+    private final Mat hierarchy = new Mat();
+    private final ArrayList<MatOfPoint> contours = new ArrayList<>();
+    private final ArrayList<MatOfPoint> contoursByArea = new ArrayList<>();
+    private final MatOfPoint2f contour2f = new MatOfPoint2f();
 
     public Scalar lowerRGBA = new Scalar(176.0, 0.0, 0.0, 0.0);
     public Scalar upperRGBA = new Scalar(255.0, 255.0, 255.0, 255.0);
-    private Mat rgbaBinaryMat = new Mat();
-
-    private ArrayList<MatOfPoint> contours = new ArrayList<>();
-    private Mat hierarchy = new Mat();
-
-    public int minArea = 10;
-    public int maxArea = 1000;
-    private ArrayList<MatOfPoint> contoursByArea = new ArrayList<>();
-
-    private MatOfPoint2f contoursByArea2f = new MatOfPoint2f();
-    private ArrayList<RotatedRect> contoursByAreaRotRects = new ArrayList<>();
-
     public Scalar lineColor = new Scalar(0.0, 255.0, 0.0, 0.0);
     public int lineThickness = 3;
-
-    private Mat inputRotRects = new Mat();
-
-    private MatOfPoint biggestContour = null;
+    public int minArea = 10;
+    public int maxArea = 1000;
 
     @Override
     public Mat processFrame(Mat input) {
+        // Thresholding
         Core.inRange(input, lowerRGBA, upperRGBA, rgbaBinaryMat);
 
+        // Find contours
         contours.clear();
-        hierarchy.release();
         Imgproc.findContours(rgbaBinaryMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
+        // Filter by area
         contoursByArea.clear();
-        for(MatOfPoint contour : contours) {
+        for (MatOfPoint contour : contours) {
             double area = Imgproc.contourArea(contour);
-            if((area >= minArea) && (area <= maxArea)) {
+            if (area >= minArea && area <= maxArea) {
                 contoursByArea.add(contour);
             }
         }
 
-        contoursByAreaRotRects.clear();
-        for(MatOfPoint points : contoursByArea) {
-            contoursByArea2f.release();
-            points.convertTo(contoursByArea2f, CvType.CV_32F);
+        // Process filtered contours
+        detectedRectangles.clear();
+        for (MatOfPoint contour : contoursByArea) {
+            contour.convertTo(contour2f, CvType.CV_32F);
+            RotatedRect rect = Imgproc.minAreaRect(contour2f);
 
-            contoursByAreaRotRects.add(Imgproc.minAreaRect(contoursByArea2f));
-        }
+            // Extract and store rectangle corners
+            Point[] rectPoints = new Point[4];
+            rect.points(rectPoints);
+            detectedRectangles.add(new RectangleCorners(rectPoints));
 
-        input.copyTo(inputRotRects);
-        for(RotatedRect rect : contoursByAreaRotRects) {
-            if(rect != null) {
-                Point[] rectPoints = new Point[4];
-                rect.points(rectPoints);
-                MatOfPoint matOfPoint = new MatOfPoint(rectPoints);
-
-                Imgproc.polylines(inputRotRects, Collections.singletonList(matOfPoint), true, lineColor, lineThickness);
+            // Draw rectangle
+            for (int i = 0; i < 4; i++) {
+                Imgproc.line(input, rectPoints[i], rectPoints[(i + 1) % 4], lineColor, lineThickness);
             }
         }
 
-        this.biggestContour = null;
-        for(MatOfPoint contour : contoursByArea) {
-            if((biggestContour == null) || (Imgproc.contourArea(contour) > Imgproc.contourArea(biggestContour))) {
-                this.biggestContour = contour;
-            }
-        }
+        return input;
+    }
 
-        if(biggestContour != null) {
-            Rect boundingRect = Imgproc.boundingRect(biggestContour);
-
-            double centroidX = (boundingRect.tl().x + boundingRect.br().x) / 2;
-            double centroidY = (boundingRect.tl().y + boundingRect.br().y) / 2;
-
-            Point centroid = new Point(centroidX, centroidY);
-            double contourArea = Imgproc.contourArea(biggestContour);
-
-            Scalar crosshairCol = new Scalar(0.0, 255.0, 0.0);
-
-            Imgproc.line(inputRotRects, new Point(centroidX - 10, centroidY), new Point(centroidX + 10, centroidY), crosshairCol, 5);
-            Imgproc.line(inputRotRects, new Point(centroidX, centroidY - 10), new Point(centroidX, centroidY + 10), crosshairCol, 5);
-        }
-
-        return inputRotRects;
+    public ArrayList<RectangleCorners> getDetectedRectangles() {
+        return detectedRectangles;
     }
 }
