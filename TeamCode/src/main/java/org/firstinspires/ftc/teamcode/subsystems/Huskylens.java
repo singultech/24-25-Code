@@ -24,4 +24,12 @@ public class Huskylens {
         return huskyLens.blocks();
     }
 
+    public HuskyLens.Block getBiggestBlock() {
+        HuskyLens.Block biggest = huskyLens.blocks()[0];
+        for (HuskyLens.Block block : huskyLens.blocks()){
+            if((block.height*block.width)>=(biggest.height*biggest.width)) biggest = block;
+        }
+        return biggest;
+    }
+
 }

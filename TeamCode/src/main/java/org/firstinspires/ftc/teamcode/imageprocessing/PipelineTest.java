@@ -105,7 +105,6 @@ public class PipelineTest extends LinearOpMode {
             telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
             telemetry.addLine("RECTANGLE 1: ");
-            telemetry.addLine(pipeline.getDetectedRectangles().get(0).toString());
             telemetry.update();
 
             /*

@@ -5,34 +5,63 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class FrontArm {
     private final Servo armServo;
-    private final double forwardPosition;
-    private final double backPosition;
-    private double currentPos;
+    private final Servo wristServo;
+
+
+    private final double ARM_FORWARD_POSITION = 1;
+    private final double ARM_BACK_POSITION = 0;
+    private final double WRIST_FORWARD_POSITION = 1;
+    private final double WRIST_BACK_POSITION = 0;
+
+
+    private double currentArmPos;
+    private double currentWristPos;
 
     public FrontArm(HardwareMap hmap){
         armServo = hmap.servo.get("frontFlip");
+        wristServo = hmap.servo.get("frontWrist");
         armServo.setDirection(Servo.Direction.REVERSE);
-        forwardPosition = 1;
-        backPosition = 0;
     }
 
-    public void forward(){
-        setPosition(forwardPosition);
+    public void armForward(){
+        setArmPosition(ARM_FORWARD_POSITION);
     }
 
-    public void back(){
-        setPosition(backPosition);
+    public void armBack(){
+        setArmPosition(ARM_BACK_POSITION);
     }
 
-    public boolean isForward(){ return (currentPos == 1); }
+    public boolean isArmForward(){ return (currentArmPos == ARM_FORWARD_POSITION); }
 
-    public boolean isBack(){ return (currentPos == backPosition);}
+    public boolean isArmBack(){ return (currentArmPos == ARM_BACK_POSITION);}
 
-    public void setPosition(double position){
+    public void setArmPosition(double position){
         if(position >= 0 && position <= 1) {
             armServo.setPosition(position);
-            currentPos = position;
+            currentArmPos = position;
         }
     }
-    public double getSetPosition(){return currentPos;}
+    public double getArmPosition(){return currentArmPos;}
+
+    public void wristForward(){
+        setWristPosition(WRIST_FORWARD_POSITION);
+    }
+
+    public void wristBack(){
+        setWristPosition(WRIST_BACK_POSITION);
+    }
+
+    public boolean isWristForward(){ return (currentWristPos == WRIST_FORWARD_POSITION); }
+
+    public boolean isWristBack(){ return (currentWristPos == WRIST_BACK_POSITION);}
+
+    public void setWristPosition(double position){
+        if(position >= 0 && position <= 1) {
+            wristServo.setPosition(position);
+            currentWristPos = position;
+        }
+    }
+    public double getWristPosition(){return currentWristPos;}
+
+
 }

@@ -49,6 +49,8 @@ public class SubmersiblePipeline extends OpenCvPipeline {
         contours.clear();
         Imgproc.findContours(rgbaBinaryMat, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
+        System.out.println("Total contours found: " + contours.size());
+
         // Filter by area
         contoursByArea.clear();
         for (MatOfPoint contour : contours) {
@@ -58,25 +60,34 @@ public class SubmersiblePipeline extends OpenCvPipeline {
             }
         }
 
+        System.out.println("Contours within area range: " + contoursByArea.size());
+
         // Process filtered contours
         detectedRectangles.clear();
         for (MatOfPoint contour : contoursByArea) {
             contour.convertTo(contour2f, CvType.CV_32F);
-            RotatedRect rect = Imgproc.minAreaRect(contour2f);
 
-            // Extract and store rectangle corners
+            if (contour2f.rows() < 4) { // Ensure valid shape
+                continue;
+            }
+
+            RotatedRect rect = Imgproc.minAreaRect(contour2f);
             Point[] rectPoints = new Point[4];
             rect.points(rectPoints);
-            detectedRectangles.add(new RectangleCorners(rectPoints));
 
-            // Draw rectangle
-            for (int i = 0; i < 4; i++) {
-                Imgproc.line(input, rectPoints[i], rectPoints[(i + 1) % 4], lineColor, lineThickness);
+            if (rectPoints.length == 4) { // Ensure we have all 4 points
+                detectedRectangles.add(new RectangleCorners(rectPoints));
+
+                // Draw rectangle
+                for (int i = 0; i < 4; i++) {
+                    Imgproc.line(input, rectPoints[i], rectPoints[(i + 1) % 4], lineColor, lineThickness);
+                }
             }
         }
 
         return input;
     }
+
 
     public ArrayList<RectangleCorners> getDetectedRectangles() {
         return detectedRectangles;
