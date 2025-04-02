@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -146,5 +150,12 @@ public class VertSlidePair {
                 Thread.currentThread().interrupt();
             }
         }).start();
+    }
+
+    @NonNull
+    @SuppressLint("DefaultLocale")
+    public String toString(){
+        String log = "Vertical Slide Pair:\nLeft Target: %f, Left Current: %f\nRight Target: %f, Right Current: %f";
+        return String.format(log ,leftSlide.getTargetPosition(), leftSlide.getCurrentPosition(), rightSlide.getTargetPosition(), rightSlide.getCurrentPosition());
     }
 }
