@@ -8,9 +8,9 @@ public class Hook {
     private HookPosition hookPosition;
 
     public enum HookPosition {
-        UP(1.0),
+        UP(0.5),
         DOWN(0.0),
-        STANDBY(0.5);
+        STANDBY(0.1);
 
         private final double position;
 

@@ -12,10 +12,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class VertSlidePair {
     DcMotorEx rightSlide;
     DcMotorEx leftSlide;
+    Hook leftHook;
+    Hook rightHook;
     private static final int MAX_HEIGHT = 3000;
     private SlidePosition leftPreset = SlidePosition.ZERO;
     private SlidePosition rightPreset = SlidePosition.ZERO;
@@ -34,7 +37,7 @@ public class VertSlidePair {
             return slidePosition;
         }
     }
-    public enum SlideSide{
+    public enum Side {
         LEFT,
         RIGHT
     }
@@ -42,6 +45,8 @@ public class VertSlidePair {
     public VertSlidePair(double startingPower, HardwareMap hmap){
         rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
         leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
+        leftHook = new Hook(hmap.get(Servo.class, "leftHook"));
+        rightHook = new Hook(hmap.get(Servo.class, "rightHook"));
         setPower(startingPower);
         init();
     }
@@ -59,36 +64,36 @@ public class VertSlidePair {
 
     }
 
-    public void setTargetPosition(SlideSide side, SlidePosition preset){
-        if (side == SlideSide.LEFT) leftPreset = preset;
+    public void setTargetPosition(Side side, SlidePosition preset){
+        if (side == Side.LEFT) leftPreset = preset;
         else rightPreset = preset;
         setTargetPosition(side, preset.getValue());
     }
     public void setTargetPosition(SlidePosition preset){
-        setTargetPosition(SlideSide.LEFT, preset);
-        setTargetPosition(SlideSide.RIGHT, preset);
+        setTargetPosition(Side.LEFT, preset);
+        setTargetPosition(Side.RIGHT, preset);
     }
-    public void setTargetPosition(SlideSide side, int position){
+    public void setTargetPosition(Side side, int position){
         DcMotorEx slide;
-        if(side == SlideSide.LEFT) slide = leftSlide;
+        if(side == Side.LEFT) slide = leftSlide;
         else slide = rightSlide;
         int pos = Math.max(0, Math.min(MAX_HEIGHT, position));
         slide.setTargetPosition(pos);
     }
     public void setTargetPosition(int position){
-        setTargetPosition(SlideSide.LEFT, position);
-        setTargetPosition(SlideSide.RIGHT, position);
+        setTargetPosition(Side.LEFT, position);
+        setTargetPosition(Side.RIGHT, position);
     }
-    public void changeTargetPosition(SlideSide side, int amt){
+    public void changeTargetPosition(Side side, int amt){
         setTargetPosition(side, getTargetPosition(side) + amt);
     }
     public void changeTargetPosition(int amt){
-        changeTargetPosition(SlideSide.LEFT, amt);
-        changeTargetPosition(SlideSide.RIGHT, amt);
+        changeTargetPosition(Side.LEFT, amt);
+        changeTargetPosition(Side.RIGHT, amt);
     }
 
-    public void setPower(SlideSide side, double p){
-        if(side == SlideSide.LEFT) {
+    public void setPower(Side side, double p){
+        if(side == Side.LEFT) {
             leftSlide.setPower(Math.max(-1, Math.min(1, p)));
         }
         else {
@@ -96,30 +101,30 @@ public class VertSlidePair {
         }
     }
     public void setPower(double p){
-        setPower(SlideSide.LEFT, p);
-        setPower(SlideSide.RIGHT, p);
+        setPower(Side.LEFT, p);
+        setPower(Side.RIGHT, p);
     }
 
-    public double getPower(SlideSide side) {
-        if (side == SlideSide.LEFT) return leftSlide.getPower();
+    public double getPower(Side side) {
+        if (side == Side.LEFT) return leftSlide.getPower();
         else return rightSlide.getPower();
     }
 
-    public boolean isActive(SlideSide side){
-        if (side == SlideSide.LEFT) return (leftSlide.getPower() > 0);
+    public boolean isActive(Side side){
+        if (side == Side.LEFT) return (leftSlide.getPower() > 0);
         else return (rightSlide.getPower() > 0);
     }
 
-    public int getTargetPosition(SlideSide side){
-        if (side == SlideSide.LEFT) return leftSlide.getTargetPosition();
+    public int getTargetPosition(Side side){
+        if (side == Side.LEFT) return leftSlide.getTargetPosition();
         else return rightSlide.getTargetPosition();
     }
-    public int getPosition(SlideSide side){
-        if (side == SlideSide.LEFT) return leftSlide.getCurrentPosition();
+    public int getPosition(Side side){
+        if (side == Side.LEFT) return leftSlide.getCurrentPosition();
         else return rightSlide.getCurrentPosition();
     }
-    public SlidePosition getPreset(SlideSide side){
-        if (side == SlideSide.LEFT) return leftPreset;
+    public SlidePosition getPreset(Side side){
+        if (side == Side.LEFT) return leftPreset;
         else return rightPreset;
     }
 
@@ -129,7 +134,7 @@ public class VertSlidePair {
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-    public void performTimedMove(SlideSide side, int changeOfPosition, Integer finalPosition, long waitTimeMillis) {
+    public void performTimedMove(Side side, int changeOfPosition, Integer finalPosition, long waitTimeMillis) {
         int startPosition = getPosition(side);
         int positionToGo = startPosition + changeOfPosition;
         new Thread(() -> {
@@ -154,6 +159,19 @@ public class VertSlidePair {
                 Thread.currentThread().interrupt();
             }
         }).start();
+    }
+
+    public void setHook(Side side, Hook.HookPosition position){
+        if (side == Side.LEFT) leftHook.setPosition(position);
+        else rightHook.setPosition(position);
+    }
+    public void setHook(Hook.HookPosition position){
+        setHook(Side.LEFT, position);
+        setHook(Side.RIGHT, position);
+    }
+    public Hook.HookPosition getHook(Side side){
+        if (side == Side.LEFT) return leftHook.getPosition();
+        else return rightHook.getPosition();
     }
 
     @NonNull
@@ -181,30 +199,30 @@ public class VertSlidePair {
                     slides.resetPosition();
                 }
                 if (gamepads.isPressed("right_bumper")){
-                    if (slides.isActive(VertSlidePair.SlideSide.RIGHT)){
-                        slides.setPower(VertSlidePair.SlideSide.RIGHT, 0);
+                    if (slides.isActive(Side.RIGHT)){
+                        slides.setPower(Side.RIGHT, 0);
                     } else{
-                        slides.setPower(VertSlidePair.SlideSide.RIGHT, SLIDE_POWER);
+                        slides.setPower(Side.RIGHT, SLIDE_POWER);
                     }
                 }
                 if (gamepads.isPressed("left_bumper")){
-                    if (slides.isActive(VertSlidePair.SlideSide.LEFT)){
-                        slides.setPower(VertSlidePair.SlideSide.LEFT, 0);
+                    if (slides.isActive(Side.LEFT)){
+                        slides.setPower(Side.LEFT, 0);
                     } else{
-                        slides.setPower(VertSlidePair.SlideSide.LEFT, SLIDE_POWER);
+                        slides.setPower(Side.LEFT, SLIDE_POWER);
                     }
                 }
                 if (gamepads.isHeld("dpad_up")){
-                    slides.changeTargetPosition(VertSlidePair.SlideSide.LEFT,50);
+                    slides.changeTargetPosition(Side.LEFT,50);
                 }
                 if (gamepads.isHeld("dpad_down")){
-                    slides.changeTargetPosition(VertSlidePair.SlideSide.LEFT,-50);
+                    slides.changeTargetPosition(Side.LEFT,-50);
                 }
                 if (gamepads.isHeld("triangle")){
-                    slides.changeTargetPosition(VertSlidePair.SlideSide.RIGHT,50);
+                    slides.changeTargetPosition(Side.RIGHT,50);
                 }
                 if (gamepads.isHeld("cross")){
-                    slides.changeTargetPosition(VertSlidePair.SlideSide.RIGHT,-50);
+                    slides.changeTargetPosition(Side.RIGHT,-50);
                 }
                 //if (gamepads.isPressed(1, "cross")){
                 //slides.performCycleMove(2000, 3000);
