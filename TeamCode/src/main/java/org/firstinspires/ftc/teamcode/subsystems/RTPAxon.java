@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.annotation.SuppressLint;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 
@@ -119,5 +123,37 @@ public class RTPAxon {
     @SuppressLint("DefaultLocale")
     public String log(){
         return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f\nCurrent Power: %f", getCurrentAngle(), totalRotation, targetRotation, power);
+    }
+
+
+    @TeleOp(name = "Cont. Rotation Axon Test", group = "test")
+    public static class CRAxonTest extends LinearOpMode {
+
+        @Override
+        public void runOpMode() throws InterruptedException {
+            telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+            CRServo crservo = hardwareMap.crservo.get("rightDiffy");
+            AnalogInput encoder = hardwareMap.get(AnalogInput.class, "rightDiffyEncoder");
+            GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
+            RTPAxon servo = new RTPAxon(crservo, encoder);
+            waitForStart();
+            while (!isStopRequested()) {
+                gamepads.copyStates();
+                servo.update();
+
+                if(gamepads.isPressed(-1, "dpad_up")){
+                    servo.changeTargetRotation(15);
+                }
+                if(gamepads.isPressed(-1, "dpad_down")){
+                    servo.changeTargetRotation(-15);
+                }
+                if(gamepads.isPressed(-1, "cross")){
+                    servo.setTargetRotation(0);
+                }
+
+                telemetry.addLine(servo.log());
+                telemetry.update();
+            }
+        }
     }
 }

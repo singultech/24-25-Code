@@ -224,9 +224,6 @@ public class VertSlidePair {
                 if (gamepads.isHeld("cross")){
                     slides.changeTargetPosition(Side.RIGHT,-50);
                 }
-                //if (gamepads.isPressed(1, "cross")){
-                //slides.performCycleMove(2000, 3000);
-                //}
 
                 telemetry.addLine("Use the D-pad and up and down face buttons to control the slides.");
                 telemetry.addLine("Press ▣ to reset the slides position to 0.");
