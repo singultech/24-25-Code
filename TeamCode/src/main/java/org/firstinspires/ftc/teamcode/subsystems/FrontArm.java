@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.annotation.SuppressLint;
+
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,62 +14,56 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class FrontArm {
     private final Servo armServo;
     private final Servo wristServo;
+    private Position currentPosition;
 
-
-    private final double ARM_FORWARD_POSITION = 1;
-    private final double ARM_BACK_POSITION = 0;
-    private final double WRIST_FORWARD_POSITION = 1;
-    private final double WRIST_BACK_POSITION = 0;
-
-
-    private double currentArmPos;
-    private double currentWristPos;
+    public enum Position {
+        GRAB_FROM_WALL(0,0),
+        HANG_SPECIMEN(0,0),
+        HANG_BASKET(0,0);
+        private final double armPosition;
+        private final double wristPosition;
+        Position(double armPosition, double wristPosition){
+            this.armPosition = armPosition;
+            this.wristPosition = wristPosition;
+        }
+        public double getArmPosition(){
+            return armPosition;
+        }
+        public double getWristPosition(){
+            return wristPosition;
+        }
+    }
 
     public FrontArm(HardwareMap hmap){
-        armServo = hmap.servo.get("frontFlip");
+        armServo = hmap.servo.get("frontArm");
         wristServo = hmap.servo.get("frontWrist");
         armServo.setDirection(Servo.Direction.REVERSE);
     }
 
-    public void armForward(){
-        setArmPosition(ARM_FORWARD_POSITION);
+    public void setPosition(Position position){
+        setArmPosition(position.getArmPosition());
+        setWristPosition(position.getWristPosition());
+        currentPosition = position;
     }
 
-    public void armBack(){
-        setArmPosition(ARM_BACK_POSITION);
-    }
+    public Position getPosition(){return currentPosition;}
 
-    public boolean isArmForward(){ return (currentArmPos == ARM_FORWARD_POSITION); }
-
-    public boolean isArmBack(){ return (currentArmPos == ARM_BACK_POSITION);}
-
-    public void setArmPosition(double position){
+    private void setArmPosition(double position){
         if(position >= 0 && position <= 1) {
             armServo.setPosition(position);
-            currentArmPos = position;
         }
     }
-    public double getArmPosition(){return currentArmPos;}
-
-    public void wristForward(){
-        setWristPosition(WRIST_FORWARD_POSITION);
-    }
-
-    public void wristBack(){
-        setWristPosition(WRIST_BACK_POSITION);
-    }
-
-    public boolean isWristForward(){ return (currentWristPos == WRIST_FORWARD_POSITION); }
-
-    public boolean isWristBack(){ return (currentWristPos == WRIST_BACK_POSITION);}
-
-    public void setWristPosition(double position){
+    private void setWristPosition(double position){
         if(position >= 0 && position <= 1) {
             wristServo.setPosition(position);
-            currentWristPos = position;
         }
     }
-    public double getWristPosition(){return currentWristPos;}
+
+    @NonNull
+    @SuppressLint("DefaultLocale")
+    public String toString(){
+        return String.format("Front Arm/Wrist Position: %s", getPosition());
+    }
 
     @TeleOp(name = "FrontArmTest")
     public static class FrontArmTest extends LinearOpMode {
@@ -79,13 +77,11 @@ public class FrontArm {
             while (!isStopRequested()) {
                 gamepads.copyStates();
 
-                if (gamepads.isPressed("up_dpad")) frontArm.armForward();
-                if (gamepads.isPressed("down_dpad")) frontArm.armBack();
-                if (gamepads.isPressed("right_dpad")) frontArm.wristForward();
-                if (gamepads.isPressed("left_dpad")) frontArm.wristBack();
+                if (gamepads.isPressed("up_dpad")) frontArm.setPosition(FrontArm.Position.HANG_SPECIMEN);
+                if (gamepads.isPressed("down_dpad")) frontArm.setPosition(Position.GRAB_FROM_WALL);
+                if (gamepads.isPressed("right_dpad")) frontArm.setPosition(Position.HANG_BASKET);
 
-                telemetry.addData("Frontarm position", frontArm.isArmForward() ? "forward" : "back");
-                telemetry.addData("Wrist position", frontArm.isWristForward() ? "forward" : "back");
+                telemetry.addLine(frontArm.toString());
                 telemetry.update();
             }
         }

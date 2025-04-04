@@ -14,7 +14,7 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Servo servo = hardwareMap.get(Servo.class, "leftHook");
+        Servo servo = hardwareMap.get(Servo.class, "frontArm");
 
         waitForStart();
         while (!isStopRequested()) {
