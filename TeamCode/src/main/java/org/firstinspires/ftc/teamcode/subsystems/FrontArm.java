@@ -17,7 +17,7 @@ public class FrontArm {
     private Position currentPosition;
 
     public enum Position {
-        GRAB_FROM_WALL(0.23,0),
+        GRAB_FROM_WALL(0.23,0.63),
         HANG_SPECIMEN(0,0),
         HANG_BASKET(0.95,0);
         private final double armPosition;
