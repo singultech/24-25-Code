@@ -29,8 +29,10 @@ public class Diffy {
         rServo.setDirection(DcMotorSimple.Direction.REVERSE);
         leftServo = new RTPAxon(lServo, hmap.get(AnalogInput.class, "leftDiffyEncoder"), RTPAxon.Direction.REVERSE);
         rightServo = new RTPAxon(rServo, hmap.get(AnalogInput.class, "rightDiffyEncoder"));
+//        leftServo.setK(0.03);
+//        rightServo.setK(0.03);
         grabberRoll = 0;
-        grabberPitch = 315;
+        grabberPitch = 0;
     }
 
     public void setLeftPower(double power) {
@@ -114,12 +116,17 @@ public class Diffy {
     public void pitchGrabber(double degrees) {
         if (grabberPitch + degrees <= 315 && grabberPitch + degrees >= 0) {
             grabberPitch += degrees;
-            changeTargetRotation(-degrees, -degrees);
+            changeTargetRotation(degrees, degrees);
         }
     }
 
+
     public double getGrabberPitch() {
         return grabberPitch;
+    }
+
+    public boolean isAtTarget() {
+        return leftServo.isAtTarget() && rightServo.isAtTarget();
     }
 
     @SuppressLint("DefaultLocale")

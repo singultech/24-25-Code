@@ -20,8 +20,8 @@ public class BackArm {
     private final double GEAR_RATIO = 3; // 3:1
 
     public BackArm(HardwareMap hmap) {
-        leftServo = hmap.crservo.get("leftFlip");
-        CRServo rServo = hmap.crservo.get("rightFlip");
+        leftServo = hmap.crservo.get("leftBackArm");
+        CRServo rServo = hmap.crservo.get("rightBackArm");
         AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
         rightServo = new RTPAxon(rServo, rightEncoder, RTPAxon.Direction.REVERSE);
         leftServo.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -73,6 +73,10 @@ public class BackArm {
 
     public void setMaxPower(double power) {
         rightServo.setMaxPower(power);
+    }
+
+    public boolean isAtTarget() {
+        return rightServo.isAtTarget();
     }
 
     @NonNull

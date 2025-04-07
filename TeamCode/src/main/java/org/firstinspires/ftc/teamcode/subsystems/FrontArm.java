@@ -17,9 +17,9 @@ public class FrontArm {
     private Position currentPosition;
 
     public enum Position {
-        GRAB_FROM_WALL(0,0),
+        GRAB_FROM_WALL(0.23,0),
         HANG_SPECIMEN(0,0),
-        HANG_BASKET(0,0);
+        HANG_BASKET(0.95,0);
         private final double armPosition;
         private final double wristPosition;
         Position(double armPosition, double wristPosition){
@@ -35,8 +35,8 @@ public class FrontArm {
     }
 
     public FrontArm(HardwareMap hmap){
-        armServo = hmap.servo.get("frontArm");
-        wristServo = hmap.servo.get("frontWrist");
+        armServo = hmap.servo.get("frontArmServo");
+        wristServo = hmap.servo.get("wristServo");
         armServo.setDirection(Servo.Direction.REVERSE);
     }
 

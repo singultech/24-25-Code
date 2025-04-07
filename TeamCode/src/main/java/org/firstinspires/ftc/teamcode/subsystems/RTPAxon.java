@@ -96,6 +96,9 @@ public class RTPAxon {
         if (servoEncoder == null) return 0;
         return (servoEncoder.getVoltage() / 3.3) * (direction.equals(Direction.REVERSE) ? -360 : 360);
     }
+    public boolean isAtTarget(){
+        return Math.abs(targetRotation - totalRotation) < 5;
+    }
     //endregion
 
     public synchronized void update() {

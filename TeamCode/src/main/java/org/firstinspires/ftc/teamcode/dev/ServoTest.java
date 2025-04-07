@@ -14,17 +14,22 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Servo servo = hardwareMap.get(Servo.class, "frontArm");
+        Servo servo = hardwareMap.get(Servo.class, "wristServo");
+        //servo.setDirection(Servo.Direction.REVERSE);
+        double targetPosition = 0.0;
 
         waitForStart();
         while (!isStopRequested()) {
-            if(gamepads.isPressed("cross")){
-                servo.setPosition(0.5);
+            if(gamepads.isPressed("dpad_right")){
+                targetPosition+=0.05;
             }
-            if(gamepads.isPressed("triangle")){
-                servo.setPosition(0.0);
+            if(gamepads.isPressed("dpad_left")){
+                targetPosition-=0.05;
             }
-
+            if(gamepads.isPressed("dpad_up")) targetPosition=0.95;
+            if(gamepads.isPressed("dpad_down")) targetPosition=0.23;
+            servo.setPosition(targetPosition);
+            telemetry.addData("Target Position", targetPosition);
             telemetry.update();
         }
     }
