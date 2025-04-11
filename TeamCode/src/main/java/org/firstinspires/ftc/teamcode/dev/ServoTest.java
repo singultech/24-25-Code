@@ -14,22 +14,31 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Servo servo = hardwareMap.get(Servo.class, "wristServo");
-        //servo.setDirection(Servo.Direction.REVERSE);
-        double targetPosition = 0.0;
+        Servo wristServo = hardwareMap.get(Servo.class, "wristServo");
+        Servo armServo = hardwareMap.get(Servo.class, "frontArmServo");
+        armServo.setDirection(Servo.Direction.REVERSE);
+        double wristTargetPosition = 0.0;
+        double armTargetPosition = 0.0;
+
 
         waitForStart();
         while (!isStopRequested()) {
             if(gamepads.isPressed("dpad_right")){
-                targetPosition+=0.05;
+                wristTargetPosition +=0.05;
             }
             if(gamepads.isPressed("dpad_left")){
-                targetPosition-=0.05;
+                wristTargetPosition -=0.05;
             }
-            if(gamepads.isPressed("dpad_up")) targetPosition=0.95;
-            if(gamepads.isPressed("dpad_down")) targetPosition=0.23;
-            servo.setPosition(targetPosition);
-            telemetry.addData("Target Position", targetPosition);
+            if(gamepads.isPressed("circle")){
+                armTargetPosition += 0.05;
+            }
+            if(gamepads.isPressed("square")){
+                armTargetPosition -= 0.05;
+            }
+            wristServo.setPosition(wristTargetPosition);
+            armServo.setPosition(armTargetPosition);
+            telemetry.addData("Wrist Target Position", wristTargetPosition);
+            telemetry.addData("Arm Target Position", armTargetPosition);
             telemetry.update();
         }
     }
