@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -19,7 +17,7 @@ public class VertSlidePair {
     DcMotorEx leftSlide;
     Hook leftHook;
     Hook rightHook;
-    private static final int MAX_HEIGHT = 3000;
+    private static final int MAX_HEIGHT = 4000;
     private SlidePosition leftPreset = SlidePosition.ZERO;
     private SlidePosition rightPreset = SlidePosition.ZERO;
 
@@ -43,8 +41,12 @@ public class VertSlidePair {
     }
 
     public VertSlidePair(double startingPower, HardwareMap hmap){
-        rightSlide = hmap.get(DcMotorEx.class, "rightSlide");
-        leftSlide = hmap.get(DcMotorEx.class, "leftSlide");
+        rightSlide = hmap.get(DcMotorEx.class, "leftSlide");
+        leftSlide = hmap.get(DcMotorEx.class, "rightSlide");
+        Servo rightHookServo = hmap.get(Servo.class, "rightHook");
+        rightHookServo.setDirection(Servo.Direction.REVERSE);
+
+
         leftHook = new Hook(hmap.get(Servo.class, "leftHook"));
         rightHook = new Hook(hmap.get(Servo.class, "rightHook"));
         setPower(startingPower);
@@ -128,6 +130,24 @@ public class VertSlidePair {
         else return rightPreset;
     }
 
+    private int getIndexOfPreset(SlidePosition preset){
+        for(int i = 0; i < SlidePosition.values().length; i++){
+            if(SlidePosition.values()[i] == preset) return i;
+        }
+        return -1;
+    }
+    public void incrementSlidePreset(Side side, int amount){
+        int currentPresetIndex = getIndexOfPreset(getPreset(side));
+        if (currentPresetIndex == -1) return;
+        if (currentPresetIndex + amount < 0 || currentPresetIndex + amount >= SlidePosition.values().length) return;
+        SlidePosition newPreset = SlidePosition.values()[currentPresetIndex + amount];
+        setTargetPosition(side, newPreset);
+    }
+    public void incrementSlidePreset(int amount){
+        incrementSlidePreset(Side.LEFT, amount);
+        incrementSlidePreset(Side.RIGHT, amount);
+    }
+
     public void resetPosition(){
         setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -175,10 +195,15 @@ public class VertSlidePair {
     }
 
     @NonNull
-    @SuppressLint("DefaultLocale")
+    @Override
     public String toString(){
-        String log = "Vertical Slide Pair:\nLeft Target: %f, Left Current: %f\nRight Target: %f, Right Current: %f";
-        return String.format(log ,leftSlide.getTargetPosition(), leftSlide.getCurrentPosition(), rightSlide.getTargetPosition(), rightSlide.getCurrentPosition());
+        String log = "Vertical Slide Pair:\nLeft Target: %d, Left Current: %d\nRight Target: %d, Right Current: %d";
+        return String.format(log,
+                leftSlide.getTargetPosition(),
+                leftSlide.getCurrentPosition(),
+                rightSlide.getTargetPosition(),
+                rightSlide.getCurrentPosition()
+        );
     }
 
     @TeleOp(name = "Vert Slides Test", group = "Dev")
@@ -212,17 +237,20 @@ public class VertSlidePair {
                         slides.setPower(Side.LEFT, SLIDE_POWER);
                     }
                 }
+                if (gamepads.isPressed("triangle")){
+                    slides.setHook(Hook.HookPosition.DOWN);
+                }
                 if (gamepads.isHeld("dpad_up")){
-                    slides.changeTargetPosition(Side.LEFT,50);
+                    slides.changeTargetPosition(Side.LEFT,30);
                 }
                 if (gamepads.isHeld("dpad_down")){
-                    slides.changeTargetPosition(Side.LEFT,-50);
+                    slides.changeTargetPosition(Side.LEFT,-30);
                 }
                 if (gamepads.isHeld("triangle")){
-                    slides.changeTargetPosition(Side.RIGHT,50);
+                    slides.changeTargetPosition(Side.RIGHT,30);
                 }
                 if (gamepads.isHeld("cross")){
-                    slides.changeTargetPosition(Side.RIGHT,-50);
+                    slides.changeTargetPosition(Side.RIGHT,-30);
                 }
 
                 telemetry.addLine("Use the D-pad and up and down face buttons to control the slides.");
