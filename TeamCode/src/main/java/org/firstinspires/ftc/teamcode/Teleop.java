@@ -194,7 +194,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("Drive style", driveStyle);
-            telemetry.addData("Horiz Slides: ", horizSlides.log());
+            telemetry.addData("Horiz Slides: ", horizSlides);
             telemetry.update();
 
         }

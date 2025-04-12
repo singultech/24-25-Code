@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -15,72 +17,58 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class HorizSlidePair {
     private final CRServo leftSlide;
     private final RTPAxon rightSlide;
-    private boolean manualMode = false;
+    private boolean manualMode;
 
     public HorizSlidePair(HardwareMap hmap) {
-        leftSlide = hmap.crservo.get("leftHorizSlide");
-//        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo leftServo = hmap.crservo.get("leftHorizSlide");
         CRServo rightServo = hmap.crservo.get("rightHorizSlide");
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide = new RTPAxon(rightServo, hmap.get(AnalogInput.class, "rightHorizSlideEncoder"));
-        setManualMode(false);
-        rightSlide.forceResetTotalRotation();
-        //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
+        rightSlide = new RTPAxon(rightServo, rightEncoder);
+        leftSlide = leftServo;
+        manualMode = false;
     }
 
-    public void update() {
+    public void update(){
         rightSlide.update();
-        if (!manualMode) {
-            leftSlide.setPower(rightSlide.getPower());
-        }
+        leftSlide.setPower(rightSlide.getPower());
     }
 
-    public void setManualMode(boolean manual) {
+    public void setManualMode(boolean manual){
         manualMode = manual;
         rightSlide.setRtp(!manual);
     }
 
-    public boolean isManualMode() {
+    public void setManualPower(double power){
+        if(!manualMode) throw new IllegalStateException("Not in manual mode");
+
+        double limitedPower = Math.max(-rightSlide.getMaxPower(), Math.min(rightSlide.getMaxPower(), power));
+        rightSlide.setPower(limitedPower);
+    }
+
+    public boolean isManualMode(){
         return manualMode;
     }
 
-    public void setManualPower(double power) {
-        if (!manualMode) throw new IllegalStateException("Not in manual mode");
-
-        double limitedPower = Math.max(-rightSlide.getMaxPower(),
-                Math.min(rightSlide.getMaxPower(), power));
-        rightSlide.setPower(limitedPower);
-        leftSlide.setPower(limitedPower);
+    public void setTargetRotation(double target){
+        rightSlide.setTargetRotation(target);
     }
 
-    public void setTargetRotation(double target) {
-        if (!manualMode) {
-            rightSlide.setTargetRotation(target);
-        }
-    }
-    public void changeTargetRotation(double delta) {
-        if (!manualMode) {
-            rightSlide.changeTargetRotation(delta);
-        }
-    }
-
-    public double getTargetRotation() {
+    public double getTargetRotation(){
         return rightSlide.getTargetRotation();
     }
 
-    public double getRotation() {
+    public void changeTargetRotation(double delta){
+        rightSlide.changeTargetRotation(delta);
+    }
+
+    public double getRotation(){
         return rightSlide.getTotalRotation();
     }
 
-    public void setMaxPower(double power) {
-        rightSlide.setMaxPower(power);
-    }
-
-    @SuppressLint("DefaultLocale")
-    public String log(){
-        return String.format("%s\nManual Mode: %b\nTotal Rotation",
-                rightSlide.log(),
-                manualMode);
+    @NonNull
+    public String toString(){
+        return String.format("%s\n Manual Mode: %b", rightSlide.log(), manualMode);
     }
 
     @TeleOp(name = "Horiz Slides Test", group = "test")
@@ -114,7 +102,7 @@ public class HorizSlidePair {
                     if (gamepads.isPressed("down_dpad")) slides.changeTargetRotation(-DEGREE_INCREMENT);
                 }
 
-                telemetry.addLine(slides.log());
+                telemetry.addLine(slides.toString());
                 telemetry.addData("Manual Mode", slides.isManualMode() ? "ON" : "OFF");
                 telemetry.update();
             }

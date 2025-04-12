@@ -54,13 +54,13 @@ public class RedAuto extends LinearOpMode {
                         .build());
         drive.updatePoseEstimate();
         slides.setManualMode(false);
-        slides.setTargetRotation(400);
+        slides.setTargetRotation(350);
         slides.setManualMode(false);
         backAssembly.setTargetPreset(BackAssembly.Preset.FLOOR);
         while ((Math.abs(slides.getTargetRotation()-slides.getRotation())>30) || (Math.abs(backAssembly.getTargetPreset().getArmDegrees()-backAssembly.getCurrentPreset().getArmDegrees())>30)){
             slides.update();
             backAssembly.update();
-            telemetry.addData("slides", slides.log());
+            telemetry.addData("slides", slides);
             telemetry.addData("diffy", backAssembly);
             telemetry.update();
         }

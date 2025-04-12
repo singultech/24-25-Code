@@ -22,6 +22,8 @@ public class RTPAxon {
     private double totalRotation;
     private double targetRotation;
     private double kP;
+    public double STARTPOS;
+    public int ntry=0;
 
     public enum Direction{
         FORWARD,
@@ -37,15 +39,38 @@ public class RTPAxon {
         initialize();
     }
     public RTPAxon(CRServo servo, AnalogInput encoder, Direction direction) {
-        rtp = true;
-        this.servo = servo;
-        servoEncoder = encoder;
+        this(servo, encoder);
         this.direction = direction;
         initialize();
     }
-    private void initialize(){
-        previousAngle = getCurrentAngle();
-        totalRotation = 0;
+    private void initialize() {
+
+        servo.setPower(0);
+        try {
+            Thread.sleep(50);
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        do {
+
+            STARTPOS = getCurrentAngle();
+            if (Math.abs(STARTPOS) > 1) {
+                previousAngle = getCurrentAngle();
+            } else{
+                try {
+                    Thread.sleep(50);
+                }
+                catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+            }
+            ntry++;
+        }while(Math.abs(previousAngle)<0.2 && (ntry<50));
+
+            totalRotation = 0;
         kP = 0.015;
         maxPower = 0.25;
     }
@@ -140,8 +165,8 @@ public class RTPAxon {
         @Override
         public void runOpMode() throws InterruptedException {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-            CRServo crservo = hardwareMap.crservo.get("rightDiffy");
-            AnalogInput encoder = hardwareMap.get(AnalogInput.class, "rightDiffyEncoder");
+            CRServo crservo = hardwareMap.crservo.get("rightHorizSlide");
+            AnalogInput encoder = hardwareMap.get(AnalogInput.class, "rightHorizSlideEncoder");
             GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
             RTPAxon servo = new RTPAxon(crservo, encoder);
             waitForStart();
@@ -158,8 +183,9 @@ public class RTPAxon {
                 if(gamepads.isPressed(-1, "cross")){
                     servo.setTargetRotation(0);
                 }
-
+                telemetry.addData("Starting angle", servo.STARTPOS);
                 telemetry.addLine(servo.log());
+                telemetry.addData("NTRY", servo.ntry);
                 telemetry.update();
             }
         }
