@@ -35,6 +35,12 @@ public class ServoTest extends LinearOpMode {
             if(gamepads.isPressed("square")){
                 armTargetPosition -= 0.05;
             }
+            if(gamepads.isPressed("dpad_up")){
+                armTargetPosition = 0.0;
+            }
+            if(gamepads.isPressed("dpad_down")){
+                armTargetPosition = 0.6;
+            }
             wristServo.setPosition(wristTargetPosition);
             armServo.setPosition(armTargetPosition);
             telemetry.addData("Wrist Target Position", wristTargetPosition);

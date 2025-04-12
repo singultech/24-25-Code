@@ -43,6 +43,10 @@ public class VertSlidePair {
     public VertSlidePair(double startingPower, HardwareMap hmap){
         rightSlide = hmap.get(DcMotorEx.class, "leftSlide");
         leftSlide = hmap.get(DcMotorEx.class, "rightSlide");
+        Servo rightHookServo = hmap.get(Servo.class, "rightHook");
+        rightHookServo.setDirection(Servo.Direction.REVERSE);
+
+
         leftHook = new Hook(hmap.get(Servo.class, "leftHook"));
         rightHook = new Hook(hmap.get(Servo.class, "rightHook"));
         setPower(startingPower);
@@ -232,6 +236,9 @@ public class VertSlidePair {
                     } else{
                         slides.setPower(Side.LEFT, SLIDE_POWER);
                     }
+                }
+                if (gamepads.isPressed("triangle")){
+                    slides.setHook(Hook.HookPosition.DOWN);
                 }
                 if (gamepads.isHeld("dpad_up")){
                     slides.changeTargetPosition(Side.LEFT,30);

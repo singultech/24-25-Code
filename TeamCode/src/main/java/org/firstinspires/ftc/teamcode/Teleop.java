@@ -32,8 +32,10 @@ public class Teleop extends LinearOpMode {
         VertSlidePair vertSlides = new VertSlidePair(hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
         BackArm backArm = new BackArm(hardwareMap);
+        backArm.setManualMode(true);
         FrontArm frontArm = new FrontArm(hardwareMap);
         Diffy diffy = new Diffy(hardwareMap);
+        diffy.setManualMode(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //endregion
 
@@ -96,6 +98,10 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(1, "dpad_down")) vertSlides.incrementSlidePreset(-1);
 
             //endregion
+
+            //region Front arm control
+            if (gamepads.isPressed("dpad_right")) frontArm.incrementPreset(1);
+            if (gamepads.isPressed("dpad_left")) frontArm.incrementPreset(-1);
 
 
             //region Diffy control
@@ -188,6 +194,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("Drive style", driveStyle);
+            telemetry.addData("Horiz Slides: ", horizSlides.log());
             telemetry.update();
 
         }

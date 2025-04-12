@@ -43,6 +43,7 @@ public class FrontArm {
         armServo = hmap.servo.get("frontArmServo");
         wristServo = hmap.servo.get("wristServo");
         armServo.setDirection(Servo.Direction.REVERSE);
+        setPosition(Position.GRAB_FROM_WALL);
     }
 
     public void setPosition(Position position){
@@ -62,6 +63,20 @@ public class FrontArm {
         if(position >= 0 && position <= 1) {
             wristServo.setPosition(position);
         }
+    }
+
+    private int getIndexOfPreset(Position preset){
+        for(int i = 0; i < Position.values().length; i++){
+            if(Position.values()[i] == preset) return i;
+        }
+        return -1;
+    }
+    public void incrementPreset(int amount){
+        int currentPresetIndex = getIndexOfPreset(currentPosition);
+        if (currentPresetIndex == -1) return;
+        if (currentPresetIndex + amount < 0 || currentPresetIndex + amount >= Position.values().length) return;
+        Position newPreset = Position.values()[currentPresetIndex + amount];
+        setPosition(newPreset);
     }
 
 

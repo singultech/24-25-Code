@@ -17,8 +17,8 @@ public class HorizSlidePair {
     private boolean manualMode = false;
 
     public HorizSlidePair(HardwareMap hmap) {
-        leftSlide = hmap.crservo.get("leftHorizSlide");
-        rightSlide = new RTPAxon(hmap.crservo.get("rightHorizSlide"), hmap.get(AnalogInput.class, "rightHorizSlideEncoder"), RTPAxon.Direction.REVERSE);
+        leftSlide = hmap.crservo.get("rightHorizSlide");
+        rightSlide = new RTPAxon(hmap.crservo.get("leftHorizSlide"), hmap.get(AnalogInput.class, "rightHorizSlideEncoder"), RTPAxon.Direction.REVERSE);
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
