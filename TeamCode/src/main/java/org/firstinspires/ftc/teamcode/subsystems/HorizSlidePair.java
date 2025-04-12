@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class HorizSlidePair {
     private final CRServo leftSlide;
@@ -17,8 +18,13 @@ public class HorizSlidePair {
     private boolean manualMode = false;
 
     public HorizSlidePair(HardwareMap hmap) {
-        leftSlide = hmap.crservo.get("rightHorizSlide");
-        rightSlide = new RTPAxon(hmap.crservo.get("leftHorizSlide"), hmap.get(AnalogInput.class, "rightHorizSlideEncoder"), RTPAxon.Direction.REVERSE);
+        leftSlide = hmap.crservo.get("leftHorizSlide");
+//        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        CRServo rightServo = hmap.crservo.get("rightHorizSlide");
+        rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide = new RTPAxon(rightServo, hmap.get(AnalogInput.class, "rightHorizSlideEncoder"));
+        setManualMode(false);
+        rightSlide.forceResetTotalRotation();
         //leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
@@ -87,7 +93,6 @@ public class HorizSlidePair {
             HorizSlidePair slides = new HorizSlidePair(hardwareMap);
             slides.setManualMode(true);
             GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-            boolean manualMode = false;
 
             waitForStart();
 
@@ -95,12 +100,12 @@ public class HorizSlidePair {
                 gamepads.copyStates();
                 slides.update();
 
+
                 if(gamepads.isPressed("triangle")){
-                    manualMode = !manualMode;
-                    slides.setManualMode(manualMode);
+                    slides.setManualMode(!slides.isManualMode());
                 }
 
-                if(manualMode) {
+                if(slides.isManualMode()) {
                     if (gamepads.isHeld(-1,"left_dpad")) slides.setManualPower(-MAX_MANUAL_POWER);
                     else if (gamepads.isHeld(-1,"right_dpad")) slides.setManualPower(MAX_MANUAL_POWER);
                     else slides.setManualPower(0);
@@ -110,7 +115,7 @@ public class HorizSlidePair {
                 }
 
                 telemetry.addLine(slides.log());
-                telemetry.addData("Manual Mode", manualMode ? "ON" : "OFF");
+                telemetry.addData("Manual Mode", slides.isManualMode() ? "ON" : "OFF");
                 telemetry.update();
             }
         }

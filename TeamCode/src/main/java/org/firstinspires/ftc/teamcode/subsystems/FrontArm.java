@@ -21,6 +21,7 @@ public class FrontArm {
     private final Servo wristServo;
     private Position currentPosition;
 
+
     public enum Position {
         GRAB_FROM_WALL(0.75,0.5),
         HANG_PREP(0,0.35),

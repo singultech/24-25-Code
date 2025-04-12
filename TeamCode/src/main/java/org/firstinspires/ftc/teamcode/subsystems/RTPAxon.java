@@ -99,6 +99,11 @@ public class RTPAxon {
     public boolean isAtTarget(){
         return Math.abs(targetRotation - totalRotation) < 5;
     }
+
+    public void forceResetTotalRotation() {
+        totalRotation = 0;
+        previousAngle = getCurrentAngle();
+    }
     //endregion
 
     public synchronized void update() {

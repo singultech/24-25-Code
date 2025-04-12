@@ -17,30 +17,16 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                /*.splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(0)), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(36, -44), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(49, -10), Math.toRadians(0))
-                .strafeTo(new Vector2d(49, -52))
-                .splineToConstantHeading(new Vector2d(60, -10), Math.toRadians(0))
-                .strafeTo(new Vector2d(60, -60))
-                .splineToConstantHeading(new Vector2d(48.25, -58), Math.toRadians(270))
-                .turnTo(Math.toRadians(90))
-                .lineToY(-63.25, new TranslationalVelConstraint(20.0)) */
-                .lineToY(-34)
-                        .waitSeconds(1)
+                .waitSeconds(0.5)
+                .lineToY(-28)
+                .waitSeconds(0.5)
+                .lineToY(-43)
                 .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(240)), Math.toRadians(240))
-                .splineToConstantHeading(new Vector2d(36, -42), Math.toRadians(240))
-                .turnTo(Math.toRadians(150))
-                .strafeTo(new Vector2d(50, -42))
+                .strafeTo(new Vector2d(37.5, -40.5))
+                .strafeTo(new Vector2d(38, -38))
+                .turnTo(Math.toRadians(140))
                 .turnTo(Math.toRadians(240))
-                .turnTo(Math.toRadians(150))
-                .strafeTo(new Vector2d(60, -42))
-                .turnTo(Math.toRadians(150))
-                .turnTo(Math.toRadians(270))
-                /*.splineToConstantHeading(new Vector2d(48.25, -50), Math.toRadians(270))
-                .turnTo(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(48.25, -58), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(10, -36), Math.toRadians(270)) */
+                .strafeTo(new Vector2d(44, -38))
                 .build()
         );
 
