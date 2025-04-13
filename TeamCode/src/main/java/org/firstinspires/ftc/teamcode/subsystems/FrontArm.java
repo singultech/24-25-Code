@@ -23,9 +23,11 @@ public class FrontArm {
 
 
     public enum Position {
+        START(0.75, 0.75),
         GRAB_FROM_WALL(0.75,0.5),
         HANG_PREP(0,0.35),
         HANG_SPECIMEN(0, 0.075);
+
         private final double armPosition;
         private final double wristPosition;
         Position(double armPosition, double wristPosition){

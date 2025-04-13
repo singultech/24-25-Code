@@ -24,6 +24,8 @@ public class RTPAxon {
     private double kP;
     public double STARTPOS;
     public int ntry=0;
+    public int cliffs=0;
+    public double homeAngle;
 
     public enum Direction{
         FORWARD,
@@ -70,9 +72,12 @@ public class RTPAxon {
             ntry++;
         }while(Math.abs(previousAngle)<0.2 && (ntry<50));
 
-            totalRotation = 0;
+        totalRotation = 0;
+        homeAngle = previousAngle;
         kP = 0.015;
         maxPower = 0.25;
+
+        cliffs = 0 ;   /// This could be wrong if init in not a home position
     }
     //endregion
 
@@ -133,14 +138,18 @@ public class RTPAxon {
 
     public synchronized void update() {
         // This code calculated when the axon has wrapped around its 360 degree encoder limit and adds to the total rotation accordingly.
-        double angleDifference = getCurrentAngle() - previousAngle;
+        double a = getCurrentAngle();
+        double angleDifference = a - previousAngle;
         if (angleDifference > 180) {
             angleDifference -= 360;
+            cliffs--;
         } else if (angleDifference < -180) {
             angleDifference += 360;
+            cliffs++;
         }
-        totalRotation += angleDifference;
-        previousAngle = getCurrentAngle();
+        //totalRotation += angleDifference;
+        totalRotation = a - homeAngle + cliffs*360;
+        previousAngle = a;  //getCurrentAngle();
 
         // Proportional controller to move the servo to the target rotation.
         if (!rtp) return;
@@ -155,7 +164,9 @@ public class RTPAxon {
     }
     @SuppressLint("DefaultLocale")
     public String log(){
-        return String.format("Current Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f\nCurrent Power: %f", getCurrentAngle(), totalRotation, targetRotation, power);
+        return String.format("Current Volts: %f\nCurrent Angle: %f\nTotal Rotation: %f\nTarget Rotation: %f\nCurrent Power: %f",
+                servoEncoder.getVoltage(),
+                getCurrentAngle(), totalRotation, targetRotation, power);
     }
 
 

@@ -26,8 +26,8 @@ public class BackAssembly {
         FOLDED(0, 0),
         TRANSFER(45, 0),
         MIDWAY(93, 90),
-        ABOVE_FLOOR(160, 200),
-        FLOOR(175, 245);
+        ABOVE_FLOOR(160, 110),
+        FLOOR(177, 240);
 
         final int armDegrees;
         final int diffyDegrees;
@@ -82,10 +82,15 @@ public class BackAssembly {
         return targetPreset;
     }
 
+    public boolean atTarget(){
+        return backArm.isAtTarget() && diffy.isAtTarget();
+    }
+
     @NonNull
     public String toString(){
         return diffy.log() + "\n" + backArm;
     }
+
 
     @TeleOp(name = "Back Assembly")
     public static class BackAssemblyOpmode extends LinearOpMode {
