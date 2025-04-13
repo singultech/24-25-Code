@@ -127,7 +127,7 @@ public class RTPAxon {
         return (servoEncoder.getVoltage() / 3.3) * (direction.equals(Direction.REVERSE) ? -360 : 360);
     }
     public boolean isAtTarget(){
-        return Math.abs(targetRotation - totalRotation) < 5;
+        return Math.abs(targetRotation - totalRotation) < 3;
     }
 
     public void forceResetTotalRotation() {
