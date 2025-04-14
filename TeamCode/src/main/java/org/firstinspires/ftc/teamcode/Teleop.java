@@ -103,12 +103,12 @@ public class Teleop extends LinearOpMode {
             //endregion
 
             //region Front arm control
-            if (gamepads.isPressed("dpad_right")) frontArm.incrementPreset(1);
-            if (gamepads.isPressed("dpad_left")) frontArm.incrementPreset(-1);
+            if (gamepads.isPressed(1,"dpad_right")) frontArm.incrementPreset(1);
+            if (gamepads.isPressed(1, "dpad_left")) frontArm.incrementPreset(-1);
 
 
             //region Backassembly control
-            if (gamepads.isPressed("triangle")){
+            if (gamepads.isPressed(1, "triangle")){
                 if(backAssembly.getTargetPreset() == BackAssembly.Preset.FOLDED){
                     backAssembly.setTargetPreset(BackAssembly.Preset.CHILL_GUY);
                     backAtTarget = false;
@@ -131,8 +131,7 @@ public class Teleop extends LinearOpMode {
             //endregion
 
             //region Toggle Grabber Code
-            // Toggle front grabber
-            if (gamepads.isPressed(1, "circle")) {
+            if (gamepads.isPressed( "circle")) {
                 if (frontGrabber.isClosed()) {
                     frontGrabber.open();
                     lastFrontOpened = curTime;
@@ -140,9 +139,6 @@ public class Teleop extends LinearOpMode {
                 else {
                     frontGrabber.close();
                 }
-            }
-            // Toggle back grabber
-            if (gamepads.isPressed(2, "circle")) {
                 if (backGrabber.isClosed()) {
                     backGrabber.open();
                     lastBackOpened = curTime;
@@ -153,7 +149,7 @@ public class Teleop extends LinearOpMode {
             }
             //endregion
 
-            //region Close Grabbers on button press
+            //region Close Grabbers on switch press
             if (frontGrabber.getSwitchState() && curTime - lastFrontOpened > 2000 && !frontGrabber.isClosed()){
                 new Thread(() -> {
                     try {
