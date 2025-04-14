@@ -11,10 +11,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.BackArm;
+import org.firstinspires.ftc.teamcode.subsystems.BackAssembly;
 import org.firstinspires.ftc.teamcode.subsystems.Diffy;
 import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
+import org.firstinspires.ftc.teamcode.subsystems.Hook;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
 import org.firstinspires.ftc.teamcode.subsystems.RumbleEffects;
 import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
@@ -31,11 +33,8 @@ public class Teleop extends LinearOpMode {
         Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
         VertSlidePair vertSlides = new VertSlidePair(hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
-        BackArm backArm = new BackArm(hardwareMap);
-        backArm.setManualMode(true);
+        BackAssembly backAssembly = new BackAssembly(hardwareMap);
         FrontArm frontArm = new FrontArm(hardwareMap);
-        Diffy diffy = new Diffy(hardwareMap);
-        diffy.setManualMode(true);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //endregion
 
@@ -47,6 +46,7 @@ public class Teleop extends LinearOpMode {
         //endregion
 
         waitForStart();
+        vertSlides.setHook(Hook.HookPosition.UP);
 
         while (opModeIsActive()) {
             gamepads.copyStates();
@@ -104,21 +104,8 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed("dpad_left")) frontArm.incrementPreset(-1);
 
 
-            //region Diffy control
-            double verticalPower = gamepads.joystickValue(2, "left", "y");
-            double rotationPower = -gamepads.joystickValue(2, "right", "x");
+            //region Backassembly control
 
-            double leftPower = (verticalPower + rotationPower) *0.5;
-            double rightPower = (verticalPower - rotationPower) *0.5;
-
-            diffy.setLeftPower(leftPower);
-            diffy.setRightPower(rightPower);
-
-
-            if (gamepads.isHeld(2, "dpad_right")) {
-                backArm.setManualPower(1);
-            } else if (gamepads.isHeld(2, "dpad_left")) backArm.setManualPower(-1);
-            else backArm.setManualPower(0);
             //endregion
 
             //region Horiz Slide Control

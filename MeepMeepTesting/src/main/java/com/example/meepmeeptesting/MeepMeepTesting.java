@@ -21,16 +21,24 @@ public class MeepMeepTesting {
                 .lineToY(-28)
                 .waitSeconds(0.25)
                 .lineToY(-41)
-                .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(280)), Math.toRadians(280))
-                .strafeTo(new Vector2d(34, -43))
-                .strafeTo(new Vector2d(37, -30))
-                .turn(Math.toRadians(-190))
+                        .splineToLinearHeading(new Pose2d(36, -30, Math.toRadians(240)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(37, -40, Math.toRadians(110)), Math.toRadians(240))
+                //.splineToSplineHeading(new Pose2d(37, -30, Math.toRadians(210)), Math.toRadians(210))
+//                .strafeTo(new Vector2d(34, -43))
+//                //slides come out
+//                .strafeTo(new Vector2d(37, -30))
                 //slides come back in
-                .splineToSplineHeading(new Pose2d(39, -16, Math.toRadians(90)), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(56, -11), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(56, -50), Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(47, -56), Math.toRadians(90))
+//                .splineToSplineHeading(new Pose2d(39, -16, Math.toRadians(90)), Math.toRadians(90))
+//                .splineToConstantHeading(new Vector2d(56, -11), Math.toRadians(90))
+//                .splineToConstantHeading(new Vector2d(56, -50), Math.toRadians(90))
+//                .splineToConstantHeading(new Vector2d(47, -56), Math.toRadians(90))
                 //Grab here
+
+
+
+
+
+
 //                .waitSeconds(0.5)
 //                .lineToY(-28)
 //                .waitSeconds(0.5)

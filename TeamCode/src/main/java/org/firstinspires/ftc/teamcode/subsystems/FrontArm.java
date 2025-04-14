@@ -23,7 +23,6 @@ public class FrontArm {
 
 
     public enum Position {
-        START(0.75, 0.75),
         GRAB_FROM_WALL(0.75,0.5),
         HANG_PREP(0,0.35),
         HANG_SPECIMEN(0, 0.075);
@@ -57,7 +56,7 @@ public class FrontArm {
 
     public Position getPosition(){return currentPosition;}
 
-    private void setArmPosition(double position){
+    public void setArmPosition(double position){
         if(position >= 0 && position <= 1) {
             armServo.setPosition(position);
         }

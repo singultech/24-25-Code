@@ -14,9 +14,10 @@ import org.firstinspires.ftc.teamcode.subsystems.BackAssembly;
 import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 import org.firstinspires.ftc.teamcode.subsystems.HorizSlidePair;
+import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @Config
-@Autonomous(name = "SampleAuto")
+@Autonomous(name = "SampleAuto",  preselectTeleOp="Teleop")
 public class SampleAuto extends LinearOpMode {
     public static double x =34;
     public static double y =-43;
@@ -31,12 +32,14 @@ public class SampleAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(10, -62, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         HorizSlidePair slides = new HorizSlidePair(hardwareMap);
-        BackAssembly backAssembly = new BackAssembly(hardwareMap);
         FrontArm frontArm = new FrontArm(hardwareMap);
+        VertSlidePair vertslides = new VertSlidePair(hardwareMap);
         Grabber frontGrabber = new Grabber(0.70, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
 
-        frontArm.setPosition(FrontArm.Position.START);
+        frontArm.setArmPosition(0.75);
+        frontArm.setWristPosition(0.75);
         waitForStart();
+        frontArm.setArmPosition(0.45);
         new Thread(() -> {
             while (!isStopRequested()) {
                 slides.update();
@@ -45,7 +48,10 @@ public class SampleAuto extends LinearOpMode {
             }
         }).start();
         frontGrabber.close();
-        frontArm.setPosition(FrontArm.Position.HANG_PREP);
+        new Thread(() -> {
+            try { Thread.sleep(275); } catch (InterruptedException ignored) {}
+            frontArm.setPosition(FrontArm.Position.HANG_PREP);
+        }).start();
         Actions.runBlocking(
                 drive.actionBuilder(beginPose)
                         .waitSeconds(0.2)
@@ -55,103 +61,143 @@ public class SampleAuto extends LinearOpMode {
         frontArm.setPosition(FrontArm.Position.HANG_SPECIMEN);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
+                        .waitSeconds(0.2)
                         .lineToY(-42)
                         .build());
         drive.updatePoseEstimate();
 
         frontGrabber.open();
-        slides.setManualMode(false);
-        slides.setTargetRotation(s);
-//        backAssembly.setTargetPreset(BackAssembly.Preset.FLOOR);
-//        while (!slides.isAtTarget()){
-//            telemetry.addData("slide pos", slides.getRotation());
-//            telemetry.addData("slide target", slides.getTargetRotation());
-//            telemetry.update();
-//        }
+        frontArm.setPosition(FrontArm.Position.HANG_PREP);
+        new Thread(() -> {
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ignored) {
+
+            }
+            slides.setManualMode(false);
+            slides.setTargetRotation(s);
+        }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToSplineHeading(new Pose2d(10, -40, Math.toRadians(280)), Math.toRadians(280))
-                        .strafeTo(new Vector2d(x, y))
+                        .splineToLinearHeading(new Pose2d(38, -30, Math.toRadians(240)), Math.toRadians(90))
+                        .splineToLinearHeading(new Pose2d(37, -47, Math.toRadians(150)), Math.toRadians(240))
                         .build());
         drive.updatePoseEstimate();
         slides.forceStopPower();
-
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(x1, y1))
-                        .turn(Math.toRadians(roataions))
-                        .build());
-        drive.updatePoseEstimate();
-        slides.setTargetRotation(0);
+        slides.setTargetRotation(-10);
         frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .splineToSplineHeading(new Pose2d(39, -16, Math.toRadians(90)), Math.toRadians(90))
                         .splineToConstantHeading(new Vector2d(60, -11), Math.toRadians(90))
                         .splineToConstantHeading(new Vector2d(60, -50), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(35.75, -56), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(35.75, -66), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -56), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ignored) {
+
+        }
         frontArm.setPosition(FrontArm.Position.HANG_PREP);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(8, -34), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(8, -31), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -34), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -29), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontArm.setPosition(FrontArm.Position.HANG_SPECIMEN);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1100);
+            } catch (InterruptedException ignored) {
+
+            }
+            frontGrabber.open();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+
+            }
+            frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
+            }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(8, -40), Math.toRadians(90))
-                        .build());
-        drive.updatePoseEstimate();
-        frontGrabber.open();
-        frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(35.5, -60))
-                        .splineToConstantHeading(new Vector2d(35.5, -66), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ignored) {
+
+        }
         frontArm.setPosition(FrontArm.Position.HANG_PREP);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(4, -34), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(4, -31), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -34), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -29), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontArm.setPosition(FrontArm.Position.HANG_SPECIMEN);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1100);
+            } catch (InterruptedException ignored) {
+
+            }
+            frontGrabber.open();
+
+            frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
+        }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(4 , -40), Math.toRadians(90))
-                        .build());
-        drive.updatePoseEstimate();
-        frontGrabber.open();
-        frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(36, -60))
-                        .splineToConstantHeading(new Vector2d(36, -66), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ignored) {
+
+        }
         frontArm.setPosition(FrontArm.Position.HANG_PREP);
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(2, -34), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(2, -31), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -34), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(0, -29), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontArm.setPosition(FrontArm.Position.HANG_SPECIMEN);
+        new Thread(() -> {
+            try {
+                Thread.sleep(1100);
+            } catch (InterruptedException ignored) {
+
+            }
+            frontGrabber.open();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+
+            }
+            frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
+        }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(2, -40), Math.toRadians(90))
+
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
                         .build());
         drive.updatePoseEstimate();
-        frontGrabber.open();
+        frontGrabber.close();
         }
 
     }
