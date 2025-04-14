@@ -26,7 +26,8 @@ public class BackAssembly {
         FOLDED(0, 0),
         TRANSFER(45, 0),
         MIDWAY(93, 90),
-        ABOVE_FLOOR(160, 110),
+        CHILL_GUY(160, 110),
+        ABOVE_FLOOR(170, 190),
         FLOOR(177, 240);
 
         final int armDegrees;

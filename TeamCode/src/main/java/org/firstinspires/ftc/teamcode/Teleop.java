@@ -10,9 +10,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.BackArm;
 import org.firstinspires.ftc.teamcode.subsystems.BackAssembly;
-import org.firstinspires.ftc.teamcode.subsystems.Diffy;
 import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
 import org.firstinspires.ftc.teamcode.subsystems.GamepadPair;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
@@ -43,6 +41,7 @@ public class Teleop extends LinearOpMode {
         long curTime;
         long lastFrontOpened = 0;
         long lastBackOpened = 0;
+        boolean backAtTarget = true;
         //endregion
 
         waitForStart();
@@ -51,6 +50,10 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
             gamepads.copyStates();
             horizSlides.update();
+            if(!backAtTarget) {
+                backAssembly.update();
+                if(backAssembly.atTarget()) backAtTarget = true;
+            }
             curTime = System.currentTimeMillis();
 
             //region drivecode
@@ -105,7 +108,16 @@ public class Teleop extends LinearOpMode {
 
 
             //region Backassembly control
-
+            if (gamepads.isPressed("triangle")){
+                if(backAssembly.getTargetPreset() == BackAssembly.Preset.FOLDED){
+                    backAssembly.setTargetPreset(BackAssembly.Preset.CHILL_GUY);
+                    backAtTarget = false;
+                }
+                else{
+                    backAssembly.setTargetPreset(BackAssembly.Preset.FOLDED);
+                    backAtTarget = false;
+                }
+            }
             //endregion
 
             //region Horiz Slide Control
@@ -182,6 +194,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("Drive style", driveStyle);
             telemetry.addData("Horiz Slides: ", horizSlides);
+            telemetry.addData("Back Preset: ", backAssembly.getTargetPreset());
             telemetry.update();
 
         }
