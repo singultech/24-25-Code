@@ -108,8 +108,8 @@ public class BackAssembly {
 
                 if(gamepads.isPressed("circle")) backAssembly.setTargetPreset(Preset.FOLDED);
                 if(gamepads.isPressed("square")) backAssembly.setTargetPreset(Preset.TRANSFER);
-                if(gamepads.isPressed("triangle")) backAssembly.setTargetPreset(Preset.MIDWAY);
-                if(gamepads.isPressed("cross")) backAssembly.setTargetPreset(Preset.FLOOR);
+                if(gamepads.isPressed("dpad_right")) backAssembly.setTargetPreset(Preset.ABOVE_FLOOR);
+                if(gamepads.isPressed("dpad_down")) backAssembly.setTargetPreset(Preset.FLOOR);
 
                 telemetry.addData("Preset", backAssembly.getCurrentPreset());
                 telemetry.addData("Target Preset", backAssembly.getTargetPreset());
