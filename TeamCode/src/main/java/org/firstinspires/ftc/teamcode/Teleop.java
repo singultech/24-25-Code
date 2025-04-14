@@ -129,8 +129,10 @@ public class Teleop extends LinearOpMode {
             if (gamepads.isPressed(1, "square")){
                 if (horizSlides.getTargetRotation()==0){
                     horizSlides.setTargetRotation(350);
+                    horizSlidesAtTarget = false;
                 } else {
                     horizSlides.setTargetRotation(0);
+                    horizSlidesAtTarget = false;
                 }
             }
             //endregion
