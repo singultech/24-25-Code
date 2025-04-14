@@ -42,6 +42,7 @@ public class Teleop extends LinearOpMode {
         long lastFrontOpened = 0;
         long lastBackOpened = 0;
         boolean backAtTarget = true;
+        boolean horizSlidesAtTarget = true;
         //endregion
 
         waitForStart();
@@ -53,6 +54,10 @@ public class Teleop extends LinearOpMode {
             if(!backAtTarget) {
                 backAssembly.update();
                 if(backAssembly.atTarget()) backAtTarget = true;
+            }
+            if(!horizSlidesAtTarget) {
+                horizSlides.update();
+                if(horizSlides.isAtTarget()) horizSlidesAtTarget = true;
             }
             curTime = System.currentTimeMillis();
 
