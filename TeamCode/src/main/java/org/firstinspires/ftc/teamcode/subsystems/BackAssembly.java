@@ -82,6 +82,9 @@ public class BackAssembly {
     public Preset getTargetPreset() {
         return targetPreset;
     }
+    public Diffy getDiffy(){
+        return diffy;
+    }
 
     public boolean atTarget(){
         return backArm.isAtTarget() && diffy.isAtTarget();
@@ -110,6 +113,9 @@ public class BackAssembly {
                 if(gamepads.isPressed("square")) backAssembly.setTargetPreset(Preset.TRANSFER);
                 if(gamepads.isPressed("dpad_right")) backAssembly.setTargetPreset(Preset.ABOVE_FLOOR);
                 if(gamepads.isPressed("dpad_down")) backAssembly.setTargetPreset(Preset.FLOOR);
+
+                if(gamepads.isPressed("right_bumper")) backAssembly.getDiffy().rollGrabber(10);
+                if(gamepads.isPressed("left_bumper")) backAssembly.getDiffy().rollGrabber(-10);
 
                 telemetry.addData("Preset", backAssembly.getCurrentPreset());
                 telemetry.addData("Target Preset", backAssembly.getTargetPreset());
