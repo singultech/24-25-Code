@@ -128,6 +128,9 @@ public class Diffy {
     public boolean isAtTarget() {
         return leftServo.isAtTarget() && rightServo.isAtTarget();
     }
+    public boolean isAtTarget(double tolerance) {
+        return leftServo.isAtTarget(tolerance) && rightServo.isAtTarget(tolerance);
+    }
 
     @SuppressLint("DefaultLocale")
     public String log() {

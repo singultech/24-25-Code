@@ -28,7 +28,7 @@ public class BackAssembly {
         MIDWAY(93, 90),
         CHILL_GUY(160, 110),
         ABOVE_FLOOR(170, 190),
-        FLOOR(177, 240);
+        FLOOR(187, 280);
 
         final int armDegrees;
         final int diffyDegrees;
@@ -58,7 +58,7 @@ public class BackAssembly {
         backArm.update();
         diffy.update();
         if(targetPreset == currentPreset) return;
-        if (!backArm.isAtTarget() || !diffy.isAtTarget()) return;
+        if (!backArm.isAtTarget(15) || !diffy.isAtTarget(17)) return;
         if(getIndexOfPreset(targetPreset) > getIndexOfPreset(currentPreset)){
             setPreset(Preset.values()[getIndexOfPreset(currentPreset) + 1]);
         } else {

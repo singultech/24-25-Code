@@ -26,7 +26,7 @@ public class HorizSlidePair {
         rightServo.setDirection(DcMotorSimple.Direction.REVERSE);
         AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightHorizSlideEncoder");
         rightSlide = new RTPAxon(rightServo, rightEncoder, RTPAxon.Direction.REVERSE);
-        rightSlide.setK(0.02);
+        rightSlide.setK(0.01);
         rightSlide.setMaxPower(1);
         leftSlide = leftServo;
         manualMode = false;

@@ -118,7 +118,11 @@ public class Teleop extends LinearOpMode {
                     backAssembly.setTargetPreset(BackAssembly.Preset.CHILL_GUY);
                     backAtTarget = false;
                 }
-                else{
+                else if (backAssembly.getTargetPreset() == BackAssembly.Preset.CHILL_GUY){
+                    backAssembly.setTargetPreset(BackAssembly.Preset.FLOOR);
+                    backAtTarget = false;
+                }
+                else {
                     backAssembly.setTargetPreset(BackAssembly.Preset.FOLDED);
                     backAtTarget = false;
                 }
