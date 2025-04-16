@@ -141,6 +141,12 @@ public class RTPAxon {
         this.kD = kD;
     }
 
+    public void setPidCoeffs(double kP, double kI, double kD){
+        setKP(kP);
+        setKI(kI);
+        setKD(kD);
+    }
+
     // PID coefficient getters
     public double getKP() {
         return kP;

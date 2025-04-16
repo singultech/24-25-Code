@@ -25,7 +25,7 @@ public class BackArm {
         AnalogInput rightEncoder = hmap.get(AnalogInput.class, "rightArmEncoder");
         rightServo = new RTPAxon(rServo, rightEncoder, RTPAxon.Direction.REVERSE);
         leftServo.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightServo.setK(0.009);
+        rightServo.setPidCoeffs(0.012, 0.02, 0.0005);
     }
 
     public void update() {
@@ -62,6 +62,10 @@ public class BackArm {
         if (!manualMode) {
             rightServo.changeTargetRotation(delta*GEAR_RATIO);
         }
+    }
+
+    public void setPidCoeffs(double kP, double kI, double kD){
+        rightServo.setPidCoeffs(kP, kI, kD);
     }
 
     public double getTargetRotation() {

@@ -29,8 +29,8 @@ public class Diffy {
         rServo.setDirection(DcMotorSimple.Direction.REVERSE);
         leftServo = new RTPAxon(lServo, hmap.get(AnalogInput.class, "leftDiffyEncoder"), RTPAxon.Direction.REVERSE);
         rightServo = new RTPAxon(rServo, hmap.get(AnalogInput.class, "rightDiffyEncoder"));
-        leftServo.setK(0.013);
-        rightServo.setK(0.013);
+        leftServo.setPidCoeffs(0.01, 0.0, 0.0);
+        rightServo.setPidCoeffs(0.01, 0.0, 0.0);
         grabberRoll = 0;
         grabberPitch = 0;
     }
@@ -46,6 +46,11 @@ public class Diffy {
     public void update() {
         leftServo.update();
         rightServo.update();
+    }
+
+    public void setPidCoeffs(double kP, double kI, double kD){
+        leftServo.setPidCoeffs(kP, kI, kD);
+        rightServo.setPidCoeffs(kP, kI, kD);
     }
 
     public void setManualMode(boolean manual) {

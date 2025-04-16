@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -28,7 +29,7 @@ public class BackAssembly {
         MIDWAY(93, 90),
         CHILL_GUY(160, 110),
         ABOVE_FLOOR(170, 190),
-        FLOOR(187, 280);
+        FLOOR(188, 280);
 
         final int armDegrees;
         final int diffyDegrees;
@@ -85,6 +86,9 @@ public class BackAssembly {
     public Diffy getDiffy(){
         return diffy;
     }
+    public BackArm getBackArm(){
+        return backArm;
+    }
 
     public boolean atTarget(){
         return backArm.isAtTarget() && diffy.isAtTarget();
@@ -95,9 +99,16 @@ public class BackAssembly {
         return diffy.log() + "\n" + backArm;
     }
 
-
+    @Config
     @TeleOp(name = "Back Assembly")
     public static class BackAssemblyOpmode extends LinearOpMode {
+        public static double diffykP = 0.01;
+        public static double diffykI = 0.0;
+        public static double diffykD = 0.0;
+        public static double armkP = 0.012;
+        public static double armkI = 0.02;
+        public static double armkD = 0.0005;
+
         @Override
         public void runOpMode() throws InterruptedException {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -108,6 +119,9 @@ public class BackAssembly {
             while (!isStopRequested()) {
                 gamepads.copyStates();
                 backAssembly.update();
+                backAssembly.getDiffy().setPidCoeffs(diffykP, diffykI, diffykD);
+                backAssembly.getBackArm().setPidCoeffs(armkP, armkI, armkD);
+
 
                 if(gamepads.isPressed("circle")) backAssembly.setTargetPreset(Preset.FOLDED);
                 if(gamepads.isPressed("square")) backAssembly.setTargetPreset(Preset.TRANSFER);

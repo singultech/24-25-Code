@@ -127,6 +127,14 @@ public class Teleop extends LinearOpMode {
                     backAtTarget = false;
                 }
             }
+            if(gamepads.isPressed("right_bumper")) {
+                backAssembly.getDiffy().rollGrabber(10);
+                backAtTarget = false;
+            }
+            if(gamepads.isPressed("left_bumper")) {
+                backAssembly.getDiffy().rollGrabber(-10);
+                backAtTarget = false;
+            }
             //endregion
 
             //region Horiz Slide Control

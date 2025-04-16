@@ -23,7 +23,7 @@ public class SampleAuto extends LinearOpMode {
     public static double y =-43;
     public static double x1 =37;
     public static double y1 =-30;
-    public static double s = 375;
+    public static double s = 300;
     public static double roataions = -210;
 
     @Override
@@ -34,6 +34,7 @@ public class SampleAuto extends LinearOpMode {
         HorizSlidePair slides = new HorizSlidePair(hardwareMap);
         FrontArm frontArm = new FrontArm(hardwareMap);
         VertSlidePair vertslides = new VertSlidePair(hardwareMap);
+        BackAssembly backAssembly = new BackAssembly(hardwareMap);
         Grabber frontGrabber = new Grabber(0.70, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
 
         frontArm.setArmPosition(0.75);
@@ -80,7 +81,7 @@ public class SampleAuto extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .splineToLinearHeading(new Pose2d(38, -30, Math.toRadians(240)), Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(37, -47, Math.toRadians(150)), Math.toRadians(240))
+                        .splineToLinearHeading(new Pose2d(37, -49, Math.toRadians(150)), Math.toRadians(240))
                         .build());
         drive.updatePoseEstimate();
         slides.forceStopPower();
@@ -125,9 +126,9 @@ public class SampleAuto extends LinearOpMode {
             }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
@@ -156,9 +157,9 @@ public class SampleAuto extends LinearOpMode {
         }).start();
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
-                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
@@ -192,9 +193,9 @@ public class SampleAuto extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
 
-                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(88))
-                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(88))
+                        .splineToConstantHeading(new Vector2d(10, -45), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -55), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(37, -64), Math.toRadians(90))
                         .build());
         drive.updatePoseEstimate();
         frontGrabber.close();
