@@ -5,9 +5,15 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 public class BackAssembly {
     private final BackArm backArm;
@@ -19,8 +25,11 @@ public class BackAssembly {
     public BackAssembly(HardwareMap hmap) {
         backArm = new BackArm(hmap);
         diffy = new Diffy(hmap);
+        diffy.setMaxPower(0.15);
         currentPreset = Preset.FOLDED;
         targetPreset = Preset.FOLDED;
+        backArm.setPidCoeffs(0.012,0.02,0.0005);
+        diffy.setPidCoeffs(0.01, 0.02, 0.0005);
     }
 
     public enum Preset {
@@ -29,6 +38,7 @@ public class BackAssembly {
         MIDWAY(93, 90),
         CHILL_GUY(160, 110),
         ABOVE_FLOOR(170, 190),
+        EXTRA(188, 190),
         FLOOR(188, 280);
 
         final int armDegrees;
@@ -114,13 +124,32 @@ public class BackAssembly {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
             GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
             BackAssembly backAssembly = new BackAssembly(hardwareMap);
-
+            MecanumDrive drive;
+            DcMotorEx rightSlide;
+            DcMotorEx leftSlide;
             waitForStart();
             while (!isStopRequested()) {
                 gamepads.copyStates();
                 backAssembly.update();
                 backAssembly.getDiffy().setPidCoeffs(diffykP, diffykI, diffykD);
                 backAssembly.getBackArm().setPidCoeffs(armkP, armkI, armkD);
+
+                if (gamepads.isPressed("dpad_right")){
+                    drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+                    drive.setDrivePowers(new PoseVelocity2d(
+                            new Vector2d(
+                                    -0.2,
+                                    -0.2
+                            ),
+                            -0.0
+                    ));
+                }
+                if (gamepads.isPressed("dpad_left")){
+                    rightSlide = hardwareMap.get(DcMotorEx.class, "leftSlide");
+                    leftSlide = hardwareMap.get(DcMotorEx.class, "rightSlide");
+                    rightSlide.setPower(0);
+                    leftSlide.setPower(0);
+                }
 
 
                 if(gamepads.isPressed("circle")) backAssembly.setTargetPreset(Preset.FOLDED);

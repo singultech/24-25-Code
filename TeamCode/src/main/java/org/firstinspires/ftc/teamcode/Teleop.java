@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.teamcode.subsystems.BackAssembly;
 import org.firstinspires.ftc.teamcode.subsystems.FrontArm;
@@ -21,6 +22,13 @@ import org.firstinspires.ftc.teamcode.subsystems.VertSlidePair;
 
 @TeleOp(name = "*Teleop")
 public class Teleop extends LinearOpMode {
+
+    public static double diffykP = 0.01;
+    public static double diffykI = 0.0;
+    public static double diffykD = 0.0;
+    public static double armkP = 0.012;
+    public static double armkI = 0.02;
+    public static double armkD = 0.0005;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -50,16 +58,20 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             gamepads.copyStates();
-            horizSlides.update();
-            if(!backAtTarget) {
+//            backAssembly.update();
+//            horizSlides.update();
+
+            if (!gamepads.isHeld(2, "right_bumper")) {
                 backAssembly.update();
-                if(backAssembly.atTarget()) backAtTarget = true;
-            }
-            if(!horizSlidesAtTarget) {
                 horizSlides.update();
-                if(horizSlides.isAtTarget()) horizSlidesAtTarget = true;
             }
+//            if(!horizSlidesAtTarget) {
+//                horizSlides.update();
+//                if(horizSlides.isAtTarget()) horizSlidesAtTarget = true;
+//            }
             curTime = System.currentTimeMillis();
+            backAssembly.getDiffy().setPidCoeffs(diffykP, diffykI, diffykD);
+            backAssembly.getBackArm().setPidCoeffs(armkP, armkI, armkD);;
 
             //region drivecode
             double driveScaleFactor = 1-gamepads.getTrigger(1, "right_trigger");
@@ -139,11 +151,11 @@ public class Teleop extends LinearOpMode {
 
             //region Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
-                if (horizSlides.getTargetRotation()==0){
-                    horizSlides.setTargetRotation(350);
+                if (horizSlides.getTargetRotation()==250){
+                    horizSlides.setTargetRotation(5);
                     horizSlidesAtTarget = false;
                 } else {
-                    horizSlides.setTargetRotation(0);
+                    horizSlides.setTargetRotation(250);
                     horizSlidesAtTarget = false;
                 }
             }
@@ -199,6 +211,15 @@ public class Teleop extends LinearOpMode {
                     }
                 }).start();
             }
+
+            if(gamepads.isHeld(2, "dpad_right")){
+                horizSlides.setManualMode(true);
+                horizSlides.setManualPower(1);
+            }
+            if(gamepads.isHeld(2, "dpad_left")){
+                horizSlides.setManualMode(true);
+                horizSlides.setManualPower(-1);
+            }
             //endregion
 
 
@@ -208,8 +229,10 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.addData("Drive style", driveStyle);
-            telemetry.addData("Horiz Slides: ", horizSlides);
+            telemetry.addData("Horiz Slides target ", horizSlides.getTargetRotation());
             telemetry.addData("Back Preset: ", backAssembly.getTargetPreset());
+            telemetry.addData("Left Diffy Angle", ((hardwareMap.get(AnalogInput.class, "leftDiffyEncoder").getVoltage()/3.3)*360));
+
             telemetry.update();
 
         }
