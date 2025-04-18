@@ -23,6 +23,7 @@ public class FrontArm {
 
 
     public enum Position {
+        HOPE_HANG(0,0.75),
         GRAB_FROM_WALL(0.75,0.5),
         HANG_PREP(0,0.35),
         HANG_SPECIMEN(0, 0.075);

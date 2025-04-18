@@ -37,9 +37,10 @@ public class BackAssembly {
         TRANSFER(45, 0),
         MIDWAY(93, 90),
         CHILL_GUY(160, 110),
-        ABOVE_FLOOR(170, 190),
-        EXTRA(188, 190),
-        FLOOR(188, 280);
+        ABOVE_FLOOR(170, 200),
+        EXTRA(192, 200),
+        RIGHT_ABOVE_FLOOR(192, 240),
+        FLOOR(192, 280);
 
         final int armDegrees;
         final int diffyDegrees;

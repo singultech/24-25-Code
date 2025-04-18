@@ -108,10 +108,8 @@ public class Diffy {
 
     public void rollGrabber(double degrees) {
         double formattedRotation = degrees * 0.55555555;
-        if (grabberRoll + degrees <= 90 && grabberRoll + degrees >= -90) {
-            grabberRoll += degrees;
-            changeTargetRotation(formattedRotation, -formattedRotation);
-        }
+        grabberRoll += degrees;
+        changeTargetRotation(formattedRotation, -formattedRotation);
     }
 
     public double getGrabberRoll() {

@@ -35,13 +35,14 @@ public class Teleop extends LinearOpMode {
         // region definitions
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, Math.toRadians(0)));
         GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
-        Grabber frontGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
-        Grabber backGrabber = new Grabber(0.73, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
+        Grabber frontGrabber = new Grabber(0.70, 1, hardwareMap.servo.get("frontGrabberServo"), hardwareMap.touchSensor.get("frontGrabberSwitch"));
+        Grabber backGrabber = new Grabber(0.70, 1, hardwareMap.servo.get("backGrabberServo"), hardwareMap.touchSensor.get("backGrabberSwitch"));
         VertSlidePair vertSlides = new VertSlidePair(hardwareMap);
         HorizSlidePair horizSlides = new HorizSlidePair(hardwareMap);
         BackAssembly backAssembly = new BackAssembly(hardwareMap);
         FrontArm frontArm = new FrontArm(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        MecanumDrive.PARAMS.maxWheelVel = 80;
         //endregion
 
         //region variables
@@ -127,10 +128,10 @@ public class Teleop extends LinearOpMode {
             //region Backassembly control
             if (gamepads.isPressed(1, "triangle")){
                 if(backAssembly.getTargetPreset() == BackAssembly.Preset.FOLDED){
-                    backAssembly.setTargetPreset(BackAssembly.Preset.CHILL_GUY);
+                    backAssembly.setTargetPreset(BackAssembly.Preset.RIGHT_ABOVE_FLOOR);
                     backAtTarget = false;
                 }
-                else if (backAssembly.getTargetPreset() == BackAssembly.Preset.CHILL_GUY){
+                else if (backAssembly.getTargetPreset() == BackAssembly.Preset.RIGHT_ABOVE_FLOOR){
                     backAssembly.setTargetPreset(BackAssembly.Preset.FLOOR);
                     backAtTarget = false;
                 }

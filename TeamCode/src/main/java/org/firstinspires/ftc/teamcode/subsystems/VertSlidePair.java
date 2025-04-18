@@ -23,6 +23,7 @@ public class VertSlidePair {
 
     public enum SlidePosition{
         ZERO(0),
+        LIFT_FROM_WALL(1530),
         MAX(4000);
 
         private final int slidePosition;
