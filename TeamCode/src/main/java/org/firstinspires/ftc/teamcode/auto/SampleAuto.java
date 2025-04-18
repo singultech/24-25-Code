@@ -218,8 +218,8 @@ public class SampleAuto extends LinearOpMode {
         Actions.runBlocking(
                 drive.actionBuilder(drive.pose)
                         .splineToSplineHeading(new Pose2d(39, -16, Math.toRadians(90)), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(60 , -11), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(60, -50), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(57 , -11), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(57, -50), Math.toRadians(90))
                         .splineToConstantHeading(new Vector2d(39, -56), Math.toRadians(90))
                         .splineToConstantHeading(new Vector2d(39, -64), Math.toRadians(90))
                         .build());
