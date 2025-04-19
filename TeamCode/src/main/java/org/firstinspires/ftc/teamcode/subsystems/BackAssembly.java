@@ -39,7 +39,7 @@ public class BackAssembly {
         CHILL_GUY(160, 110),
         ABOVE_FLOOR(170, 200),
         EXTRA(192, 200),
-        RIGHT_ABOVE_FLOOR(192, 240),
+        RIGHT_ABOVE_FLOOR(192,   240),
         FLOOR(192, 280);
 
         final int armDegrees;
