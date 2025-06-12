@@ -153,16 +153,6 @@ public class SampleAuto extends LinearOpMode {
         frontArm.setWristPosition(0.75);
         waitForStart();
         frontArm.setArmPosition(0.45);
-        new Thread(() -> {
-            while (!isStopRequested()) {
-                slides.update();
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException ignored) {
-                }
-                //backAssembly.update();
-            }
-        }).start();
         frontGrabber.close();
         new Thread(() -> {
             try {
@@ -193,7 +183,7 @@ public class SampleAuto extends LinearOpMode {
 
             }
             slides.setManualMode(false);
-            slides.setTargetRotation(s);
+            slides.setTargetRotation((int) s);
         }).start();
         frontGrabber.open();
         frontArm.setPosition(FrontArm.Position.HANG_PREP);
@@ -206,7 +196,7 @@ public class SampleAuto extends LinearOpMode {
         drive.updatePoseEstimate();
         //slides.forceStopPower();
         new Thread(() -> {
-            slides.setTargetRotation(s+150);
+            slides.setTargetRotation((int) s+150);
             try {
                 Thread.sleep(850);
             } catch (InterruptedException ignored) {

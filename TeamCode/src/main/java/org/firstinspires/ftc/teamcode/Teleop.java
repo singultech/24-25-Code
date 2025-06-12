@@ -64,7 +64,6 @@ public class Teleop extends LinearOpMode {
 
             if (!gamepads.isHeld(2, "right_bumper")) {
                 backAssembly.update();
-                horizSlides.update();
             }
 //            if(!horizSlidesAtTarget) {
 //                horizSlides.update();

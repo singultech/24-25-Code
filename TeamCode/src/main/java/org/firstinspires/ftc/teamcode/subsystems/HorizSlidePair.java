@@ -26,6 +26,8 @@ public class HorizSlidePair {
         leftSlide = hmap.get(DcMotorEx.class, "leftHorizSlide");
         rightSlide = hmap.get(DcMotorEx.class, "rightHorizSlide");
         manualMode = false;
+        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setTargetPosition(0);
@@ -86,7 +88,7 @@ public class HorizSlidePair {
 
     @NonNull
     public String toString(){
-        return String.format("%s\n Manual Mode: %b\nTarget Pos: %f\nCurrent Pos: %f", manualMode, getTargetRotation(), getRotation());
+        return String.format("Manual Mode: %b\nTarget Pos: %d\nCurrent Pos: %d", manualMode, getTargetRotation(), getRotation());
     }
     @Config
     @TeleOp(name = "Horiz Slides Test", group = "test")
