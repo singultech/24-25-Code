@@ -95,10 +95,13 @@ public class VertSlidePair {
 
     public void setPower(Side side, double p){
         if(side == Side.LEFT) {
-            leftSlide.setPower(Math.max(-1, Math.min(1, p)));
+            double power = Math.max(-1, Math.min(1, p));
+            leftSlide.setPower(power * 0.25);
+
         }
         else {
-            rightSlide.setPower(Math.max(-1, Math.min(1, p)));
+            double power = Math.max(-1, Math.min(1, p));
+            rightSlide.setPower(power * 0.25);
         }
     }
     public void setPower(double p){

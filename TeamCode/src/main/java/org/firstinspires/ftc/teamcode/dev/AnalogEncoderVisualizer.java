@@ -18,17 +18,13 @@ public class AnalogEncoderVisualizer extends LinearOpMode {
         AnalogInput leftDiffyEncoder = hardwareMap.get(AnalogInput.class, "leftDiffyEncoder");
         AnalogInput rightDiffyEncoder = hardwareMap.get(AnalogInput.class, "rightDiffyEncoder");
         AnalogInput rightArmEncoder = hardwareMap.get(AnalogInput.class, "rightArmEncoder");
-        AnalogInput rightSlideEncoder = hardwareMap.get(AnalogInput.class, "rightHorizSlideEncoder");
-        CRServo rightFlip = hardwareMap.crservo.get("rightHorizSlide");
         waitForStart();
 
         while (opModeIsActive()) {
-            rightFlip.setPower(0.1);
 
             telemetry.addData("LeftDiffy:", leftDiffyEncoder.getVoltage());
             telemetry.addData("RightDiffy:", rightDiffyEncoder.getVoltage());
             telemetry.addData("RightArm:", rightArmEncoder.getVoltage());
-            telemetry.addData("RightSlide:", rightSlideEncoder.getVoltage());
             telemetry.update();
         }
     }

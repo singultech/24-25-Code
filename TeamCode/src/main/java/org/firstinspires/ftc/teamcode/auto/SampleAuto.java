@@ -23,7 +23,7 @@ public class SampleAuto extends LinearOpMode {
     public static double y = -43;
     public static double x1 = 37;
     public static double y1 = -30;
-    public static double s = 250;
+    public static double s = 1000;
     public static double roataions = -210;
     int a = -4;
     Pose2d beginPose;
@@ -182,8 +182,8 @@ public class SampleAuto extends LinearOpMode {
             } catch (InterruptedException ignored) {
 
             }
-            slides.setManualMode(false);
-            slides.setTargetRotation((int) s);
+//            slides.setManualMode(false);
+//            slides.setTargetRotation((int) s);
         }).start();
         frontGrabber.open();
         frontArm.setPosition(FrontArm.Position.HANG_PREP);
@@ -196,13 +196,13 @@ public class SampleAuto extends LinearOpMode {
         drive.updatePoseEstimate();
         //slides.forceStopPower();
         new Thread(() -> {
-            slides.setTargetRotation((int) s+150);
+//            slides.setTargetRotation((int) s+250);
             try {
                 Thread.sleep(850);
             } catch (InterruptedException ignored) {
 
             }
-            slides.setTargetRotation(0);
+//            slides.setTargetRotation(0);
         }).start();
         frontArm.setPosition(FrontArm.Position.GRAB_FROM_WALL);
         Actions.runBlocking(

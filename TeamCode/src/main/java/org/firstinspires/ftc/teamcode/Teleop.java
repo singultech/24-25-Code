@@ -151,11 +151,11 @@ public class Teleop extends LinearOpMode {
 
             //region Horiz Slide Control
             if (gamepads.isPressed(1, "square")){
-                if (horizSlides.getTargetRotation()==250){
-                    horizSlides.setTargetRotation(5);
+                if (horizSlides.getTargetRotation()==750){
+                    horizSlides.setTargetRotation(0);
                     horizSlidesAtTarget = false;
                 } else {
-                    horizSlides.setTargetRotation(250);
+                    horizSlides.setTargetRotation(750);
                     horizSlidesAtTarget = false;
                 }
             }
