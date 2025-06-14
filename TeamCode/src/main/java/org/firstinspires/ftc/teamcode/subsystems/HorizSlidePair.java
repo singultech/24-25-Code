@@ -18,27 +18,32 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class HorizSlidePair {
-    private final DcMotorEx leftSlide;
-    private final DcMotorEx rightSlide;
+    public final DcMotorEx leftSlide;
+    public final DcMotorEx rightSlide;
     private boolean manualMode;
+    private static final int MAX_ROTATION = 1450;
 
     public HorizSlidePair(HardwareMap hmap) {
         leftSlide = hmap.get(DcMotorEx.class, "leftHorizSlide");
         rightSlide = hmap.get(DcMotorEx.class, "rightHorizSlide");
         manualMode = false;
-        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightSlide.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftSlide.setDirection(DcMotorEx.Direction.REVERSE);
+        rightSlide.setDirection(DcMotorEx.Direction.FORWARD);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setTargetPosition(0);
         rightSlide.setTargetPosition(0);
         leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftSlide.setPower(0.5);
+        rightSlide.setPower(0.5);
     }
 
     public void setManualMode(boolean manual){
         manualMode = manual;
         if(!manual){
+            leftSlide.setPower(0.5);
+            rightSlide.setPower(0.5);
             leftSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else {
@@ -59,8 +64,10 @@ public class HorizSlidePair {
     }
 
     public void setTargetRotation(int target){
-        rightSlide.setTargetPosition(target);
-        leftSlide.setTargetPosition(target);
+        rightSlide.setTargetPosition(
+                Math.min(target, MAX_ROTATION));
+        leftSlide.setTargetPosition(
+                Math.min(target, MAX_ROTATION));
     }
 
     public int getTargetRotation(){
@@ -74,7 +81,7 @@ public class HorizSlidePair {
     }
 
     public int getRotation(){
-        return rightSlide.getCurrentPosition();
+        return leftSlide.getCurrentPosition();
     }
     public double getPower(){
         return rightSlide.getPower();
@@ -93,13 +100,12 @@ public class HorizSlidePair {
     @Config
     @TeleOp(name = "Horiz Slides Test", group = "test")
     public static class HorizontalSlidesTest extends LinearOpMode {
-        public static int DEGREE_INCREMENT = 15;
+        public static int DEGREE_INCREMENT = 50;
         public static double MAX_MANUAL_POWER = 0.5;
         @Override
         public void runOpMode() {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
             HorizSlidePair slides = new HorizSlidePair(hardwareMap);
-            slides.setManualMode(true);
             GamepadPair gamepads = new GamepadPair(gamepad1, gamepad2);
 
             waitForStart();
@@ -122,6 +128,10 @@ public class HorizSlidePair {
                 }
 
                 telemetry.addLine(slides.toString());
+                telemetry.addData("Left Slide Pos: ", slides.leftSlide.getCurrentPosition());
+                telemetry.addData("Right Slide Pos: ", slides.rightSlide.getCurrentPosition());
+                telemetry.addData("Left Slide Tar: ", slides.leftSlide.getTargetPosition());
+                telemetry.addData("Right Slide Tar: ", slides.rightSlide.getTargetPosition());
                 telemetry.update();
             }
         }
